@@ -39,6 +39,8 @@ export interface FinishedGoodsMovement {
   salesOrderItemId?: string;
   jobCardId?: string;
   manufacturingItemId?: string;
+  qualityReleaseId?: string;
+  stockApprovalId?: string;
   modelId?: string;
   modelName?: string;
   batch?: string;

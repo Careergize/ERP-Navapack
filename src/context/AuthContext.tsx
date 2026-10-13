@@ -11,6 +11,8 @@ interface AuthContextValue {
 }
 
 const DEMO_NAMES: Record<Role, string> = {
+  qc_inspector: "QC Inspector",
+  qc_supervisor: "QC Supervisor",
   receptionist: "Amara (Receptionist)",
   production_manager: "Kwame (Production Manager)",
   store_keeper: "Zola (Store Keeper)",

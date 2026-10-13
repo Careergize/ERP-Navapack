@@ -1,3 +1,5 @@
+import { QC_VIEW_ROLES, isQCRole } from '@/lib/quality';
+import { QC_SECTIONS } from '@/pages/Quality/QualityPage';
 import { NavLink, Outlet } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -23,6 +25,7 @@ interface NavItem {
 }
 
 const NAV_ITEMS: NavItem[] = [
+  { to: "/qc", label: "Quality Control", icon: ClipboardList, roles: QC_VIEW_ROLES },
   { to: "/", label: "Dashboard", icon: LayoutDashboard, roles: ["receptionist", "production_manager", "store_keeper", "production_operator", "recycling_operator", "accounts", "admin"] },
   { to: "/sales-orders", label: "Sales Orders", icon: FileText, roles: ["receptionist", "admin"] },
   { to: "/job-cards", label: "Job Cards", icon: ClipboardList, roles: ["receptionist", "production_manager", "store_keeper", "production_operator", "admin"] },
@@ -37,12 +40,12 @@ const NAV_ITEMS: NavItem[] = [
 
 export function AppShell() {
   const { user, logout } = useAuth();
-  const items = NAV_ITEMS.filter((item) => !user || item.roles.includes(user.role));
+  const items: NavItem[] = isQCRole(user?.role) ? [{ to: "/qc", label: "QC Dashboard", icon: LayoutDashboard, roles: QC_VIEW_ROLES }, ...QC_SECTIONS.map(([key, label]) => ({ to: `/qc/${key}`, label, icon: ClipboardList, roles: QC_VIEW_ROLES }))] : NAV_ITEMS.filter((item) => !user || item.roles.includes(user.role));
 
   return (
     <div className="min-h-screen bg-[radial-gradient(circle_at_72%_0%,#2dbb4c_0%,#16803d_42%,#0b3c2a_100%)] p-3 sm:p-5">
-      <div className="flex min-h-[calc(100vh-2rem)] overflow-hidden rounded-[24px] bg-[#f5f8f5] shadow-2xl shadow-emerald-950/25">
-      <aside className="flex w-[230px] shrink-0 flex-col bg-[#102d24] text-white">
+      <div className={`flex min-h-[calc(100vh-2rem)] overflow-hidden rounded-[24px] bg-[#f5f8f5] shadow-2xl shadow-emerald-950/25 ${isQCRole(user?.role) ? "flex-col sm:flex-row" : ""}`}>
+      <aside className={`flex shrink-0 flex-col bg-[#102d24] text-white ${isQCRole(user?.role) ? "w-full sm:w-[230px]" : "w-[230px]"}`}>
         <div className="flex items-center gap-2 px-5 py-6">
           <img src="/assets/Nava-logo.png" alt="NavaPack" className="h-8 w-auto max-w-[155px] object-contain" />
         </div>
@@ -58,7 +61,7 @@ export function AppShell() {
             <NavLink
               key={to}
               to={to}
-              end={to === "/"}
+              end={to === "/" || to === "/qc"}
               className={({ isActive }) =>
                 `flex items-center gap-3 rounded-xl px-3 py-2.5 text-[13px] font-medium transition-colors ${
                   isActive ? "bg-[#b7efbd] text-[#123b29]" : "text-white/65 hover:bg-white/10 hover:text-white"

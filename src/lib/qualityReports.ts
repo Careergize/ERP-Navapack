@@ -1,0 +1,11 @@
+import type { QCInspection, QCNonConformance } from './quality';
+export const xmlEscape = (value: unknown) => String(value ?? '').replace(/[<>&"']/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;', "'": '&apos;' })[c]!);
+export function excelWorkbook(rows: unknown[][]) {
+  return '<?xml version="1.0"?><?mso-application progid="Excel.Sheet"?><Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"><Worksheet ss:Name="QC Report"><Table>' + rows.map(row => '<Row>' + row.map(value => `<Cell><Data ss:Type="${typeof value === 'number' && Number.isFinite(value) ? 'Number' : 'String'}">${xmlEscape(value)}</Data></Cell>`).join('') + '</Row>').join('') + '</Table></Worksheet></Workbook>';
+}
+export function inspectionReportRows(inspections: QCInspection[]) {
+  return [['Inspection', 'Date', 'Time', 'Category', 'Department', 'Inspector', 'Status', 'Result', 'Subject', 'Template', 'Revision', 'Document code', 'Job Card ID', 'Manufacturing item ID', 'Batch ID', 'Batch number', 'Receipt ID', 'Machine ID', 'Sample', 'Check', 'Response', 'Actual unit', 'Target', 'Minus tolerance', 'Plus tolerance', 'Remarks'], ...inspections.flatMap(i => (i.responses.length ? i.responses : [undefined]).map(r => [i.number, i.date, i.time, i.subject.kind, i.department, i.inspector, i.status, i.result ?? '', i.subject.label, i.template.name, i.template.revision, i.template.documentCode ?? '', i.subject.jobCardId ?? '', i.subject.manufacturingItemId ?? '', i.subject.batchId ?? '', i.subject.batchNumber ?? '', i.subject.receiptId ?? '', i.subject.machineId ?? '', r?.sample ?? '', i.template.items.find(t => t.id === r?.itemId)?.label ?? '', r?.value ?? '', r?.unit ?? '', r?.target ?? '', r?.lowerTolerance ?? '', r?.upperTolerance ?? '', r?.remarks ?? '']))];
+}
+export function findingReportRows(findings: QCNonConformance[]) {
+  return [['Reference', 'Inspection ID', 'Severity', 'Description', 'Department', 'Assigned user ID', 'Immediate action', 'Corrective action', 'Due date', 'Verification', 'Status'], ...findings.map(n => [n.number, n.inspectionId, n.severity, n.description, n.department, n.assignedTo, n.immediateAction, n.correctiveAction, n.dueDate, n.verification, n.status])];
+}

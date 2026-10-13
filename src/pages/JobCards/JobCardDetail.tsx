@@ -1,3 +1,5 @@
+import { useQuality } from '@/context/QualityContext';
+import { subjectHeld, isQCRole } from '@/lib/quality';
 import { workItems, parentForItem } from '@/lib/parentJobCards';
 import { FINISHED_GOODS, finishedGoodLabel } from '@/lib/finishedGoodsData';
 import { ENTRY_INPUT } from '@/components/ui/SearchSelect';
@@ -16,13 +18,15 @@ import { PRODUCTION_STATUS_LABELS, currentLocation, fmtQuantity, isDelayed, orde
 import { JOB_BUTTON, JOB_PRIMARY, JobFields, JobProgress, JobStatus, jobDate } from './JobCardUI';
 import { JobEditForm, MaterialIssueForm, StageUpdateForm, StockTransferForm } from './JobCardForms';
 
-const tabs = ['Overview', 'Materials', 'Costing', 'Production Routing', 'Production Tracking', 'Waste', 'Activity History'] as const;
-type Tab = typeof tabs[number];
+const allTabs = ['Overview', 'Materials', 'Costing', 'Production Routing', 'Production Tracking', 'Waste', 'Activity History'] as const;
+type Tab = typeof allTabs[number];
 export function JobCardDetail() {
   const { id = '' } = useParams();
   const [search, setSearch] = useSearchParams();
   const { user } = useAuth();
+  const tabs = allTabs.filter(t => !isQCRole(user?.role) || t !== 'Costing');
   const { cards, loadDetail, approve, edit, issue, updateStage, transfer, postPreparedReceipts, toggleStage, saveSequence } = useJobCards();
+  const quality = useQuality();
   const { rawMovements } = useInventory();
   const [detailLoading, setDetailLoading] = useState(true);
   const [tab, setTab] = useState<Tab>('Overview');
@@ -54,6 +58,7 @@ export function JobCardDetail() {
     <Link to="/job-cards" className="inline-flex items-center gap-2 text-sm text-navy hover:underline"><ArrowLeft size={16} />Back to Job Cards</Link>
     <header className="flex flex-wrap items-start justify-between gap-4"><div><h1 className="text-2xl font-semibold text-navy">{card.jobCardNumber}</h1><p className="mt-1 text-sm text-gray-500">Sales Order: <Link to={`/sales-orders/${card.salesOrderId}`} className="font-medium text-navy underline" title="Open the existing Sales Orders list">{card.salesOrderNumber ?? card.salesOrderId}</Link> · {card.customerName ?? 'Customer not recorded'}</p></div><div className="flex flex-wrap items-center gap-2"><JobStatus card={card} />{isDelayed(card) && <StatusBadge status="Delayed" />}{canApprove && <><button className={JOB_BUTTON} onClick={() => setForm('edit')}>Edit</button><button className={JOB_PRIMARY} onClick={() => run(() => approve(parent?.id ?? card.id), 'Approved and forwarded to Store Issue Pending.')}>Approve {parent?.manufacturingItems ? 'all manufacturing items' : 'Job Card'}</button></>}{canIssue && <button className={JOB_PRIMARY} onClick={() => setForm('issue')}>Issue Materials</button>}{canTransfer && <button className={JOB_PRIMARY} onClick={() => setForm('transfer')}>Transfer to Finished Goods</button>}</div></header>
     {parent?.manufacturingItems && <Card className="space-y-3"><h2 className="font-semibold text-navy">Parent Job Card · <JobStatus card={parent} /></h2><p className="text-xs text-gray-500">Review every manufacturing item before approving the whole card. Progress counts required stages; quantities remain separate by product and unit.</p>{workItems(parent).map(item => <div key={item.id} className="rounded-card border p-3"><button className={JOB_BUTTON} aria-pressed={item.id === card.id} onClick={() => setSearch({ item: item.id })}>{item.product} · {fmtQuantity(item.qty, item.unit)} · <JobStatus card={item} /></button><JobProgress card={item} compact /></div>)}</Card>}
+    <Card><h2 className="font-semibold text-navy">Manufacturing item QC / quality release</h2><Link className="underline" to="/qc/production">Record / review production QC</Link>{quality.inspections.filter(i => i.subject.manufacturingItemId === card.id).map(i => <p key={i.id} className="text-sm"><Link className="underline" to={`/qc/inspections/${i.id}`}>{i.number}</Link> · {i.subject.batchNumber} · {i.status} · {subjectHeld(quality, i.subject) ? 'QC Hold' : 'Quality released'}</p>)}<p className="text-xs text-gray-500">Store must use the exact QC batch number. QC release and separate Production Manager/Admin stock authorization are required before Stock IN.</p></Card>
     <p className="text-xs text-gray-500">Frontend manufacturing tracking. Changes survive navigation and reset on refresh. Material issue and recycling remain tracking-only; accepted Finished Goods receipts post to shared frontend inventory for linked products. No data is persistent.</p>
     {notice && <p role="status" className="rounded-card bg-green/10 px-4 py-3 text-sm text-green">{notice}</p>}{error && <p role="alert" className="rounded-card bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>}
     <Card className="space-y-5"><JobFields fields={overviewFields.filter(([label]) => !['Specifications', 'Production Requirements', 'Job Card No.', 'Sales Order No.'].includes(label))} /><JobProgress card={card} /></Card>

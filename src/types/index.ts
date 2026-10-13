@@ -1,4 +1,6 @@
 export type Role =
+  | "qc_inspector"
+  | "qc_supervisor"
   | "receptionist"
   | "production_manager"
   | "store_keeper"
@@ -70,6 +72,7 @@ export interface JobCardStageEntry {
 }
 
 export interface JobCard {
+  productionBatches?: { id: string; number: string; stageId: string; quantity: number; unit: string; createdAt: string }[];
   /** Present only on new parent cards; legacy single-product records stay unchanged. */
   manufacturingItems?: JobCard[];
   parentJobCardId?: string;
@@ -121,6 +124,8 @@ export interface JobCardMaterial {
 }
 export type ProductionStageStatus = "Pending" | "Received" | "InProgress" | "Completed" | "OnHold";
 export interface JobProductionStage {
+  qcTemplateIds?: string[];
+  machineId?: string;
   id: string;
   name: string;
   department: string;

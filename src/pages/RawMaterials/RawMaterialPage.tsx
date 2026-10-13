@@ -1,3 +1,6 @@
+import { Link } from 'react-router-dom';
+import { useQuality } from '@/context/QualityContext';
+import { rawQualityStatus } from '@/lib/qualityIntegration';
 import { useState } from 'react';
 import { ArrowDownToLine, ArrowUpFromLine, Search, Download, Filter } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
@@ -14,6 +17,7 @@ const button = 'flex items-center gap-2 rounded-card border border-gray-200 bg-w
 const th = 'px-4 py-3 font-medium';
 const td = 'px-4 py-3 tabular-nums';
 export function RawMaterialPage() {
+  const quality = useQuality();
   const { rawMovements, addRawMovement } = useInventory();
   const [category, setCategory] = useState<RawCategory>('virgin');
   const [view, setView] = useState<View>('levels');
@@ -51,7 +55,7 @@ export function RawMaterialPage() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a'); a.href = url; a.download = `raw-material-${category}-${month}.csv`; a.click(); URL.revokeObjectURL(url);
   };
-  return <div className="space-y-6">
+  return <div className="space-y-6"><Card><h2 className="font-semibold text-navy">Raw receipt quality status</h2><p className="text-xs text-gray-500">Physical Stock IN does not imply QC acceptance. Pending/rejected receipts remain physically recorded and are excluded from ordinary issue availability.</p><Link to="/qc/raw" className="underline">Raw Material Inspection</Link><details><summary>Receipt acceptance history</summary>{rawMovements.filter(m => m.movementType === "IN").map(m => <p key={m.id} className="text-xs">{m.date} · {m.materialName} · Receipt {m.id} · {m.quantity} {m.unit} · {rawQualityStatus(quality, m.id)}</p>)}</details></Card>
     <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"><div><h1 className="text-2xl font-semibold text-navy">Raw Material</h1><p className="mt-1 text-sm text-gray-500">Virgin materials, recycled granules and inks used in production.</p></div><div className="flex gap-2"><button className={button} onClick={() => setDirection('IN')}><ArrowDownToLine size={16} />Stock IN</button><button className={"flex items-center gap-2 rounded-card bg-navy px-4 py-2 text-sm font-medium text-white hover:opacity-90 focus-visible:ring-2 focus-visible:ring-navy"} onClick={() => setDirection('OUT')}><ArrowUpFromLine size={16} />Stock OUT</button></div></header>
     <section aria-label="Raw material summary" className="grid grid-cols-2 gap-4 lg:grid-cols-4">{[summary[0], { label: 'Below Minimum', value: minimumMasters.length ? String(low) : 'Not configured', hint: minimumMasters.length ? 'Materials with configured minimums' : 'Workbook does not specify minimum levels' }, summary[1], summary[2]].map(card => <Card key={card.label}><p className="text-sm text-gray-500">{card.label}</p><p className="mt-1 text-2xl font-semibold text-navy">{card.value}</p><p className="mt-1 text-xs text-gray-500">{card.hint}</p></Card>)}</section>
     <p className="text-xs text-gray-500">Reference: September 2026 physical stock workbook. All 91 material records are included; existing demo granules are kept separately. Ink and solvent opening balances were not recorded.</p>

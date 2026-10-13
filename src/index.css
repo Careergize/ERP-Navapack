@@ -33,3 +33,10 @@ body {
   body:has(.customer-estimate) .estimate-overlay { position: absolute; inset: 0; padding: 0; background: white; overflow: visible; }
   body:has(.customer-estimate) .customer-estimate { box-shadow: none; margin: 0; max-width: none; width: 100%; }
 }
+
+/* QC reports export only the selected report, with expanded findings. */
+@media print {
+  body:has(.qc-report) aside, body:has(.qc-report) nav, body:has(.qc-report) button { display: none !important; }
+  body:has(.qc-report) .qc-report details > * { display: block !important; }
+  body:has(.qc-report) .qc-report { width: 100%; }
+}

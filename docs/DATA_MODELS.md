@@ -63,7 +63,7 @@ Supplier: id, name, materialSupplied, phone.
 Department: id, name, assignedProductionManager (text).
 MasterUser: id, name, email, role, optional department.
 User: id, name, role, optional department; held by AuthContext.
-Role: receptionist, production_manager, store_keeper, production_operator, recycling_operator, accounts or admin.
+Role: receptionist, production_manager, store_keeper, production_operator, recycling_operator, accounts, qc_inspector, qc_supervisor or admin.
 Master page edits are page-local; name fields are not enforced foreign-key relationships.
 
 ## Consumables (src/lib/consumableData.ts; ConsumablesContext)
@@ -81,3 +81,11 @@ Revisioned Model recipes/processes/routing and CostEstimate input/totals/approva
 ## Parent Job Cards — 13 October 2026
 
 New JobCard headers contain `origin: sales_order` and `manufacturingItems`; each item reuses the existing JobCard workflow fields with a distinct stable `id`, `parentJobCardId`, `salesOrderItemId`, product/model/estimate revisions, quantities/units, materials, approved routing, stages and receipts. Headers do not expose a summed production quantity: compatibility `qty` is zero, and views use item quantities. Header status/due date/activity derive from items. JobCardActivity adds parent `jobCardId` and `manufacturingItemId`; FinishedGoodsMovement adds `manufacturingItemId` while `jobCardId` points to the parent for new receipts. Old records keep their existing IDs and shape. `production_for_stock` is a prepared origin value only; its workflow remains pending. See the phase boundary in sales-fulfillment.md.
+
+## Quality Control frontend models
+
+`src/lib/quality.ts` defines QCItem, QCTemplate, QCResponse, QCSubject, QCInspection, QCApproval, QCRelease, QCNonConformance and QCEvent. Templates and inspections retain exact revision snapshots, independent samples/measurements/tolerances/units, typed source IDs, assignment, immutable submission/review/reinspection history and purpose-specific release references. The live session NC stores corrective action/verification plus append-only events; separate action/attachment persistence is a future contract.
+
+JobProductionStage adds optional `qcTemplateIds` and `machineId`, preserved in approved routing. JobCard adds `productionBatches` inspection-lot records (stable ID/number/stage/quantity/unit/time); these partition existing output and are not independent execution runs. FinishedGoodsMovement adds `qualityReleaseId` and `stockApprovalId`, alongside parent/manufacturing-item references. ModelsContext owns shared Machine records (UUID, name, department, extruder/recycle_extruder type, active). QualityContext owns configurable area IDs, versioned templates, inspections/releases and NCs. Raw inward IDs remain source references; missing supplier identity is not fabricated.
+
+[quality.md](quality.md) is the canonical proposed Django/DRF data contract, including UUID/FK/field/status/validation/unique/audit/lifecycle/permission requirements for all eleven requested entities and audit integration. No backend schema was created.

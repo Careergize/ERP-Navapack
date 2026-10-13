@@ -1,3 +1,4 @@
+import { useAuth } from '@/context/AuthContext';
 import { findWorkItem } from '@/lib/parentJobCards';
 import { useJobCards } from '@/context/JobCardsContext';
 import { Link } from 'react-router-dom';
@@ -45,6 +46,7 @@ function downloadCsv(filename: string, lines: (string | number | null)[][]) {
 }
 
 export function StockPage() {
+  const { user } = useAuth();
   const { ledger, finishedMovements, addFinishedMovement, finishedPieces, updateFinishedPieces } = useInventory();
   const { cards, load } = useJobCards();
   useEffect(() => { void load(); }, [load]);
@@ -87,10 +89,10 @@ export function StockPage() {
     }),
   ]);
   const count = tab === 'movements' ? movements.length : products.length;
-  return <div className="space-y-6">
+  return <div className="space-y-6"><Card><p className="text-sm text-navy">Manufactured Stock IN requires independent QC release and final manager authorization, then an exact batch receipt from Job Cards.</p><p className="text-xs text-gray-500">Manual unbatched reference imports are restricted to Admin and cannot bypass an active product QC hold.</p><Link to="/job-cards" className="text-sm underline">Approved Job Card receipts</Link></Card>
     <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between print:hidden">
       <div><h1 className="text-2xl font-semibold text-navy">Stock</h1><p className="mt-1 text-sm text-gray-500">Finished goods inventory, stock movements and monthly reports.</p></div>
-      <div className="flex items-center gap-2"><button type="button" onClick={() => setDirection('IN')} className={BUTTON}><ArrowDownToLine size={16} />Stock IN</button><button type="button" onClick={() => setDirection('OUT')} className="flex items-center gap-2 rounded-card bg-navy px-4 py-2 text-sm font-medium text-white hover:opacity-90 focus-visible:ring-2 focus-visible:ring-navy"><ArrowUpFromLine size={16} />Stock OUT</button></div>
+      <div className="flex items-center gap-2">{user?.role === "admin" ? <button type="button" onClick={() => setDirection('IN')} className={BUTTON}><ArrowDownToLine size={16} />Stock IN</button> : <Link to="/job-cards" className={BUTTON}><ArrowDownToLine size={16} />Receive Approved Batch</Link>}<button type="button" onClick={() => setDirection('OUT')} className="flex items-center gap-2 rounded-card bg-navy px-4 py-2 text-sm font-medium text-white hover:opacity-90 focus-visible:ring-2 focus-visible:ring-navy"><ArrowUpFromLine size={16} />Stock OUT</button></div>
     </header>
     <section aria-label="Stock summary" className="grid grid-cols-2 gap-4 lg:grid-cols-4 print:hidden">{kpis.map(card => <Card key={card.label}><p className="text-sm text-gray-500">{card.label}</p><p className="mt-1 text-2xl font-semibold text-navy">{card.value}</p><p className="mt-1 text-xs text-gray-500">{card.hint}</p></Card>)}</section>
     {notice && <p role="status" className="rounded-card bg-emerald-50 px-4 py-3 text-sm text-emerald-700">{notice}</p>}

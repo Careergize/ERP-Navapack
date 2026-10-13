@@ -4,7 +4,7 @@
 
 The application lives in navapack-frontend, which has its own Git repository and package.json. No backend code is present.
 
-src/main.tsx mounts React StrictMode and BrowserRouter. src/App.tsx composes AuthProvider, SalesOrdersProvider, InventoryProvider, ConsumablesProvider and JobCardsProvider. RequireAuth checks the in-memory user; AppShell hosts nested routes and role-filtered navigation. Navigation visibility is not server authorization.
+src/main.tsx mounts React StrictMode and BrowserRouter. src/App.tsx composes AuthProvider → SalesOrdersProvider → ModelsProvider → QualityProvider → InventoryProvider → CostingProvider → ConsumablesProvider → JobCardsProvider → InvoicesProvider. RequireAuth checks the in-memory user; AppShell hosts nested routes and role-filtered navigation. Navigation visibility is not server authorization.
 
 Routes: / (Dashboard), /sales-orders and /sales-orders/new, /job-cards and /job-cards/:id, /stock, /raw-materials, /recycling, /costing, /track-trace, /masters and /login. The new-order route opens the modal on the list page. Placeholder.tsx remains in source but is not wired to these module routes.
 
@@ -46,3 +46,29 @@ ModelsContext and CostingContext provide shared, session-only versioned model/es
 ## Parent/item workflow — 13 October 2026
 
 JobCardsContext continues to own all Job Cards. New headers embed manufacturing items using the existing workflow fields; `parentJobCards.ts` derives scope, status and chronological activity. Mutation adapters target an item and republish its parent. Atomic parent approval validates every manufacturing line first. Views resolve stable work-item IDs under one parent; inventory receipt references carry both parent and item IDs. Legacy single-product records keep their existing paths and API behavior. No second production or inventory store was introduced. See sales-fulfillment.md for the partial implementation boundary.
+
+## Quality Control & Quality Assurance Module
+
+QualityProvider sits under Auth/Models and above Inventory/JobCards. It owns versioned templates, inspections, responses, reviews, releases, NC actions and history in session state. InventoryProvider consults synchronous QC state for raw availability, manufactured Stock IN and held-batch dispatch; inventory remains the stock owner. JobCardsProvider partitions completed stage output into stable inspection lots and enforces item-specific/mandatory-routing QC. ModelsContext provides shared machine identities. Existing Sales Orders, costing/model snapshots, invoices, recycling data and ledgers are reused. QC Inspector/Supervisor use the same login and a dedicated dashboard/navigation; other roles retain their screens.
+
+Master workflow (confirmed target, with frontend boundaries documented in [quality.md](quality.md)):
+
+```mermaid
+flowchart LR
+  SO[Sales Order] --> JC[Parent Job Card / manufacturing items]
+  IP[Internal production request: pending frontend phase] --> JC
+  JC --> PM[Production Manager approval / approved routing]
+  RM[Physical raw receipt] --> RQC[Raw material QC inspection / quality release]
+  RQC --> MI[Store material issue]
+  PM --> MI
+  MI --> PROD[Sequential production / mandatory item QC checkpoints]
+  PROD --> QC[Exact item / run / batch QC inspection]
+  QC --> QR[Independent quality review / release]
+  QR --> FA[Separate Supervisor / Manager stock authorization]
+  FA --> IN[Inventory-owned Finished Goods Stock IN]
+  IN --> DSP[Confirmed dispatch / Stock OUT]
+  QC --> NC[Hold / non-conformance / corrective action / reinspection]
+  NC --> QC
+```
+
+Future Django architecture adds a dedicated `quality` app for templates/versions, inspections, reviews, release decisions, NCs/actions, attachments and audit. `production` owns routing/run/stage output; `inventory` owns receipts/batches/Stock IN/OUT and quality availability; `masters` owns source identities/users; `accounts` owns costing/invoices; `reports` owns scoped projections; `recycling` owns authorized waste disposition. QC never moves ledger ownership into quality. [Canonical backend models, APIs and transaction boundaries](quality.md) are proposed, not implemented endpoints/schema.

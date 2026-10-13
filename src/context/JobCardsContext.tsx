@@ -1,3 +1,6 @@
+import { useQuality } from './QualityContext';
+import { assertMachineQC, assertProductionQC, finishedAuthorization, rawHeldQuantity } from '@/lib/qualityIntegration';
+import { RAW_MATERIALS, rawMaterialBalance } from '@/lib/rawMaterialData';
 import { attachManufacturingItem, assertCompleteManufacturingScope, findWorkItem, parentForItem, summarizeParent } from '@/lib/parentJobCards';
 import { buildLinkedJob } from '@/lib/salesJob';
 import { createContext, useCallback, useContext, useRef, useState, type ReactNode } from 'react';
@@ -15,6 +18,7 @@ import { useSalesOrders } from './SalesOrdersContext';
 import type { JobCard } from '@/types';
 
 interface JobCardsState {
+  registerBatch: (id: string, stageId: string, number: string, quantity: number) => NonNullable<JobCard['productionBatches']>[number];
   createLinked: (orderId: string, itemId: string, modelId: string, requiredDate: string, specifications: string, materials: NonNullable<JobCard["requiredMaterials"]>, estimateId?: string) => Promise<JobCard>;
   cards: JobCard[];
   loading: boolean;
@@ -38,10 +42,11 @@ const Context = createContext<JobCardsState | undefined>(undefined);
 const validCard = (value: JobCard) => value && typeof value.id === 'string' && typeof value.jobCardNumber === 'string' && Array.isArray(value.stages);
 export function JobCardsProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
+  const quality = useQuality();
   const { orders, linkJob, linkFinishedProduct } = useSalesOrders();
   const { versions } = useModels();
   const { estimates, invalidate, bindJob } = useCosting();
-  const { postReceipt } = useInventory();
+  const { postReceipt, rawMovements } = useInventory();
   const orderRef = useRef(orders); orderRef.current = orders;
   const [cards, setCards] = useState<JobCard[]>([]);
   const current = useRef<JobCard[]>([]);
@@ -109,11 +114,22 @@ export function JobCardsProvider({ children }: { children: ReactNode }) {
     linkJob(order.id, attached.parent.id); return attached.parent;
   };
   return <Context.Provider value={{ createLinked, cards, loading, usingDemo, load, loadDetail,
+    registerBatch: (id, stageId, number, quantity) => {
+      if (!user || !['admin', 'qc_inspector', 'qc_supervisor'].includes(user.role)) throw new Error('QC staff/Admin registers inspection lots.');
+      const card = findWorkItem(current.current, id); const stage = card?.productionStages?.find(s => s.id === stageId);
+      if (!card || !stage || stage.status !== 'Completed' || !number.trim() || !Number.isFinite(quantity) || quantity <= 0 || !stage.outputUnit) throw new Error('Use a completed stage, actual batch number and positive quantity in its output unit.');
+      const existing = card.productionBatches?.find(b => b.stageId === stageId && b.number === number.trim());
+      if (existing) { if (existing.quantity !== quantity) throw new Error('The existing QC lot quantity is immutable.'); return existing; }
+      if ((card.productionBatches ?? []).filter(b => b.stageId === stageId).reduce((sum, b) => sum + b.quantity, 0) + quantity > (stage.outputQuantity ?? 0)) throw new Error('QC lots cannot exceed this stage output.');
+      const batch = { id: crypto.randomUUID(), number: number.trim(), stageId, quantity, unit: stage.outputUnit, createdAt: new Date().toISOString() };
+      mutate(id, c => ({ ...c, productionBatches: [...(c.productionBatches ?? []), batch] })); return batch;
+    },
     postPreparedReceipts: (id, productId) => mutate(id, card => {
       if (!['admin', 'store_keeper'].includes(user!.role) || !card.stockReceiptPending || !card.approval || !card.stockTransfers?.length) throw new Error('Store/Admin can post QC-prepared receipts once.');
+      for (const receipt of card.stockTransfers) finishedAuthorization(quality.getState(), card, receipt.batch, 0, 0);
       const product = FINISHED_BY_ID.get(productId);
       if (!product || product.unit !== card.stockTransfer?.unit || card.stockTransfers.some(r => r.date < product.openingDate)) throw new Error('Choose an exact finished product with matching output unit and valid opening date. No package conversion is assumed.');
-      for (const receipt of card.stockTransfers) if (receipt.quantity > 0) postReceipt({ id: receipt.id, productId: product.id, date: receipt.date, type: 'IN', quantity: receipt.quantity, unit: product.unit, salesOrderId: card.salesOrderId, salesOrderItemId: card.salesOrderItemId, jobCardId: card.parentJobCardId ?? card.id, manufacturingItemId: card.parentJobCardId ? card.id : undefined, modelId: card.modelId, modelName: card.modelName, batch: receipt.batch, reference: card.jobCardNumber, customer: card.customerName, remarks: 'QC-prepared receipt explicitly mapped by Store.' });
+      for (const receipt of card.stockTransfers) if (receipt.quantity > 0) postReceipt({ stockApprovalId: finishedAuthorization(quality.getState(), card, receipt.batch, 0, 0).id, qualityReleaseId: quality.getState().releases.find(r => r.purpose === "quality" && r.inspectionId === finishedAuthorization(quality.getState(), card, receipt.batch, 0, 0).inspectionId)?.id, id: receipt.id, productId: product.id, date: receipt.date, type: 'IN', quantity: receipt.quantity, unit: product.unit, salesOrderId: card.salesOrderId, salesOrderItemId: card.salesOrderItemId, jobCardId: card.parentJobCardId ?? card.id, manufacturingItemId: card.id, modelId: card.modelId, modelName: card.modelName, batch: receipt.batch, reference: card.jobCardNumber, customer: card.customerName, remarks: 'QC-prepared receipt explicitly mapped by Store.' });
       if (card.salesOrderItemId) linkFinishedProduct(card.salesOrderId, card.salesOrderItemId, productId);
       const produced = card.productionStages?.filter(s => s.required && s.kind === 'production').at(-1)?.outputQuantity ?? 0;
       return { ...card, finishedProductId: productId, stockReceiptPending: false, status: (card.acceptedQuantity ?? 0) + (card.rejectedQuantity ?? 0) >= produced ? 'Completed' : 'ReadyForStock', activityHistory: [...(card.activityHistory ?? []), { id: crypto.randomUUID(), timestamp: new Date().toISOString(), action: 'Prepared Stock IN posted', user: user!.name, department: 'Store', description: `Mapped exact product ${product.id}; QC batches posted to shared frontend inventory.` }] };
@@ -144,16 +160,31 @@ export function JobCardsProvider({ children }: { children: ReactNode }) {
         mutate(parent.id, () => summarizeParent(parent, approved));
       } else mutate(id, card => { if (card.estimateId) { const estimate = estimates.find(e => e.id === card.estimateId); if (!estimate || ['Revision Required', 'Superseded'].includes(estimate.status)) throw new Error('Linked costing requires recalculation/review.'); validateRouting(card.productionStages ?? []); } return approveJobCard(card, user!); });
     },
-    issue: (id, quantities, available) => mutate(id, card => issueJobMaterials(card, quantities, available, user!)),
-    updateStage: (id, stageId, update) => mutate(id, card => updateJobStage(card, stageId, update, user!)),
+    issue: (id, quantities, available) => mutate(id, card => {
+      const usable = { ...available };
+      for (const material of card.requiredMaterials ?? []) {
+        const raw = RAW_MATERIALS.find(r => r.id === material.materialId && r.unit === material.unit);
+        if (!raw) throw new Error('Resolve the exact raw material master before ordinary issue.');
+        const balance = rawMaterialBalance(raw, rawMovements).currentStock;
+        const held = rawHeldQuantity(quality.getState(), rawMovements, raw.id);
+        if (held > 0 && balance === null && (quantities[material.id] ?? 0) > 0) throw new Error('Unknown raw balance with pending QC cannot be issued.');
+        usable[material.id] = balance === null ? null : Math.max(0, balance - held);
+      }
+      return issueJobMaterials(card, quantities, usable, user!);
+    }),
+    updateStage: (id, stageId, update) => mutate(id, card => { assertMachineQC(quality.getState(), card.productionStages?.find(s => s.id === stageId)?.machineId); assertProductionQC(quality.getState(), card, card.productionStages?.find(s => s.id === stageId)?.sequence); return updateJobStage(card, stageId, update, user!); }),
     transfer: (id, accepted, date, receipt) => mutate(id, card => {
+      if (!['admin', 'store_keeper'].includes(user!.role) || !receipt) throw new Error('Store/Admin must select an authorized QC batch and explicit accepted/rejected quantities.');
+      const repeated = card.stockTransfers?.find(r => r.id === receipt.id);
+      if (repeated) { if (repeated.quantity !== accepted || repeated.rejectedQuantity !== receipt.rejected || repeated.batch !== receipt.batch || repeated.date !== date) throw new Error('Receipt request ID conflicts with the recorded batch.'); return card; }
+      const authorization = finishedAuthorization(quality.getState(), card, receipt?.batch ?? `LOT-${card.jobCardNumber}`, accepted, receipt?.rejected ?? 0);
       const next = transferJobToStock(card, accepted, date, user!, new Date().toISOString(), receipt);
       if (next === card) return card;
       if ((next.acceptedQuantity ?? 0) === 0 && next.status === 'Completed') return { ...next, stockReceiptPending: false };
       const product = FINISHED_BY_ID.get(card.finishedProductId ?? '');
       if (!product && !card.finishedProductId && card.salesOrderItemId) return { ...next, status: 'ReadyForStock', stockReceiptPending: true, activityHistory: [...(next.activityHistory ?? []), { id: crypto.randomUUID(), timestamp: new Date().toISOString(), action: 'Stock IN prepared', user: user!.name, department: 'Store', description: 'QC quantities and batches retained; choose an exact finished-goods variant/unit to post. No physical inventory change occurred.' }] };
       if (!product || product.unit !== next.stockTransfer!.unit || !card.salesOrderItemId) throw new Error('Link a finished product and Sales Order item with matching output unit before posting stock. Legacy demo cards cannot be matched by name.');
-      if (accepted > 0) postReceipt({ id: receipt?.id ?? `receipt-${card.id}`, productId: product.id, date, type: 'IN', quantity: accepted, unit: product.unit, salesOrderId: card.salesOrderId, salesOrderItemId: card.salesOrderItemId, jobCardId: card.parentJobCardId ?? card.id, manufacturingItemId: card.parentJobCardId ? card.id : undefined, modelId: card.modelId, modelName: card.modelName, batch: receipt?.batch ?? `LOT-${card.jobCardNumber}`, reference: card.jobCardNumber, customer: card.customerName, remarks: 'Accepted quantity verified by Store; frontend receipt.' });
+      if (accepted > 0) postReceipt({ stockApprovalId: authorization.id, qualityReleaseId: quality.getState().releases.find(r => r.purpose === "quality" && r.inspectionId === authorization.inspectionId)?.id, id: receipt?.id ?? `receipt-${card.id}`, productId: product.id, date, type: 'IN', quantity: accepted, unit: product.unit, salesOrderId: card.salesOrderId, salesOrderItemId: card.salesOrderItemId, jobCardId: card.parentJobCardId ?? card.id, manufacturingItemId: card.id, modelId: card.modelId, modelName: card.modelName, batch: receipt?.batch ?? `LOT-${card.jobCardNumber}`, reference: card.jobCardNumber, customer: card.customerName, remarks: 'Accepted quantity verified by Store; frontend receipt.' });
       return next;
     }),
     edit: (id, change) => mutate(id, card => {

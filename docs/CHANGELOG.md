@@ -1,5 +1,13 @@
 # Changelog
 
+## Quality Control — 2026-10-13
+
+- Added same-login QC roles, dashboard/navigation and category/template/inspection/review/action/report screens.
+- Added versioned checklist snapshots, negative-answer/numeric sample validation, immutable review and correction history.
+- Connected raw receipt holds, mandatory production QC/machine guards, separate quality/final-stock authorization and traceable Store receipts/held-batch dispatch.
+- Added Excel-readable XML/browser PDF printing, focused QC regressions and canonical proposed Django/DRF quality architecture/contracts; no backend implementation or new dependencies.
+- Source photographs were not present; templates remain provisional and all state resets on refresh.
+
 ## 2026-10-13
 
 - New manufacturing lines share one parent Job Card per Sales Order, retaining independent costing, routes, materials, units, tracking and batches.

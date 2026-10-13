@@ -82,3 +82,15 @@ Persist revisioned models, line-linked estimates and immutable financial/routing
 One parent Job Card per Sales Order with durable item-level references and independent routes/units. Persist and enforce parent uniqueness, complete manufacturing scope, atomic approvals, audit history, item-level costing revisions and inventory source references. Migrate historical multi-card orders only through an authorized trace-preserving procedure. Manufacturing-only inclusion for mixed orders requires client confirmation. Frontend parent/item state is demonstrative.
 
 The confirmed posting sequence is demand → parent Job Card → PM approval → material issue → sequential production → Supervisor/Manager finished approval → Finished Goods IN → confirmed dispatch/OUT. Production for stock requires no fabricated Sales Order. Reservations are not mandatory. Replace earlier reservation/QC decision placeholders with these confirmed rules when implementing their pending frontend/backend phases. Persist additional issues, batch/run history, authorized excess decisions, order amendments and atomic idempotent Stock IN/OUT with server roles and concurrency validation. No API/schema changes were made in this phase.
+
+## Dedicated quality app — proposed contracts, not implemented
+
+- [ ] Implement the canonical eleven QC entities/action audits and source FKs described in [quality.md](quality.md), reusing production/inventory/masters/accounts/reports/recycling ownership.
+- [ ] Provide authoritative raw supplier/batch/receipt and production run/stage/finished-batch identity; preserve template snapshots and submitted findings.
+- [ ] Enforce QC Inspector/Supervisor assignment scope, independent review, NC verification and separately mapped final FG managerial authority on the server.
+- [ ] Implement atomic raw holds/releases, production checkpoint guards, cumulative batch authorization and inventory-owned idempotent Stock IN/OUT with concurrent hold rechecks.
+- [ ] Implement proposed DRF actions, paging/filters/errors/version conflicts/idempotency and evidence/report storage; no QC endpoints are called by the frontend.
+- [ ] Reconcile historical raw receipt QC/opening availability, seed IDs and manual import receipts before production deployment; never assume rejected material was returned or discarded.
+- [ ] Supply eight photographs and resolve sampling/concession/partial-disposition/schedule/role/retention policies; implement native XLSX/PDF exports and scoped report scheduling if required.
+
+The QC frontend now separates independent quality release, Production Manager/Admin FG authorization and Store stock posting. Earlier notes treating Store confirmation alone as acceptance describe superseded frontend behavior. All new states/actions are session-only; see quality.md for transaction boundaries and retry behavior.

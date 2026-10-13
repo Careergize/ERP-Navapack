@@ -1,9 +1,13 @@
+import { isQCRole } from '@/lib/quality';
+import { QualityProvider } from '@/context/QualityContext';
+import { QualityPage, QualityGuard, RoleDashboard } from '@/pages/Quality/QualityPage';
+import { InspectionDetail } from '@/pages/Quality/InspectionDetail';
 import { ModelsProvider } from '@/context/ModelsContext';
 import { CostingProvider } from '@/context/CostingContext';
 import { InvoicesProvider } from '@/context/InvoicesContext';
 import { SalesOrderDetail } from '@/pages/SalesOrders/SalesOrderDetail';
 import { SalesOrdersProvider } from '@/context/SalesOrdersContext';
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
 import { AppShell } from "@/components/layout/AppShell";
 import { Login } from "@/pages/Login";
@@ -25,7 +29,9 @@ import { MastersPage } from "@/pages/Masters/MastersPage";
 
 function RequireAuth({ children }: { children: JSX.Element }) {
   const { user } = useAuth();
+  const location = useLocation();
   if (!user) return <Navigate to="/login" replace />;
+  if (isQCRole(user.role) && location.pathname !== "/" && !location.pathname.startsWith("/qc") && !location.pathname.startsWith("/job-cards")) return <Navigate to="/qc" replace />;
   return children;
 }
 
@@ -41,7 +47,10 @@ function AppRoutes() {
           </RequireAuth>
         }
       >
-        <Route path="/" element={<Dashboard />} />
+        <Route path="/" element={<RoleDashboard operations={<Dashboard />} />} />
+        <Route path="/qc" element={<QualityGuard><QualityPage /></QualityGuard>} />
+        <Route path="/qc/inspections/:id" element={<QualityGuard><InspectionDetail /></QualityGuard>} />
+        <Route path="/qc/:section" element={<QualityGuard><QualityPage /></QualityGuard>} />
         <Route path="/sales-orders" element={<SalesOrderList />} />
         <Route path="/sales-orders/new" element={<SalesOrderList />} />
         <Route path="/sales-orders/:id" element={<SalesOrderDetail />} />
@@ -62,7 +71,7 @@ function AppRoutes() {
 export function App() {
   return (
     <AuthProvider>
-      <SalesOrdersProvider><ModelsProvider><InventoryProvider><CostingProvider><ConsumablesProvider><JobCardsProvider><InvoicesProvider><AppRoutes /></InvoicesProvider></JobCardsProvider></ConsumablesProvider></CostingProvider></InventoryProvider></ModelsProvider></SalesOrdersProvider>
+      <SalesOrdersProvider><ModelsProvider><QualityProvider><InventoryProvider><CostingProvider><ConsumablesProvider><JobCardsProvider><InvoicesProvider><AppRoutes /></InvoicesProvider></JobCardsProvider></ConsumablesProvider></CostingProvider></InventoryProvider></QualityProvider></ModelsProvider></SalesOrdersProvider>
     </AuthProvider>
   );
 }
