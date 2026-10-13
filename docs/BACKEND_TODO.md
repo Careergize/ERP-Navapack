@@ -76,3 +76,9 @@ Sales Order creation itself must not deduct stock. Current demand comparison cre
 ## Custom costing and routing integration
 
 Persist revisioned models, line-linked estimates and immutable financial/routing snapshots with independent customer response. Enforce role/revision/concurrency checks server-side. Integrate atomic raw-material issue/consumption, actual process/expense costing and exact finished-variant configuration. Persist idempotent QC receipts and approved stage history without losing the frontend references. No new endpoint or schema was implemented. See [detailed boundaries](custom-costing-routing.md).
+
+## Client-confirmed target — 12 October 2026
+
+One parent Job Card per Sales Order with durable item-level references and independent routes/units. Persist and enforce parent uniqueness, complete manufacturing scope, atomic approvals, audit history, item-level costing revisions and inventory source references. Migrate historical multi-card orders only through an authorized trace-preserving procedure. Manufacturing-only inclusion for mixed orders requires client confirmation. Frontend parent/item state is demonstrative.
+
+The confirmed posting sequence is demand → parent Job Card → PM approval → material issue → sequential production → Supervisor/Manager finished approval → Finished Goods IN → confirmed dispatch/OUT. Production for stock requires no fabricated Sales Order. Reservations are not mandatory. Replace earlier reservation/QC decision placeholders with these confirmed rules when implementing their pending frontend/backend phases. Persist additional issues, batch/run history, authorized excess decisions, order amendments and atomic idempotent Stock IN/OUT with server roles and concurrency validation. No API/schema changes were made in this phase.

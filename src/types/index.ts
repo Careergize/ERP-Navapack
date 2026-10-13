@@ -70,6 +70,10 @@ export interface JobCardStageEntry {
 }
 
 export interface JobCard {
+  /** Present only on new parent cards; legacy single-product records stay unchanged. */
+  manufacturingItems?: JobCard[];
+  parentJobCardId?: string;
+  origin?: 'sales_order' | 'production_for_stock';
   id: string;
   jobCardNumber: string;
   salesOrderId: string;
@@ -146,6 +150,8 @@ export interface JobProductionStage {
   sentToRecycling?: number;
 }
 export interface JobCardActivity {
+  jobCardId?: string;
+  manufacturingItemId?: string;
   id: string;
   timestamp: string;
   action: string;

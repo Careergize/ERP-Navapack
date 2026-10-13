@@ -8,9 +8,10 @@ export const PRODUCTION_STATUS_LABELS: Record<ProductionStageStatus, string> = {
 export const localToday = () => new Date().toLocaleDateString('en-CA');
 export const orderedStages = (card: JobCard) => [...(card.productionStages ?? [])].sort((a, b) => a.sequence - b.sequence);
 export const productionStages = (card: JobCard) => orderedStages(card).filter(s => s.required && s.kind === 'production');
-export const isDelayed = (card: JobCard, today = localToday()) => card.status !== 'Completed' && !!card.requiredDate && card.requiredDate < today;
+export const isDelayed = (card: JobCard, today = localToday()): boolean => card.manufacturingItems ? card.manufacturingItems.some(i => isDelayed(i, today)) : card.status !== 'Completed' && !!card.requiredDate && card.requiredDate < today;
 export const fmtQuantity = (value: number | null | undefined, unit = '') => value == null ? 'Not recorded' : `${value.toLocaleString('en-IN', { maximumFractionDigits: 3 })}${unit ? ` ${unit}` : ''}`;
-export function currentLocation(card: JobCard) {
+export function currentLocation(card: JobCard): { department: string; stage: string } {
+  if (card.manufacturingItems) { const locations = card.manufacturingItems.map(currentLocation); return { department: [...new Set(locations.map(l => l.department))].join(', '), stage: [...new Set(locations.map(l => l.stage))].join(', ') }; }
   if (card.status === 'Draft' || card.status === 'PendingApproval') return { department: 'Production Manager', stage: 'PM Approval' };
   if (card.status === 'Approved' || card.status === 'StoreIssuePending') return { department: 'Store', stage: 'Store Issue' };
   if (card.status === 'ReadyForStock' || card.status === 'Completed') return { department: 'Stock Keeping', stage: card.status === 'Completed' ? 'Stock Confirmed' : orderedStages(card).find(s => s.required && s.kind === 'stock' && s.status !== 'Completed')?.name ?? 'Stock Keeping' };
@@ -50,11 +51,11 @@ export function normalizeJobCard(card: JobCard, orders: SalesOrder[] = []): JobC
 export interface JobFilters { query: string; status: string; department: string; stage: string; from: string; to: string }
 export function filterJobCards(cards: JobCard[], filters: JobFilters, today = localToday()) {
   return cards.filter(card => {
-    const location = currentLocation(card);
-    const text = [card.jobCardNumber, card.salesOrderNumber, card.customerName, card.modelName, card.product].join(' ').toLowerCase();
+    const items = card.manufacturingItems ?? [card];
+    const text = [card.jobCardNumber, card.salesOrderNumber, card.customerName, ...items.flatMap(i => [i.modelName, i.product])].join(' ').toLowerCase();
     return filters.query.trim().toLowerCase().split(/\s+/).every(word => text.includes(word)) &&
       (filters.status === 'all' || (filters.status === 'Delayed' ? isDelayed(card, today) : filters.status === 'MaterialIssued' ? ['Issued', 'MaterialIssued'].includes(card.status) : card.status === filters.status)) &&
-      (filters.department === 'all' || location.department === filters.department) && (filters.stage === 'all' || location.stage === filters.stage) &&
+      (filters.department === 'all' || items.some(i => currentLocation(i).department === filters.department)) && (filters.stage === 'all' || items.some(i => currentLocation(i).stage === filters.stage)) &&
       (!filters.from || (!!card.createdDate && card.createdDate.slice(0, 10) >= filters.from)) &&
       (!filters.to || (!!card.createdDate && card.createdDate.slice(0, 10) <= filters.to));
   });

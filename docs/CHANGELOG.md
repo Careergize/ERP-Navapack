@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-10-13
+
+- New manufacturing lines share one parent Job Card per Sales Order, retaining independent costing, routes, materials, units, tracking and batches.
+- Parent list/detail show separate item progress and combined history; approval requires complete manufacturing scope and completion requires all items.
+- Preserve historical cards; retain parent/item references on new receipts. Add focused regression coverage.
+- Partial client-workflow delivery: amendment, internal production, additional issues, FG authority, unreserved dispatch, exports and dashboard phases remain pending (see sales-fulfillment.md).
+
 ## Unreleased
 
 ### Added

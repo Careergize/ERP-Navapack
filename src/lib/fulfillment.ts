@@ -56,7 +56,7 @@ export function orderFulfillmentStatus(order: SalesOrder, state: FulfillmentLedg
   if (order.items.some(i => dispatched(i.id) > 0)) return 'Partially Dispatched';
   if (state.allocations.some(a => a.orderId === order.id && !a.released && a.quantity > a.dispatched)) return 'Reserved';
   if (state.movements.some(m => m.salesOrderId === order.id && m.jobCardId && m.type === 'IN')) return 'Stock Received';
-  const jobs = cards.filter(c => c.salesOrderId === order.id);
+  const jobs = cards.filter(c => c.salesOrderId === order.id).flatMap(c => c.manufacturingItems ?? [c]);
   if (jobs.some(j => j.status === 'ReadyForStock')) return 'Ready for Stock';
   if (jobs.some(j => ['MaterialIssued', 'InProduction', 'OnHold'].includes(j.status))) return 'In Production';
   if (jobs.some(j => j.approval)) return 'Approved';

@@ -72,6 +72,36 @@ try {
   const finalReceipt = jobs.transferJobToStock(partialReceipt, 290, '2026-10-09', admin, '2026-10-09T12:00:00Z', { id: 'batch-2', batch: 'LOT-2', rejected: 10, qcVerified: true });
   assert.equal(finalReceipt.status, 'Completed'); assert.equal(finalReceipt.acceptedQuantity, 490); assert.equal(finalReceipt.stockTransfers.length, 2);
   assert.throws(() => jobs.transferJobToStock(ready, 200, '2026-10-09', admin, '2026-10-09T12:00:00Z', { id: 'bad-qc', batch: 'LOT-3', rejected: 0, qcVerified: false }));
+  const stockBeforeParentChanges = f.physical(state, product.id);
+  const parentJobs = await server.ssrLoadModule('/src/lib/parentJobCards.ts');
+  const secondLine = { ...custom, id: 'second-manufacturing', quantity: 30, unit: 'kg' };
+  const mixedOrder = { ...customOrder, items: [custom, secondLine, item] };
+  const firstAttachment = parentJobs.attachManufacturingItem([], mixedOrder, linked);
+  assert.equal(firstAttachment.parent.manufacturingItems.length, 1);
+  assert.throws(() => parentJobs.assertCompleteManufacturingScope(firstAttachment.parent, mixedOrder));
+  const secondJob = { ...linked, id: 'work-2', salesOrderItemId: secondLine.id, qty: 30, unit: 'kg', modelId: 'second-model', activityHistory: [] };
+  const attached = parentJobs.attachManufacturingItem([firstAttachment.parent], mixedOrder, secondJob);
+  assert.equal(attached.parent.id, firstAttachment.parent.id);
+  assert.equal(attached.parent.manufacturingItems.length, 2);
+  assert.deepEqual(attached.parent.manufacturingItems.map(i => [i.qty, i.unit]), [[custom.quantity, custom.unit], [30, 'kg']]);
+  assert.equal(attached.parent.qty, 0); // Header has no cross-product quantity total.
+  parentJobs.assertCompleteManufacturingScope(attached.parent, mixedOrder);
+  assert.equal(parentJobs.attachManufacturingItem([attached.parent], mixedOrder, secondJob).parent, attached.parent);
+  assert.throws(() => parentJobs.attachManufacturingItem([], mixedOrder, { ...linked, salesOrderItemId: item.id }));
+  assert.throws(() => parentJobs.attachManufacturingItem([linked], mixedOrder, secondJob));
+  assert.equal(linked.parentJobCardId, undefined); // No historical migration.
+  const completeOne = parentJobs.summarizeParent(attached.parent, attached.parent.manufacturingItems.map((i, n) => ({ ...i, status: n === 0 ? 'Completed' : 'InProduction' })));
+  assert.equal(completeOne.status, 'InProduction');
+  const waiting = parentJobs.summarizeParent(attached.parent, attached.parent.manufacturingItems.map((i, n) => ({ ...i, status: n === 0 ? 'Completed' : 'ReadyForStock' })));
+  assert.equal(waiting.status, 'ReadyForStock');
+  const completedParent = parentJobs.summarizeParent(attached.parent, attached.parent.manufacturingItems.map(i => ({ ...i, status: 'Completed' })));
+  assert.equal(completedParent.status, 'Completed');
+  assert.equal(parentJobs.findWorkItem([attached.parent], 'work-2').modelId, 'second-model');
+  assert.ok(attached.parent.activityHistory.every(e => e.jobCardId === attached.parent.id && e.manufacturingItemId));
+  const approvedParent = parentJobs.summarizeParent(attached.parent, attached.parent.manufacturingItems.map(i => jobs.approveJobCard(i, admin)));
+  assert.throws(() => parentJobs.attachManufacturingItem([approvedParent], { ...mixedOrder, items: [...mixedOrder.items, { ...secondLine, id: 'late-line' }] }, { ...secondJob, id: 'work-3', salesOrderItemId: 'late-line' }));
+  assert.equal(f.physical(state, product.id), stockBeforeParentChanges); // Manufacturing changes never move inventory.
+  console.log('Passed: one parent per order, distinct item quantities/units/models, mixed-stock exclusion, creation idempotency, historical preservation, complete approval scope, late-item lock, item lookup, parent timeline and completion aggregation.');
   const range = inv.finishedRangeBalance(product, state.movements, '2026-10-09', '2026-10-09');
   assert.equal(range.currentStock, range.openingStock + range.stockIn - range.stockOut);
   console.log('Passed: source validation, stock-only order, reservation idempotency/limits, unchanged physical allocation, partial dispatch, duplicate OUT protection, unit/batch bounds, reversals, unknown stock, monthly carry-forward, configurable invoice tax/discount/words, approval/receipt bounds and source references.');

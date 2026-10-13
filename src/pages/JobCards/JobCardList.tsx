@@ -1,3 +1,4 @@
+import { workItems } from '@/lib/parentJobCards';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Search } from 'lucide-react';
@@ -13,7 +14,7 @@ export function JobCardList() {
   const { cards, loading, usingDemo, load } = useJobCards();
   const [filters, setFilters] = useState(emptyFilters);
   useEffect(() => { void load(); }, [load]);
-  const locations = cards.map(currentLocation);
+  const locations = cards.flatMap(workItems).map(currentLocation);
   const departments = [...new Set(locations.map(location => location.department))].sort();
   const stages = [...new Set(locations.map(location => location.stage))].sort();
   const filtered = filterJobCards(cards, filters);
@@ -35,8 +36,8 @@ export function JobCardList() {
       const latest = orderedStages(card).filter(s => s.required && s.kind === 'production' && s.outputQuantity !== null).at(-1);
       return <Link key={card.id} to={`/job-cards/${card.id}`} className="block rounded-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy" aria-label={`View ${card.jobCardNumber}`}><Card className={`space-y-4 transition-shadow hover:shadow-md ${isDelayed(card) ? 'ring-1 ring-amber-300' : ''}`}>
         <div className="flex flex-wrap items-center justify-between gap-3"><div><h2 className="font-semibold text-navy">{card.jobCardNumber}</h2><p className="mt-1 break-words text-sm text-gray-500">{card.salesOrderNumber ?? 'Sales order not recorded'} · {card.customerName ?? 'Customer not recorded'}</p></div><div className="flex flex-wrap gap-2"><JobStatus card={card} />{isDelayed(card) && <StatusBadge status="Delayed" />}</div></div>
-        <JobFields fields={[["Model / Product", [card.modelName, card.product !== card.modelName ? card.product : ''].filter(Boolean).join(' · ')], ['Order Quantity', fmtQuantity(card.qty, card.unit)], ['Current Department', location.department], ['Current Production Stage', location.stage], ['Output / Produced Quantity', fmtQuantity(latest?.outputQuantity, latest?.outputUnit)], ['Waste Quantity', totals.waste], ['Required / Due Date', jobDate(card.requiredDate)]]} />
-        <JobProgress card={card} compact /><p className="text-right text-sm font-medium text-navy">View Details →</p>
+        {card.manufacturingItems ? <div className="space-y-4">{card.manufacturingItems.map(item => <div key={item.id}><p className="text-sm font-medium text-navy">{item.product} · {item.modelName} · {fmtQuantity(item.qty, item.unit)} · {currentLocation(item).department} / {currentLocation(item).stage}</p><JobProgress card={item} compact /></div>)}<p className="text-xs text-gray-500">Due: {jobDate(card.requiredDate)} · {card.manufacturingItems.length} manufacturing items</p></div> : <JobFields fields={[["Model / Product", [card.modelName, card.product !== card.modelName ? card.product : ''].filter(Boolean).join(' · ')], ['Order Quantity', fmtQuantity(card.qty, card.unit)], ['Current Department', location.department], ['Current Production Stage', location.stage], ['Output / Produced Quantity', fmtQuantity(latest?.outputQuantity, latest?.outputUnit)], ['Waste Quantity', totals.waste], ['Required / Due Date', jobDate(card.requiredDate)]]} />}
+        {!card.manufacturingItems && <JobProgress card={card} compact />}<p className="text-right text-sm font-medium text-navy">View Details →</p>
       </Card></Link>;
     })}{!loading && !filtered.length && <Card><p className="py-6 text-center text-sm text-gray-500">No job cards match your search and filters.</p></Card>}</div>
   </div>;

@@ -77,3 +77,7 @@ See [sales-fulfillment.md](sales-fulfillment.md) for extended line/order/job/mov
 ## Custom costing and routing additions
 
 Revisioned Model recipes/processes/routing and CostEstimate input/totals/approval/customer-response snapshots are session models. Order lines retain model/revision/specification/delivery/estimate references; Job Cards retain model/estimate/routing revisions, approved material/route snapshots and reapproval history. Production stages carry machine, expected quantities/units, planned waste and instructions. Unmapped QC output may retain stockReceiptPending until an exact finished variant is selected. See [field and formula details](custom-costing-routing.md).
+
+## Parent Job Cards — 13 October 2026
+
+New JobCard headers contain `origin: sales_order` and `manufacturingItems`; each item reuses the existing JobCard workflow fields with a distinct stable `id`, `parentJobCardId`, `salesOrderItemId`, product/model/estimate revisions, quantities/units, materials, approved routing, stages and receipts. Headers do not expose a summed production quantity: compatibility `qty` is zero, and views use item quantities. Header status/due date/activity derive from items. JobCardActivity adds parent `jobCardId` and `manufacturingItemId`; FinishedGoodsMovement adds `manufacturingItemId` while `jobCardId` points to the parent for new receipts. Old records keep their existing IDs and shape. `production_for_stock` is a prepared origin value only; its workflow remains pending. See the phase boundary in sales-fulfillment.md.

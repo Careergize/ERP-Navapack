@@ -42,3 +42,7 @@ Define authoritative inventory posting, reservations, statuses and permissions b
 ## Custom costing and routing
 
 ModelsContext and CostingContext provide shared, session-only versioned model/estimate state upstream of JobCardsContext. Existing order/job/inventory stores remain connected. ModelManager replaces page-local model editing; other master categories retain their previous behavior. CustomCosting extends the existing Costing page while preserving legacy record/rate calls. Dynamic routing uses domain helpers and approved snapshots rather than a fixed component route. See [implementation and boundaries](custom-costing-routing.md).
+
+## Parent/item workflow — 13 October 2026
+
+JobCardsContext continues to own all Job Cards. New headers embed manufacturing items using the existing workflow fields; `parentJobCards.ts` derives scope, status and chronological activity. Mutation adapters target an item and republish its parent. Atomic parent approval validates every manufacturing line first. Views resolve stable work-item IDs under one parent; inventory receipt references carry both parent and item IDs. Legacy single-product records keep their existing paths and API behavior. No second production or inventory store was introduced. See sales-fulfillment.md for the partial implementation boundary.

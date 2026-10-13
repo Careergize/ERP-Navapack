@@ -1,3 +1,4 @@
+import { workItems } from '@/lib/parentJobCards';
 import { useJobCards } from '@/context/JobCardsContext';
 import { emptyMaterial, emptyProcess } from './CostingFields';
 import { useState, type FormEvent } from 'react';
@@ -16,7 +17,7 @@ export function CustomCosting() {
   const { estimates, save, setStatus, generate, accept } = useCosting(); const { models, versions } = useModels(); const { orders } = useSalesOrders(); const { user } = useAuth(); const [params, setParams] = useSearchParams();
   const [draft, setDraft] = useState<CostingInput | null>(null); const [existingId, setExistingId] = useState<string>(); const [error, setError] = useState(''); const [previewId, setPreviewId] = useState<string>();
   const order = orders.find(o => o.id === params.get('orderId')), item = order?.items?.find(i => i.id === params.get('itemId'));
-  const proposedJob = cards.find(c => c.salesOrderId === order?.id && c.salesOrderItemId === item?.id);
+  const proposedJob = cards.flatMap(workItems).find(c => c.salesOrderId === order?.id && c.salesOrderItemId === item?.id);
   const canCustom = ['admin', 'accounts'].includes(user?.role ?? '');
   const run = (action: () => void) => { try { action(); setError(''); } catch(e) { setError(e instanceof Error ? e.message : 'Unable to update estimate.'); } };
   const begin = (modelId: string) => { const model = versions.find(m => m.id === modelId && (item?.modelRevision ? m.revision === item.modelRevision : m.revision === models.find(latest => latest.id === modelId)?.revision)); if (order && item && model) { setDraft(newCostingInput(order, item, model)); setExistingId(undefined); setError(''); } };
