@@ -1,11 +1,11 @@
 import type { JobCard, SalesOrder, SalesOrderItem, Model, User } from '../types';
 import type { CostEstimate } from './customCosting';
-import { materialRequirements } from './customCosting';
+import { estimateMatchesOrder, materialRequirements } from './customCosting';
 import { normalizeJobCard } from './jobCards';
 import { today } from './salesOrders';
 import { RAW_MATERIALS } from './rawMaterialData';
 export function buildLinkedJob(order: SalesOrder, item: SalesOrderItem, model: Model, requiredDate: string, specifications: string, materials: NonNullable<JobCard['requiredMaterials']>, user: User, cards: JobCard[], estimate?: CostEstimate) {
-  if (estimate && (estimate.input.orderId !== order.id || estimate.input.itemId !== item.id || estimate.input.modelId !== model.id || estimate.input.modelRevision !== (model.revision ?? 1) || ['Superseded', 'Revision Required'].includes(estimate.status))) throw new Error('Use a current costing revision for this order line and model.');
+  if (estimate && (!estimateMatchesOrder(estimate, order.id, item.id) || estimate.input.modelId !== model.id || estimate.input.modelRevision !== (model.revision ?? 1) || ['Superseded', 'Revision Required'].includes(estimate.status))) throw new Error('Use a current costing revision for this order line and model.');
   if (estimate) materials = materialRequirements(estimate.input);
   if (item.fulfillmentSource !== 'manufacturing' || !order.items?.some(i => i.id === item.id)) throw new Error('Select a manufacturing line from this order.');
   if (new Set(materials.map(m => m.materialId)).size !== materials.length || materials.some(m => !RAW_MATERIALS.some(raw => raw.id === m.materialId && raw.unit === m.unit))) throw new Error('Use distinct raw materials with their configured units.');

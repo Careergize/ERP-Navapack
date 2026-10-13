@@ -5,6 +5,7 @@ import type { SalesOrder } from '@/types';
 
 interface OrdersContextValue {
   orders: SalesOrder[];
+  getOrders: () => SalesOrder[];
   linkFinishedProduct: (orderId: string, itemId: string, productId: string) => void;
   linkEstimate: (orderId: string, itemId: string, estimateId: string) => void;
   linkJob: (orderId: string, jobId: string) => void;
@@ -17,12 +18,14 @@ export function SalesOrdersProvider({ children }: { children: ReactNode }) {
   const [orders, setOrders] = useState<SalesOrder[]>(MOCK_SALES_ORDERS);
   const current = useRef(orders);
   const createSalesOrder = (draft: SalesOrderDraft) => {
+    const existing = draft.quotationId ? current.current.find(o => o.quotationId === draft.quotationId) : undefined;
+    if (existing) return existing;
     const order = buildSalesOrder(draft, current.current);
     current.current = [order, ...current.current];
     setOrders(current.current);
     return order;
   };
-  return <OrdersContext.Provider value={{ orders, createSalesOrder, linkFinishedProduct: (orderId, itemId, productId) => { current.current = current.current.map(o => o.id === orderId ? { ...o, items: o.items?.map(i => i.id === itemId ? { ...i, itemId: productId } : i) } : o); setOrders(current.current); }, linkEstimate: (orderId, itemId, estimateId) => { current.current = current.current.map(o => o.id === orderId ? { ...o, items: o.items?.map(i => i.id === itemId ? { ...i, estimateId } : i) } : o); setOrders(current.current); }, linkJob: (orderId, jobId) => { current.current = current.current.map(o => o.id === orderId ? { ...o, jobCardIds: [...new Set([...o.jobCardIds, jobId])] } : o); setOrders(current.current); } }}>{children}</OrdersContext.Provider>;
+  return <OrdersContext.Provider value={{ orders, getOrders: () => current.current, createSalesOrder, linkFinishedProduct: (orderId, itemId, productId) => { current.current = current.current.map(o => o.id === orderId ? { ...o, items: o.items?.map(i => i.id === itemId ? { ...i, itemId: productId } : i) } : o); setOrders(current.current); }, linkEstimate: (orderId, itemId, estimateId) => { current.current = current.current.map(o => o.id === orderId ? { ...o, items: o.items?.map(i => i.id === itemId ? { ...i, estimateId } : i) } : o); setOrders(current.current); }, linkJob: (orderId, jobId) => { current.current = current.current.map(o => o.id === orderId ? { ...o, jobCardIds: [...new Set([...o.jobCardIds, jobId])] } : o); setOrders(current.current); } }}>{children}</OrdersContext.Provider>;
 }
 export function useSalesOrders() {
   const value = useContext(OrdersContext);

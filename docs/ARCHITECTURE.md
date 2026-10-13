@@ -4,7 +4,7 @@
 
 The application lives in navapack-frontend, which has its own Git repository and package.json. No backend code is present.
 
-src/main.tsx mounts React StrictMode and BrowserRouter. src/App.tsx composes AuthProvider → SalesOrdersProvider → ModelsProvider → QualityProvider → InventoryProvider → CostingProvider → ConsumablesProvider → JobCardsProvider → InvoicesProvider. RequireAuth checks the in-memory user; AppShell hosts nested routes and role-filtered navigation. Navigation visibility is not server authorization.
+src/main.tsx mounts React StrictMode and BrowserRouter. src/App.tsx composes AuthProvider → SalesOrdersProvider → ModelsProvider → CommercialProvider → QualityProvider → InventoryProvider → CostingProvider → QuotationsProvider → ConsumablesProvider → JobCardsProvider → InvoicesProvider. RequireAuth checks the in-memory user; AppShell hosts nested routes and role-filtered navigation. Navigation visibility is not server authorization.
 
 Routes: / (Dashboard), /sales-orders and /sales-orders/new, /job-cards and /job-cards/:id, /stock, /raw-materials, /recycling, /costing, /track-trace, /masters and /login. The new-order route opens the modal on the list page. Placeholder.tsx remains in source but is not wired to these module routes.
 
@@ -19,7 +19,7 @@ Demand reads each open line against current finished-goods stock independently; 
 Finished-goods reference -> lib/finishedGoodsData.ts -> InventoryContext movements -> Stock balances, movement history and monthly reports.
 Raw-material reference plus legacy demo granules -> lib/rawMaterialData.ts -> separate InventoryContext movements -> Virgin Material, Recycled Granules and Ink views.
 
-Both Context stores survive navigation and reset on refresh. Non-model Masters have page-local mock add/edit state; these edits do not update the separately imported customer/staff suggestions in sales orders. JobCardsContext lazily loads the existing list/detail APIs with mock fallback, normalizes legacy records and keeps manufacturing mutations in frontend state across routes. The existing stage-requirement PATCH remains available with explicit fallback; approval/issue/stage actions remain local, and linked stock confirmations now post to InventoryContext without new endpoints. Recycling, Costing and Track & Trace use Axios with mock fallbacks. Dashboard uses its own static demo metrics rather than live Context totals.
+Both Context stores survive navigation and reset on refresh. Customer Masters and Sales Order customer suggestions share CommercialContext; item/supplier/department/user Masters remain page-local and staff suggestions retain existing mock data. JobCardsContext lazily loads the existing list/detail APIs with mock fallback, normalizes legacy records and keeps manufacturing mutations in frontend state across routes. The existing stage-requirement PATCH remains available with explicit fallback; approval/issue/stage actions remain local, and linked stock confirmations now post to InventoryContext without new endpoints. Recycling, Costing and Track & Trace use Axios with mock fallbacks. Dashboard retains its existing operations demo metrics; quotation metrics additionally derive from live session QuotationsContext records.
 
 Types are in src/types/index.ts and domain data/helper files. Balance functions and variant matching live alongside inventory types. Generated reference files contain workbook-derived records; extraction scripts require Python/openpyxl. Detailed FG interpretation is maintained in finished-goods-reference.md.
 
@@ -55,7 +55,12 @@ Master workflow (confirmed target, with frontend boundaries documented in [quali
 
 ```mermaid
 flowchart LR
-  SO[Sales Order] --> JC[Parent Job Card / manufacturing items]
+  PROS[Customer Prospect / existing customer] --> QUOTE[Quotation / Proforma Invoice]
+  QUOTE --> IA[Internal approval]
+  IA --> CA[Customer acceptance of exact revision]
+  CA --> SO[Sales Order]
+  DIRECT[Direct customer order] --> SO
+  SO --> JC[Parent Job Card / manufacturing items]
   IP[Internal production request: pending frontend phase] --> JC
   JC --> PM[Production Manager approval / approved routing]
   RM[Physical raw receipt] --> RQC[Raw material QC inspection / quality release]
@@ -72,3 +77,9 @@ flowchart LR
 ```
 
 Future Django architecture adds a dedicated `quality` app for templates/versions, inspections, reviews, release decisions, NCs/actions, attachments and audit. `production` owns routing/run/stage output; `inventory` owns receipts/batches/Stock IN/OUT and quality availability; `masters` owns source identities/users; `accounts` owns costing/invoices; `reports` owns scoped projections; `recycling` owns authorized waste disposition. QC never moves ledger ownership into quality. [Canonical backend models, APIs and transaction boundaries](quality.md) are proposed, not implemented endpoints/schema.
+
+## Quotations / commercial source integration
+
+CommercialContext owns the shared customer/prospect/company/bank/terms state; existing Customer Masters and order suggestions reuse it. QuotationsContext lives below CostingProvider and above JobCardsProvider, consuming approved estimate/model/order references. The existing costing engine accepts explicit quotation origins before an order exists; quoted approved financial snapshots acquire real order-line bindings on conversion. No second order/inventory/pricing service or fake Sales Order is created.
+
+`commercialPricing.ts` provides explicit inclusive/exclusive tax/discount/rounding for quotation snapshots and converted orders/invoices. Direct order paths retain their previous behavior. Public quotation projections whitelist customer-facing fields. The future/planned Django sales app owns quotation families/revisions/lines/reviews/customer responses/terms snapshots and atomic idempotent order conversion, reusing masters/costing/company/order entities. See [canonical data/API/lifecycle/transaction specification](quotations.md). No new network endpoints or backend code were introduced.

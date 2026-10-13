@@ -32,6 +32,9 @@ export interface User {
 
 export type CustomerType = "B2B" | "B2C";
 export interface SalesOrderItem {
+  quotationLineId?: string;
+  quotationCostEstimateId?: string;
+  quotationCostEstimateRevision?: number;
   id: string;
   modelId?: string;
   modelRevision?: number;
@@ -48,6 +51,15 @@ export interface SalesOrderItem {
 }
 
 export interface SalesOrder {
+  quotationId?: string;
+  quotationRevisionId?: string;
+  quotationNumber?: string;
+  quotationRevision?: number;
+  prospectId?: string;
+  customerContact?: import('@/lib/quotations').QuotationCustomer;
+  commercialTerms?: import('@/lib/quotations').QuotationTerms;
+  commercialPricing?: { taxMode: import('@/lib/commercialPricing').TaxMode; discount: number; roundingPolicy: string };
+
   taxRate?: number;
   currency?: string;
   customerId?: string;
@@ -246,6 +258,12 @@ export interface Model {
 }
 
 export interface Customer {
+  prospectId?: string;
+  billingAddress?: string;
+  deliveryAddress?: string;
+  email?: string;
+  tin?: string;
+  customerType?: CustomerType;
   id: string;
   name: string;
   contactPerson: string;

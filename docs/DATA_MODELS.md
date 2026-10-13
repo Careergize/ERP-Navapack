@@ -8,7 +8,7 @@ SalesOrder: id, orderNumber, customerName, date, Open/Completed status and jobCa
 SalesOrderItem: id, optional itemId (finished-goods variant reference), itemName, quantity, unit, unitPrice and totalPrice.
 SalesOrderDraft contains form customer/date/marketing/type/requisition fields and items; customerType temporarily permits an empty value.
 New orders get a UUID-derived ID and locally generated SO number (maximum numeric suffix + 1).
-totalPrice = round(quantity x unitPrice, 2); orderTotal = round(sum of rounded line totals, 2). orderSummary returns the pre-tax subtotal; buildSalesOrder applies transaction tax to the order total. Invoice discounts/tax are calculated independently on selected dispatches.
+totalPrice = round(quantity x unitPrice, 2); orderTotal = round(sum of rounded line totals, 2). orderSummary returns the pre-tax subtotal; buildSalesOrder applies transaction tax to the order total. Direct-order invoice discounts/tax are calculated on selected dispatches. Quotation-origin orders retain optional inclusive/exclusive/discount/rounding snapshots, which the order builder and invoices honour rather than applying VAT twice.
 
 ## Finished goods (src/lib/finishedGoodsData.ts)
 
@@ -64,7 +64,7 @@ Department: id, name, assignedProductionManager (text).
 MasterUser: id, name, email, role, optional department.
 User: id, name, role, optional department; held by AuthContext.
 Role: receptionist, production_manager, store_keeper, production_operator, recycling_operator, accounts, qc_inspector, qc_supervisor or admin.
-Master page edits are page-local; name fields are not enforced foreign-key relationships.
+Customer master state is shared via CommercialContext and models via ModelsContext; other Master page edits remain local. Name fields are not backend foreign-key enforcement.
 
 ## Consumables (src/lib/consumableData.ts; ConsumablesContext)
 
@@ -89,3 +89,11 @@ New JobCard headers contain `origin: sales_order` and `manufacturingItems`; each
 JobProductionStage adds optional `qcTemplateIds` and `machineId`, preserved in approved routing. JobCard adds `productionBatches` inspection-lot records (stable ID/number/stage/quantity/unit/time); these partition existing output and are not independent execution runs. FinishedGoodsMovement adds `qualityReleaseId` and `stockApprovalId`, alongside parent/manufacturing-item references. ModelsContext owns shared Machine records (UUID, name, department, extruder/recycle_extruder type, active). QualityContext owns configurable area IDs, versioned templates, inspections/releases and NCs. Raw inward IDs remain source references; missing supplier identity is not fabricated.
 
 [quality.md](quality.md) is the canonical proposed Django/DRF data contract, including UUID/FK/field/status/validation/unique/audit/lifecycle/permission requirements for all eleven requested entities and audit integration. No backend schema was created.
+
+## Quotations / commercial additions
+
+`src/lib/quotations.ts`: Quotation family/revision identity, type/dates/validity/delivery, party/company/terms/price/tax snapshots, exact lines/product/model/costing references, status, approvals, responses and events. CompanySettings includes multiple BankAccount records and editable commercial defaults. QuotationCustomer retains customer/prospect/contact/billing/delivery/TIN/type; QuotationTerms stores optional advance/credit/tolerance clauses. CommercialContext reuses Customer and adds CustomerProspect with explicit linkedCustomerId; no duplicate customer store remains on Masters.
+
+CostingInput adds optional quotationId with logical quotation-line itemId and no fabricated order ID; CostEstimate adds salesOrderReferences for immutable source adoption. `estimateMatchesOrder` resolves original/adopted order-line sources. SalesOrder/Draft add quotation family/revision IDs/number, prospect/contact/terms and commercialPricing (taxMode/discount/rounding); items preserve quotationLineId and original quotationCostEstimateId/revision. Invoices add taxMode, allocated quotationDiscount and explicit roundingAdjustment for final billed reconciliation. Public projection excludes internal costing inputs/source actor IDs.
+
+Future Django sales entities, relationships/constraints/precision/status/permissions/audit and proposed DRF contracts are defined once in [quotations.md](quotations.md); no schema was implemented.

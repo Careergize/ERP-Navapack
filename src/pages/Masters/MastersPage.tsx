@@ -1,8 +1,9 @@
+import { useCommercial } from '@/context/CommercialContext';
 import { useModels } from '@/context/ModelsContext';
 import { ModelManager } from './ModelManager';
 import { useState } from "react";
 import { MasterTable, type MasterColumn } from "@/pages/Masters/MasterTable";
-import { MOCK_CUSTOMERS, MOCK_DEPARTMENTS, MOCK_ITEMS, MOCK_SUPPLIERS, MOCK_USERS } from "@/lib/mockData";
+import { MOCK_DEPARTMENTS, MOCK_ITEMS, MOCK_SUPPLIERS, MOCK_USERS } from "@/lib/mockData";
 import type { Customer, Department, Item, MasterUser, Model, Supplier } from "@/types";
 
 type MasterKey = "items" | "models" | "customers" | "suppliers" | "departments" | "users";
@@ -51,7 +52,7 @@ export function MastersPage() {
   const [selected, setSelected] = useState<MasterKey>("items");
   const [items, setItems] = useState<Item[]>(MOCK_ITEMS);
   const { models } = useModels();
-  const [customers, setCustomers] = useState<Customer[]>(MOCK_CUSTOMERS);
+  const { customers, saveCustomer } = useCommercial();
   const [suppliers, setSuppliers] = useState<Supplier[]>(MOCK_SUPPLIERS);
   const [departments, setDepartments] = useState<Department[]>(MOCK_DEPARTMENTS);
   const [users, setUsers] = useState<MasterUser[]>(MOCK_USERS);
@@ -68,7 +69,7 @@ export function MastersPage() {
   function addRow(row: MasterData) {
     if (selected === "items") setItems((current) => [...current, row as Item]);
 
-    if (selected === "customers") setCustomers((current) => [...current, row as Customer]);
+    if (selected === "customers") saveCustomer(row as Customer);
     if (selected === "suppliers") setSuppliers((current) => [...current, row as Supplier]);
     if (selected === "departments") setDepartments((current) => [...current, row as Department]);
     if (selected === "users") setUsers((current) => [...current, row as MasterUser]);
@@ -77,7 +78,7 @@ export function MastersPage() {
   function editRow(row: MasterData) {
     if (selected === "items") setItems((current) => current.map((item) => item.id === row.id ? row as Item : item));
 
-    if (selected === "customers") setCustomers((current) => current.map((item) => item.id === row.id ? row as Customer : item));
+    if (selected === "customers") saveCustomer(row as Customer);
     if (selected === "suppliers") setSuppliers((current) => current.map((item) => item.id === row.id ? row as Supplier : item));
     if (selected === "departments") setDepartments((current) => current.map((item) => item.id === row.id ? row as Department : item));
     if (selected === "users") setUsers((current) => current.map((item) => item.id === row.id ? row as MasterUser : item));

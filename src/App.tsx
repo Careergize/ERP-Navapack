@@ -1,3 +1,9 @@
+import { CommercialProvider } from '@/context/CommercialContext';
+import { QuotationsProvider } from '@/context/QuotationsContext';
+import { QuotationList, QuotationsGuard } from '@/pages/Quotations/QuotationList';
+import { QuotationDetail } from '@/pages/Quotations/QuotationDetail';
+import { QuotationEditor } from '@/pages/Quotations/QuotationEditor';
+import { QuotationSettings } from '@/pages/Quotations/QuotationSettings';
 import { isQCRole } from '@/lib/quality';
 import { QualityProvider } from '@/context/QualityContext';
 import { QualityPage, QualityGuard, RoleDashboard } from '@/pages/Quality/QualityPage';
@@ -51,6 +57,10 @@ function AppRoutes() {
         <Route path="/qc" element={<QualityGuard><QualityPage /></QualityGuard>} />
         <Route path="/qc/inspections/:id" element={<QualityGuard><InspectionDetail /></QualityGuard>} />
         <Route path="/qc/:section" element={<QualityGuard><QualityPage /></QualityGuard>} />
+        <Route path="/quotations" element={<QuotationsGuard><QuotationList /></QuotationsGuard>} />
+        <Route path="/quotations/settings" element={<QuotationsGuard><QuotationSettings /></QuotationsGuard>} />
+        <Route path="/quotations/:id" element={<QuotationsGuard><QuotationDetail /></QuotationsGuard>} />
+        <Route path="/quotations/:id/edit" element={<QuotationsGuard><QuotationEditor /></QuotationsGuard>} />
         <Route path="/sales-orders" element={<SalesOrderList />} />
         <Route path="/sales-orders/new" element={<SalesOrderList />} />
         <Route path="/sales-orders/:id" element={<SalesOrderDetail />} />
@@ -71,7 +81,7 @@ function AppRoutes() {
 export function App() {
   return (
     <AuthProvider>
-      <SalesOrdersProvider><ModelsProvider><QualityProvider><InventoryProvider><CostingProvider><ConsumablesProvider><JobCardsProvider><InvoicesProvider><AppRoutes /></InvoicesProvider></JobCardsProvider></ConsumablesProvider></CostingProvider></InventoryProvider></QualityProvider></ModelsProvider></SalesOrdersProvider>
+      <SalesOrdersProvider><ModelsProvider><CommercialProvider><QualityProvider><InventoryProvider><CostingProvider><QuotationsProvider><ConsumablesProvider><JobCardsProvider><InvoicesProvider><AppRoutes /></InvoicesProvider></JobCardsProvider></ConsumablesProvider></QuotationsProvider></CostingProvider></InventoryProvider></QualityProvider></CommercialProvider></ModelsProvider></SalesOrdersProvider>
     </AuthProvider>
   );
 }

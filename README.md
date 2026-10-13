@@ -2,7 +2,7 @@
 
 ERP frontend for sales, production, finished-goods inventory and raw-material workflows.
 
-Current modules: Dashboard, Sales Orders, Job Cards, Stock, Raw Material, Recycling, Costing, Track & Trace, Masters, and Quality Control. All have routed pages; this does not mean complete production workflows.
+Current modules: Dashboard, Sales Orders, Job Cards, Stock, Raw Material, Recycling, Costing, Track & Trace, Masters, Quality Control, and Quotations/Proforma Invoice. All have routed pages; this does not mean complete production workflows.
 
 ## Current phase
 
@@ -49,5 +49,7 @@ Build runs TypeScript then Vite. There is no lint script or lint configuration. 
 Start with [development status](docs/DEVELOPMENT_STATUS.md) and [architecture](docs/ARCHITECTURE.md).
 See [business rules](docs/BUSINESS_RULES.md), [frontend models](docs/DATA_MODELS.md), [backend TODO](docs/BACKEND_TODO.md), [changelog](docs/CHANGELOG.md) and [finished-goods source interpretation](docs/finished-goods-reference.md).
 Quality Control routes, provisional source templates, frontend limits and proposed Django/DRF contracts are in [quality.md](docs/quality.md). QC Inspector/Supervisor use the existing login; mock mode includes a role selector. QC state resets on refresh and the eight reference photos remain outstanding. Run `node scripts/check-quality.mjs` for focused QC checks.
+
+Quotations, quotation-origin costing, tax/revision/conversion rules and proposed sales backend contracts are in [quotations.md](docs/quotations.md). Run `node scripts/check-quotations.mjs` for focused checks. The two referenced client documents remain outstanding; new commercial state resets on refresh.
 
 Agent guidance is in [AGENTS.md](AGENTS.md).

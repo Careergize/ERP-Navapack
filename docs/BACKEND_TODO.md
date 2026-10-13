@@ -94,3 +94,12 @@ The confirmed posting sequence is demand → parent Job Card → PM approval →
 - [ ] Supply eight photographs and resolve sampling/concession/partial-disposition/schedule/role/retention policies; implement native XLSX/PDF exports and scoped report scheduling if required.
 
 The QC frontend now separates independent quality release, Production Manager/Admin FG authorization and Store stock posting. Earlier notes treating Store confirmation alone as acceptance describe superseded frontend behavior. All new states/actions are session-only; see quality.md for transaction boundaries and retry behavior.
+
+## Quotation business logic in future sales app
+
+- [ ] Persist the six quotation entities and immutable source/company/customer/terms/price/tax snapshots in [quotations.md](quotations.md), reusing Customer/Prospect/Product/Model/CostEstimate/SalesOrder/User/CompanySettings.
+- [ ] Enforce exact revision/source/expiry/approval/customer-response policy and authorized numbering/manual prices on the server; printing/sending must not imply acceptance.
+- [ ] Implement proposed DRF contracts, paging/filters/version conflicts and immutable public document projection; no quotation endpoints currently exist or are called by the frontend.
+- [ ] Make conversion atomic and idempotent with one order per quotation family, adopted costing references, explicit prospect/customer linkage and audit/outbox. Never create Job Cards/stock/invoices at quote creation or conversion.
+- [ ] Preserve inclusive/exclusive VAT/discount/rounding through order and partial/final invoice workflows using server decimals; define quantity/currency precision and adjustment/credit-note policy.
+- [ ] Verify the two missing reference documents, company/bank/TIN/signatory, terms/credit/tolerance/expiry/acceptance evidence and conversion KPI policy; supply durable PDF/report/communications services if required.

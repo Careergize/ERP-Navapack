@@ -63,3 +63,7 @@ Backend integration must provide durable versioned model/estimate/job data, inde
 The 13 October parent-card change preserves item-level costing and routing. Historical single-product cards are not migrated. See [current phase boundary](sales-fulfillment.md#client-confirmed-integration--13-october-2026-parent-card-phase-boundary) for confirmed requirements still pending.
 
 The later QC module adds mandatory checkpoint template and machine-ID references to approved routes and separate quality/final-stock authorizations. Costing revisions/formulas remain unchanged. Store QC acknowledgement alone cannot authorize stock; see [quality.md](quality.md).
+
+## Quotation-origin costing — 13 October 2026
+
+Custom Product Costing now also accepts a saved quotation line via the same input/recipe/process/FX/waste/pricing/revision functions, without a fake order. After internal costing approval, the quotation explicitly imports only public net selling subtotal plus charges and applies its own VAT basis once. Approved quotation financial snapshots remain immutable. Conversion adopts the estimate into the real order through exact source bindings; later production cost revisions are order-scoped and never silently re-price the original accepted quotation. See quotations.md for source guards, currency/tax/rounding and conversion behavior. Existing direct-order costing, recycling/waste and USD/UGX rules remain intact.

@@ -1,9 +1,10 @@
+import { useCommercial } from '@/context/CommercialContext';
 import { useNavigate } from 'react-router-dom';
 import { useModels } from '@/context/ModelsContext';
 import { ModelManager } from '@/pages/Masters/ModelManager';
 import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from 'react';
 import { Plus, Trash2, X } from 'lucide-react';
-import { MOCK_CUSTOMERS, MOCK_USERS } from '@/lib/mockData';
+import { MOCK_USERS } from '@/lib/mockData';
 import { FINISHED_GOODS, FINISHED_BY_ID, FINISHED_CATEGORY_LABEL, findFinishedGood, finishedBalance, finishedGoodLabel } from '@/lib/finishedGoodsData';
 import { reserved } from '@/lib/fulfillment';
 import { useInventory } from '@/context/InventoryContext';
@@ -17,6 +18,7 @@ const untouched = (item: SalesOrderItem) => !item.itemName && !item.itemId && !i
 const money = (value: number) => `${(Number.isFinite(value) ? value : 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 export function NewSalesOrderModal({ onClose, onCreated }: { onClose: () => void; onCreated: (number: string) => void }) {
   const navigate = useNavigate();
+  const { customers: customerMaster } = useCommercial();
   const { models } = useModels();
   const [showModels, setShowModels] = useState(false);
   const { orders, createSalesOrder } = useSalesOrders();
@@ -76,7 +78,7 @@ export function NewSalesOrderModal({ onClose, onCreated }: { onClose: () => void
     try { const order = createSalesOrder(effective); onCreated(order.orderNumber); if ((event.nativeEvent as SubmitEvent).submitter?.getAttribute('value') === 'costing') { const item = order.items?.find(i => i.fulfillmentSource === 'manufacturing'); if (item) navigate(`/costing?orderId=${order.id}&itemId=${item.id}`); } }
     catch (error) { setErrors({ form: error instanceof Error ? error.message : 'Unable to create order.' }); locked.current = false; setSubmitting(false); }
   };
-  const customers = MOCK_CUSTOMERS.map(c => ({ id: c.id, name: c.name }));
+  const customers = customerMaster.map(c => ({ id: c.id, name: c.name }));
   const staff = MOCK_USERS.map(user => ({ id: user.id, name: user.name, detail: user.role.replaceAll('_', ' ') }));
   const items = FINISHED_GOODS.map(item => { const available = getAvailableStock(item.id, finishedGoodLabel(item), item.unit); return { id: item.id, name: finishedGoodLabel(item), detail: `${FINISHED_CATEGORY_LABEL[item.category]} · Source row ${item.sourceRow} · ${available === undefined ? 'Stock not recorded' : `Available: ${available.toLocaleString('en-IN')} ${item.unit}`}` }; });
   const error = (text?: string) => text && <p role="alert" className="mt-1 text-xs text-red-600">{text}</p>;

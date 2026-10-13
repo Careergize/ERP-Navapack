@@ -25,6 +25,7 @@ interface NavItem {
 }
 
 const NAV_ITEMS: NavItem[] = [
+  { to: "/quotations", label: "Quotations", icon: FileText, roles: ["receptionist", "accounts", "production_manager", "admin"] },
   { to: "/qc", label: "Quality Control", icon: ClipboardList, roles: QC_VIEW_ROLES },
   { to: "/", label: "Dashboard", icon: LayoutDashboard, roles: ["receptionist", "production_manager", "store_keeper", "production_operator", "recycling_operator", "accounts", "admin"] },
   { to: "/sales-orders", label: "Sales Orders", icon: FileText, roles: ["receptionist", "admin"] },

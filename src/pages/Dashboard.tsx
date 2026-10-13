@@ -1,3 +1,5 @@
+import { QuotationMetrics } from '@/pages/Quotations/QuotationList';
+import { QUOTATION_VIEW_ROLES } from '@/lib/quotations';
 import type { ReactNode } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/Card";
@@ -554,6 +556,8 @@ export function Dashboard() {
           )}
         </div>
       </header>
+
+      {QUOTATION_VIEW_ROLES.includes(user?.role ?? "") && <div className="mb-6"><h2 className="mb-3 font-semibold text-navy">Quotation pipeline (session records)</h2><QuotationMetrics /></div>}
 
       {/* KPI widgets */}
       <section aria-label="Key numbers" className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">

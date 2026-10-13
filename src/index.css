@@ -40,3 +40,15 @@ body {
   body:has(.qc-report) .qc-report details > * { display: block !important; }
   body:has(.qc-report) .qc-report { width: 100%; }
 }
+
+@page quotation { size: A4 portrait; margin: 14mm; }
+@media print {
+  body:has(.quotation-sheet) * { visibility: hidden; }
+  body:has(.quotation-sheet) .quotation-sheet,
+  body:has(.quotation-sheet) .quotation-sheet * { visibility: visible; }
+  body:has(.quotation-sheet) .quotation-overlay { position: absolute; inset: 0; padding: 0; background: white; overflow: visible; }
+  body:has(.quotation-sheet) .quotation-sheet { page: quotation; box-shadow: none; border-radius: 0; padding: 0; margin: 0; width: 100%; max-width: none; }
+  .quotation-sheet thead { display: table-header-group; }
+  .quotation-sheet tr { break-inside: avoid; }
+  .quotation-sheet .overflow-x-auto { overflow: visible; }
+}

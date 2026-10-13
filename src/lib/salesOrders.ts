@@ -1,6 +1,7 @@
+import { calculateCommercialTotals } from './commercialPricing';
 import type { CustomerType, SalesOrder, SalesOrderItem } from '@/types';
 
-export interface SalesOrderDraft {
+export interface SalesOrderDraft extends Pick<SalesOrder, 'quotationId' | 'quotationRevisionId' | 'quotationNumber' | 'quotationRevision' | 'prospectId' | 'customerContact' | 'commercialTerms' | 'commercialPricing'> {
   taxRate?: number;
   currency?: string;
   customerId?: string;
@@ -36,6 +37,7 @@ export function validateOrder(draft: SalesOrderDraft) {
     if (!Number.isFinite(item.unitPrice) || item.unitPrice < 0) errors[`${i}.price`] = 'Price must be 0 or greater.';
     if (Number.isFinite(item.quantity) && Number.isFinite(item.unitPrice) && !Number.isFinite(lineTotal(item.quantity, item.unitPrice))) errors[`${i}.price`] = 'The line total is too large.';
   });
+  if (draft.commercialPricing) { try { calculateCommercialTotals(draft.items, draft.commercialPricing.discount, draft.taxRate ?? 0, draft.commercialPricing.taxMode); } catch { errors.items = 'Invalid commercial tax/discount snapshot.'; } }
   if (draft.items.every(item => Number.isFinite(item.quantity) && Number.isFinite(item.unitPrice)) && !Number.isFinite(orderTotal(draft.items))) errors.items = 'The order total is too large.';
   return errors;
 }
@@ -49,7 +51,7 @@ export function buildSalesOrder(draft: SalesOrderDraft, existing: SalesOrder[]):
     customerName: draft.customerName.trim(), marketingPersonName: draft.marketingPersonName.trim(),
     requisitionOrder: draft.requisitionOrder.trim(), customerType: draft.customerType as CustomerType,
     items: draft.items.map(item => ({ ...item, totalPrice: lineTotal(item.quantity, item.unitPrice) })),
-    orderTotal: lineTotal(orderTotal(draft.items), 1 + (draft.taxRate ?? 0) / 100), status: 'Draft', jobCardIds: [],
+    orderTotal: draft.commercialPricing ? calculateCommercialTotals(draft.items, draft.commercialPricing.discount, draft.taxRate ?? 0, draft.commercialPricing.taxMode).total : lineTotal(orderTotal(draft.items), 1 + (draft.taxRate ?? 0) / 100), status: 'Draft', jobCardIds: [],
   };
 }
 

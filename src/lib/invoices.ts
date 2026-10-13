@@ -1,6 +1,7 @@
+import { calculateCommercialTotals } from './commercialPricing';
 import type { SalesOrder } from '../types';
 import type { Dispatch } from './fulfillment';
-export interface Invoice { id: string; number: string; orderId: string; orderNumber: string; date: string; dispatchIds: string[]; dispatchNumbers?: string[]; seller: string; sellerAddress: string; sellerTax: string; email: string; contact: string; buyer: string; billingAddress: string; deliveryAddress: string; buyerTax: string; po: string; paymentTerms: string; destination: string; challans: string; currency: string; discount: number; taxRate: number; subtotal: number; tax: number; total: number; fiscalNumber?: string; verificationCode?: string; items: { itemId: string; description: string; quantity: number; unit: string; rate: number; amount: number }[] }
+export interface Invoice { taxMode?: 'inclusive' | 'exclusive'; quotationDiscount?: number; roundingAdjustment?: number; id: string; number: string; orderId: string; orderNumber: string; date: string; dispatchIds: string[]; dispatchNumbers?: string[]; seller: string; sellerAddress: string; sellerTax: string; email: string; contact: string; buyer: string; billingAddress: string; deliveryAddress: string; buyerTax: string; po: string; paymentTerms: string; destination: string; challans: string; currency: string; discount: number; taxRate: number; subtotal: number; tax: number; total: number; fiscalNumber?: string; verificationCode?: string; items: { itemId: string; description: string; quantity: number; unit: string; rate: number; amount: number }[] }
 export type InvoiceDraft = Omit<Invoice, 'id' | 'orderId' | 'orderNumber' | 'buyer' | 'po' | 'challans' | 'items' | 'subtotal' | 'tax' | 'total'>;
 const money = (value: number) => Math.round(value * 100) / 100;
 export function createInvoice(draft: InvoiceDraft, order: SalesOrder, dispatches: Dispatch[], existing: Invoice[]): Invoice {
@@ -12,9 +13,27 @@ export function createInvoice(draft: InvoiceDraft, order: SalesOrder, dispatches
   const items = (order.items ?? []).flatMap(item => { const quantity = selected.filter(d => d.itemId === item.id).reduce((sum, d) => sum + d.quantity, 0); return quantity ? [{ itemId: item.id, description: item.itemName, quantity, unit: item.unit, rate: item.unitPrice, amount: money(quantity * item.unitPrice) }] : []; });
   const subtotal = money(items.reduce((sum, i) => sum + i.amount, 0));
   if (draft.discount > subtotal) throw new Error('Discount exceeds subtotal.');
-  const tax = money((subtotal - draft.discount) * draft.taxRate / 100), total = money(subtotal - draft.discount + tax);
+  let discount = draft.discount, taxMode = 'exclusive' as 'inclusive' | 'exclusive', quotationDiscount: number | undefined, roundingAdjustment: number | undefined;
+  let tax = money((subtotal - discount) * draft.taxRate / 100), total = money(subtotal - discount + tax);
+  if (order.commercialPricing) {
+    if (draft.taxRate !== order.taxRate || draft.discount !== 0) throw new Error('Quoted VAT is frozen and the accepted discount is apportioned automatically. Additional invoice adjustments need a separate authorized workflow.');
+    taxMode = order.commercialPricing.taxMode;
+    const full = calculateCommercialTotals(order.items ?? [], order.commercialPricing.discount, order.taxRate ?? 0, taxMode);
+    const prior = existing.filter(i => i.orderId === order.id);
+    const fullyInvoiced = (order.items ?? []).every(item => { const billed = prior.reduce((sum, invoice) => sum + invoice.items.filter(i => i.itemId === item.id).reduce((s, i) => s + i.quantity, 0), 0) + items.filter(i => i.itemId === item.id).reduce((sum, i) => sum + i.quantity, 0); return Math.abs(billed - item.quantity) <= Number.EPSILON * Math.max(1, item.quantity) * 8; });
+    const alreadyDiscounted = prior.reduce((sum, i) => sum + (i.quotationDiscount ?? 0), 0);
+    quotationDiscount = fullyInvoiced ? money(full.discount - alreadyDiscounted) : Math.min(money(full.discount * (full.subtotal ? subtotal / full.subtotal : 0)), money(full.discount - alreadyDiscounted));
+    discount = quotationDiscount;
+    const calculated = calculateCommercialTotals(items.map(i => ({ quantity: i.quantity, unitPrice: i.rate })), discount, draft.taxRate, taxMode);
+    tax = calculated.tax; total = calculated.total;
+    if (fullyInvoiced) {
+      const reconciled = money(full.total - prior.reduce((sum, i) => sum + i.total, 0));
+      roundingAdjustment = money(reconciled - total); total = reconciled;
+      tax = money(full.tax - prior.reduce((sum, i) => sum + i.tax, 0));
+    }
+  }
   if (![subtotal, tax, total].every(Number.isFinite)) throw new Error('Invoice amounts exceed the supported range.');
-  return { ...draft, id: crypto.randomUUID(), orderId: order.id, orderNumber: order.orderNumber, buyer: order.customerName, dispatchNumbers: selected.map(d => d.number), po: order.requisitionOrder ?? '', challans: selected.map(d => d.challan).join(', '), items, subtotal, tax, total };
+  return { ...draft, discount, taxMode, quotationDiscount, roundingAdjustment, id: crypto.randomUUID(), orderId: order.id, orderNumber: order.orderNumber, buyer: order.customerName, dispatchNumbers: selected.map(d => d.number), po: order.requisitionOrder ?? '', challans: selected.map(d => d.challan).join(', '), items, subtotal, tax, total };
 }
 export function amountInWords(amount: number, currency: string) {
   const ones = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];

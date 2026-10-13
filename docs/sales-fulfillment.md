@@ -177,3 +177,43 @@ Supply eight source photographs; confirm paper codes/revisions, final authority 
 ### R. Frontend-Only Limitations
 
 QC, templates, master additions, lots, approvals/releases and corrective histories reset on refresh. Server permissions, audit, transactions, attachments, schedules and production-run persistence remain future work. No photograph-based verification or browser end-to-end verification is claimed. TypeScript/build and six check suites pass; browser testing was blocked by localhost timeout and unavailable Chrome. Vite retains its bundle-size warning. No automatic commit was made.
+
+## Quotations & Proforma Invoice Module
+
+Implemented 13 October 2026, frontend only. The dedicated `/quotations` module provides current/history lists and filters, draft creation/editing, details, duplication/revisions, preview/A4 printing, internal price/tax/terms approval, separate customer response and accepted-revision conversion. Source documents mentioned in the task were not attached; layout follows the written fields and existing logo, with unverified company/bank/contact/signatory values left unrecorded. No handwritten signature or sample bag specifications were made permanent defaults.
+
+### Creation, prospects and commercial settings
+
+Select a shared customer or create/select a prospect, enter contact/billing/delivery/TIN/type and representative, then add exact existing products or custom models. Customer Master changes and direct Sales Order customer suggestions now use the same CommercialContext; unrelated Masters remain unchanged. Prospect promotion/linking is explicit and idempotent, preserving original prospect IDs without automatic duplicate customers. Company settings centralize trading/legal names/logo, multiple bank accounts, signatory, currency, configurable VAT basis/rate and default validity. UGX/18% inclusive/14-day validity are editable task examples, not immutable tax or business policy; delivery lead time is separate. Optional terms templates preserve advance/credit/payment/price-revision/tolerance clauses only when selected. A tolerance never grants excess dispatch/invoicing.
+
+### Custom costing, pricing and taxes
+
+Quotation custom lines reuse the existing model/recipe/process/waste/overhead/FX/markup engine through a quotation origin; no fake Sales Order or second pricing engine is created. Lines retain exact approved estimate/model IDs and revisions. The public net selling subtotal plus charges supplies the price; quotation inclusive/exclusive VAT applies once, without taxing an already inclusive estimate price again. Currency must match; no implicit conversion or KG/carton/piece inference occurs. No suggested selling-price data exists for imported stock variants, so authorized draft prices are entered and reviewed.
+
+Line amount = quantity × stored unit price rounded to 2 decimals. Inclusive discounted total divides by (1 + VAT rate) to derive net/tax; exclusive net adds VAT once. Discounts use the selected price basis. Approval freezes exact rates/currency/discount/tax mode/rate/totals and rounding policy. UGX words reuse the existing formatter. Public print projection excludes recipes, material prices, margins, exchange-rate inputs and internal costing links.
+
+### Approval, acceptance and revision history
+
+Draft → Pending Internal Approval → Approved → Sent → customer Accepted/Rejected → Converted. Receptionist/Accounts/Admin draft and record customer responses; Accounts/Production Manager/Admin internally approve; Receptionist/Admin converts. Customer acceptance is separate from internal approval/printing/sending. Responses capture actual date/respondent/remarks/reference and accepted revision. Sent/approved commercial content is immutable; new revisions preserve prior prices/company/terms/approval/response history. Model/costing/quantity/specification drift blocks sending/conversion until explicit revision/review. Expired offers cannot convert; converted records cannot be revised into another order. Mark Sent is only a session event, not an email send.
+
+### Quotation-to-Sales-Order and manufacturing integration
+
+Only the current approved, accepted, unexpired/source-valid revision converts through existing `createSalesOrder`. Customer identity and actual manufacturing due date are confirmed; no customer, Job Card, reservation or stock transaction is created automatically. Repeating conversion returns the same order, guarded in both shared stores. The existing order Draft lifecycle remains; confirmed-order amendments are still the separately pending phase.
+
+Converted orders retain customer/prospect/contact/billing/delivery data, exact commercial rates and tax basis/discount/rounding, payment/delivery/tolerance terms, model/costing references and quotation number/revision/line provenance. Approved quotation costing is adopted into the real order without rewriting its financial snapshot. Manufacturing enters the existing one-parent Job Card/routing/material/stage/QC/Stock IN/dispatch workflow when manually prepared; stock-source lines remain dispatch demand only. Direct Sales Order creation remains available.
+
+Existing invoice helpers honour converted-order inclusive/exclusive pricing and automatically apportion the accepted quotation discount over billed dispatches, with final tax/total/discount rounding reconciliation shown explicitly. Direct-order invoice behavior remains unchanged. Proforma preview/conversion does not create a posted tax/fiscal invoice or inventory transaction.
+
+### Printable layout, reporting and backend architecture
+
+A4 design includes branding/title/date/number/revision/validity/delivery, company/customer sections, grouped multiline items, units/rates/basis/totals, VAT/words, bank details/selected terms and configured signatory. Application UI is hidden on print; table headers repeat. Exact resemblance/multi-page PDF layout still requires the two missing reference documents and browser verification. Print/Save as PDF uses the existing browser workflow.
+
+List/dashboard metrics derive from latest session quotation families (draft/pending/sent/awaiting response/accepted/expired/converted and defined conversion rate); reports export filtered CSV without independent hard-coded totals. Existing unrelated operations demo metrics remain separate.
+
+The canonical [quotation specification](quotations.md) defines future Django `sales` ownership; Quotation, QuotationLine, QuotationRevision, QuotationApproval, QuotationCustomerResponse and QuotationTermsSnapshot; reused masters/settings/costing/order entities; PK/FK/revision/status/price/tax/approval/audit/validation rules; proposed DRF list/create/detail/draft-patch/submit/approve/send/response/revise/convert contracts; pagination/errors/examples; and atomic, concurrency-safe idempotent conversion. These are proposed contracts, not implemented backend endpoints/schema.
+
+### Validation, limitations and open decisions
+
+Standalone TypeScript, production build, new quotation regression suite and all six existing suites passed; Git diff whitespace review passed. Regressions cover source costing without fake orders, public redaction, approval/acceptance/revision/expiry guards, conversion/source preservation/duplicate prevention, parent manufacturing eligibility, inclusive/exclusive VAT/discount/words and partial-invoice reconciliation. Vite retains its bundle-size warning. Browser/reference-layout verification is not claimed.
+
+All new quotes/prospects/company/terms/customer/estimate bindings reset on refresh. Durable audit, roles, document numbering, accepted evidence, database transactions/locking, communications and fiscal/PDF services remain backend work. Supply the two source documents; confirm company/tax/rounding/credit/advance/tolerance/validity/expiry/signatory/approval policy, acceptance evidence and conversion-rate denominator. Existing recycling, waste, USD/UGX costing, QC and traceability requirements are retained. The earlier reservation-free dispatch/amendment/internal-production pending phases remain separate work. No dependencies/backend/schema changes or automatic commit.

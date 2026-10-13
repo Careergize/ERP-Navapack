@@ -10,7 +10,7 @@ import { normalizeJobCard, approveJobCard, issueJobMaterials, updateJobStage, tr
 import { useInventory } from './InventoryContext';
 import { useModels } from './ModelsContext';
 import { useCosting } from './CostingContext';
-import { materialRequirements } from '@/lib/customCosting';
+import { estimateMatchesOrder, materialRequirements } from '@/lib/customCosting';
 import { changeRouting, reopenRouting, validateRouting } from '@/lib/productionRouting';
 import { FINISHED_BY_ID } from '@/lib/finishedGoodsData';
 import { useAuth } from './AuthContext';
@@ -139,7 +139,7 @@ export function JobCardsProvider({ children }: { children: ReactNode }) {
     recalculate: (id, estimateId) => mutate(id, card => {
       if (!['admin', 'production_manager'].includes(user!.role) || card.approval || !['Draft', 'PendingApproval'].includes(card.status)) throw new Error('Requirements can only be recalculated by PM/Admin before approval.');
       const estimate = estimates.find(e => e.id === estimateId);
-      if (!estimate || estimate.status !== 'Approved' || estimate.input.orderId !== card.salesOrderId || estimate.input.itemId !== card.salesOrderItemId || estimate.input.modelId !== card.modelId || estimate.input.modelRevision !== card.modelRevision) throw new Error('Select an internally approved, recalculated estimate for this line and model revision.');
+      if (!estimate || estimate.status !== 'Approved' || !estimateMatchesOrder(estimate, card.salesOrderId, card.salesOrderItemId) || estimate.input.modelId !== card.modelId || estimate.input.modelRevision !== card.modelRevision) throw new Error('Select an internally approved, recalculated estimate for this line and model revision.');
       bindJob(estimate.id, card.id);
       return { ...card, requiredMaterials: materialRequirements(estimate.input), estimateId: estimate.id, estimateRevision: estimate.revision, requirementsReviewRequired: false, activityHistory: [...(card.activityHistory ?? []), { id: crypto.randomUUID(), timestamp: new Date().toISOString(), action: 'Requirements recalculated', user: user!.name, department: 'Production Manager', description: `Applied ${estimate.number} revision ${estimate.revision}. Explicit recipe quantities and costs were reviewed.` }] };
     }),

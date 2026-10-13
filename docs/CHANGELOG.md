@@ -1,5 +1,12 @@
 # Changelog
 
+## Quotations / Proforma Invoice — 2026-10-13
+
+- Added dedicated commercial quotation screens, approvals, customer responses, immutable revisions, A4 preview and accepted-revision order conversion.
+- Reused costing before an order exists; adopted approved source references into real order/job flows without duplicate pricing or fake orders.
+- Shared customer/prospect/company/bank/terms settings and explicit VAT/discount snapshots; preserved basis through converted orders/partial invoices.
+- Added live quotation metrics/CSV, focused regressions and report/backend specification; missing reference documents/layout verification and all backend persistence remain outstanding. No dependencies or automatic commit.
+
 ## Quality Control — 2026-10-13
 
 - Added same-login QC roles, dashboard/navigation and category/template/inspection/review/action/report screens.
