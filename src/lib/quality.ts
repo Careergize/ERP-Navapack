@@ -1,15 +1,16 @@
 import type { Role, User } from '../types';
 
+export const QC_FREQUENCIES = ['per_receipt','per_batch','per_shift','daily','weekly','monthly','on_demand','per_activity'] as const;
 export type QCCategory = 'raw' | 'production' | 'machine' | 'cleaning' | 'safety';
 export type ResponseType = 'yes_no' | 'ok_not_ok' | 'tick_cross' | 'pass_fail' | 'numeric' | 'text';
 export type QCStatus = 'Draft' | 'Submitted' | 'Passed' | 'Failed' | 'Reinspection Required' | 'Approved/Released' | 'Conditionally Accepted';
 export interface QCItem { id: string; label: string; type: ResponseType; acceptable?: string; required: boolean; allowNA: boolean; remarksRequired?: boolean; measurementUnit?: string }
-export interface QCTemplate { id: string; name: string; documentCode?: string; revision: number; effectiveDate: string; department: string; category: QCCategory; frequency: 'per_receipt' | 'per_batch' | 'weekly' | 'per_activity'; applicable: string; active: boolean; approvalRequired: boolean; items: QCItem[]; source: string }
+export interface QCTemplate { id: string; name: string; documentCode?: string; revision: number; effectiveDate: string; department: string; category: QCCategory; frequency: typeof QC_FREQUENCIES[number]; applicable: string; active: boolean; approvalRequired: boolean; items: QCItem[]; source: string }
 export interface QCResponse { itemId: string; sample: number; value: string; remarks: string; target?: number; lowerTolerance?: number; upperTolerance?: number; unit?: string }
 export interface QCSubject { kind: QCCategory; label: string; materialId?: string; receiptId?: string; supplierId?: string; supplierName?: string; jobCardId?: string; manufacturingItemId?: string; productId?: string; modelId?: string; modelName?: string; modelRevision?: number; stageId?: string; isFinishedOutput?: boolean; batchId?: string; batchNumber?: string; machineId?: string; machineType?: string; areaId?: string; quantity?: number; unit?: string }
 export interface QCEvent { id: string; type: string; at: string; userId: string; user: string; description: string }
 export interface QCApproval { id: string; decision: 'Passed' | 'Failed' | 'Reinspection Required' | 'Conditionally Accepted'; userId: string; user: string; at: string; remarks: string }
-export interface QCInspection { id: string; number: string; template: QCTemplate; subject: QCSubject; date: string; time: string; department: string; inspectorId: string; inspector: string; assignedTo: string; sampleCount: number; responses: QCResponse[]; metadata: Record<string, string>; comments: string; status: QCStatus; result?: 'Pass' | 'Fail'; previousInspectionId?: string; approvals: QCApproval[]; events: QCEvent[] }
+export interface QCInspection { scheduleKey?: string; id: string; number: string; template: QCTemplate; subject: QCSubject; date: string; time: string; department: string; inspectorId: string; inspector: string; assignedTo: string; sampleCount: number; responses: QCResponse[]; metadata: Record<string, string>; comments: string; status: QCStatus; result?: 'Pass' | 'Fail'; previousInspectionId?: string; approvals: QCApproval[]; events: QCEvent[] }
 export interface QCRelease { id: string; requestId: string; inspectionId: string; subject: QCSubject; purpose: 'quality' | 'finished_stock'; acceptedQuantity?: number; rejectedQuantity?: number; unit?: string; userId: string; user: string; at: string }
 export interface QCNonConformance { id: string; number: string; inspectionId: string; description: string; severity: 'Minor' | 'Major' | 'Critical'; quantityAffected?: number; unit?: string; department: string; assignedTo: string; immediateAction: string; correctiveAction: string; dueDate: string; verification: string; status: 'Open' | 'Assigned' | 'In Progress' | 'Awaiting Verification' | 'Closed'; events: QCEvent[] }
 export interface QCState { inspections: QCInspection[]; releases: QCRelease[]; nonConformances: QCNonConformance[] }
@@ -25,7 +26,9 @@ const validDate = (date: string) => /^\d{4}-\d{2}-\d{2}$/.test(date) && Number.i
 const finite = (n: unknown): n is number => typeof n === 'number' && Number.isFinite(n);
 const event = (user: User, type: string, description: string): QCEvent => ({ id: crypto.randomUUID(), type, description, userId: user.id, user: user.name, at: new Date().toISOString() });
 export function validateTemplate(t: QCTemplate) {
+  ensure(!(t.id === 'ksec' && t.active && t.items.some(i => i.label === 'Client-confirmed checklist required before activation')), 'Configure client-confirmed KSEC checks before activation; its meaning is undefined.');
   ensure(t.id && t.name.trim() && t.department.trim() && validDate(t.effectiveDate), 'Complete template identity, department and effective date.');
+  ensure(QC_FREQUENCIES.includes(t.frequency), 'Choose a supported frequency.');
   ensure(t.items.length && new Set(t.items.map(i => i.id)).size === t.items.length, 'Use distinct checklist items.');
   t.items.forEach(i => { ensure(i.label.trim() && (i.type === 'text' || i.type === 'numeric' || optionsFor(i.type).includes(i.acceptable ?? '')), 'Set an acceptable answer for each choice item.'); });
 }

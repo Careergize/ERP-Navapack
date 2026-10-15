@@ -26,6 +26,8 @@ export interface FinishedGood {
   dataNotes: string[];
 }
 export interface FinishedGoodsMovement {
+  quantitySnapshot?: import('./stockIntelligence').QuantitySnapshot;
+  movementPurpose?: 'sale' | 'transfer' | 'waste' | 'adjustment' | 'receipt';
   id: string;
   productId: string;
   date: string;

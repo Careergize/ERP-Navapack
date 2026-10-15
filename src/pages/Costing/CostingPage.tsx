@@ -1,3 +1,4 @@
+import { StockIntelligence } from '@/components/StockIntelligence';
 import { CustomCosting } from './CustomCosting';
 import { useSearchParams } from 'react-router-dom';
 import { FormEvent, useEffect, useState } from "react";
@@ -109,6 +110,7 @@ export function CostingPage() {
         })}
       </div>
 
+      <details className="mt-4"><summary>Stock cost / VAT / LED / KG / CTR analysis</summary><StockIntelligence/></details>
       {view === "custom" && <div className="mt-4"><CustomCosting /></div>}
       {view === "costing" && (
         <div className="mt-4">

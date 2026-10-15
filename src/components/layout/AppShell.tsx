@@ -40,10 +40,11 @@ const NAV_ITEMS: NavItem[] = [
 ];
 
 const FINANCE_NAV_ITEMS: NavItem[] = [
+  { to: "/", label: "Finance Dashboard", icon: LayoutDashboard, roles: ["accounts"] },
   { to: "/consumables", label: "Consumables", icon: Package, roles: ["accounts"] },
   { to: "/costing", label: "Costing", icon: Calculator, roles: ["accounts"] },
   { to: "/masters", label: "Masters", icon: Settings, roles: ["accounts"] },
-  { to: "/qc", label: "Quality", icon: ClipboardList, roles: ["accounts"] },
+  { to: "/finance/quality", label: "Quality summary", icon: ClipboardList, roles: ["accounts"] },
   { to: "/quotations", label: "Quotations", icon: FileText, roles: ["accounts"] },
   { to: "/raw-materials", label: "Raw Materials", icon: Package, roles: ["accounts"] },
   { to: "/recycling", label: "Recycling", icon: Recycle, roles: ["accounts"] },
@@ -66,7 +67,7 @@ export function AppShell() {
 
         <div className="mx-4 mb-5 rounded-xl border border-white/10 bg-white/5 px-3 py-2">
           <p className="text-[10px] uppercase tracking-wider text-white/45">Active workspace</p>
-          <p className="mt-1 text-xs font-medium text-white/90">NavaPack Operations</p>
+          <p className="mt-1 text-xs font-medium text-white/90">{user?.role==='accounts'?'NavaPack Finance':'NavaPack Operations'}</p>
         </div>
 
         <nav className="flex-1 space-y-1 px-3">

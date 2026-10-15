@@ -1,5 +1,20 @@
 # Changelog
 
+## Confirmed LED MAX / Finance demo — 2026-10-15
+
+- Made client-confirmed Higher of the Two the default for applicable LED; centralized 2.5% versus USD 70/tonne × saved FX with mandatory weight/conversion validation and configurable pending percentage base.
+- Connected frozen LED calculations/FX through costing, stock analysis, quotations, Sales Orders and partial invoices without double VAT.
+- Connected the existing finance workspace to separate demo login/accounts entry, home navigation and read-only quality summary; preserved real authentication and QC permissions.
+- Added focused MAX/tax/snapshot/demo regression coverage and updated existing costing/tax/backend/report documentation; no backend or automatic commit.
+
+## Integrated operations — 2026-10-15
+
+- Added versioned product/model KG–CTR conversions, stock VAT/LED/markup/margin/COP snapshots, evidence-based actual totals and product alert policies.
+- Added confirmed dispatch without prior reservation, preserving dated/batch/QC guards and reversal history; classified new non-sales OUT.
+- Replaced static operational dashboard aggregates with six current-state sections; added shared sales summary, connected ID-based trace navigation, stage timelines and multiple execution runs.
+- Added source-idempotent quotation generation, reviewer rejection/change comparison and customer-safe email drafts/mailto without delivery claims.
+- Added configurable QC frequencies, explicit idempotent schedules/daily counts and inactive KSEC placeholder. Updated report/backend requirements and integrated regression coverage; all state remains session-only.
+
 ## Quotations / Proforma Invoice — 2026-10-13
 
 - Added dedicated commercial quotation screens, approvals, customer responses, immutable revisions, A4 preview and accepted-revision order conversion.

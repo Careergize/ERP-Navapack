@@ -3,7 +3,7 @@ import { X } from 'lucide-react';
 import { ENTRY_INPUT, SearchSelect } from './SearchSelect';
 
 export interface InventoryOption { id: string; name: string; category: string; unit: string; available: number | null; openingDate?: string; detail?: string; fields?: [string, string][]; pieces?: number | null; customer?: string }
-export interface InventoryEntry { date: string; materialId: string; quantity: number; reference: string; remarks: string; customer?: string; pieces?: number }
+export interface InventoryEntry { movementPurpose?: 'transfer' | 'waste' | 'adjustment'; date: string; materialId: string; quantity: number; reference: string; remarks: string; customer?: string; pieces?: number }
 const today = () => new Date().toLocaleDateString('en-CA');
 export function InventoryMovementModal({ direction, title, options, categories, initialCategory, onClose, onSave, finishedGoods = false }: {
   direction: 'IN' | 'OUT'; title: string; options: InventoryOption[]; categories: [string, string][];
@@ -16,6 +16,7 @@ export function InventoryMovementModal({ direction, title, options, categories, 
   const [quantity, setQuantity] = useState('');
   const [reference, setReference] = useState('');
   const [remarks, setRemarks] = useState('');
+  const [movementPurpose,setMovementPurpose]=useState<'transfer'|'waste'|'adjustment'>('transfer');
   const [customer, setCustomer] = useState('');
   const [pieces, setPieces] = useState('');
   const [error, setError] = useState('');
@@ -51,7 +52,7 @@ export function InventoryMovementModal({ direction, title, options, categories, 
     if (selected.openingDate && date < selected.openingDate) { setError(`The reference ledger begins on ${selected.openingDate}. Choose that date or later.`); return; }
     if (finishedGoods && direction === 'IN' && pieces !== '' && (!Number.isSafeInteger(Number(pieces)) || Number(pieces) <= 0)) { setError('Pieces must be a positive whole number or left unrecorded.'); return; }
     locked.current = true;
-    onSave({ date, materialId, quantity: Number(quantity), reference: reference.trim(), remarks: remarks.trim(), ...(finishedGoods ? { customer: customer.trim(), ...(direction === 'IN' && pieces !== '' ? { pieces: Number(pieces) } : {}) } : {}) });
+    onSave({ movementPurpose: finishedGoods && direction==='OUT' ? movementPurpose : undefined, date, materialId, quantity: Number(quantity), reference: reference.trim(), remarks: remarks.trim(), ...(finishedGoods ? { customer: customer.trim(), ...(direction === 'IN' && pieces !== '' ? { pieces: Number(pieces) } : {}) } : {}) });
     onClose();
   };
   return <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/35 p-4" onMouseDown={event => { if (event.target === event.currentTarget) onClose(); }}>
@@ -73,6 +74,7 @@ export function InventoryMovementModal({ direction, title, options, categories, 
           <label className="text-sm text-gray-600">Unit<input readOnly value={selected?.unit ?? ''} className={`${ENTRY_INPUT} mt-1 bg-gray-50`} /></label>
         </div>
         {finishedGoods && direction === 'OUT' && <label className="block text-sm text-gray-600">Customer / Destination<input value={customer} onChange={event => setCustomer(event.target.value)} className={`${ENTRY_INPUT} mt-1`} /></label>}
+        {finishedGoods&&direction==='OUT'&&<label className="block text-sm">Non-sales Stock OUT purpose<select className={ENTRY_INPUT} value={movementPurpose} onChange={e=>setMovementPurpose(e.target.value as typeof movementPurpose)}><option value="transfer">Transfer</option><option value="waste">Waste</option><option value="adjustment">Approved adjustment (Admin confirmation)</option></select><span className="text-xs">Customer sales must use confirmed Sales Order dispatch. Adjustments require Admin approval, reference and reason.</span></label>}
         <label className="block text-sm text-gray-600">Reference<input value={reference} onChange={event => setReference(event.target.value)} className={`${ENTRY_INPUT} mt-1`} /></label>
         <label className="block text-sm text-gray-600">Remarks<textarea value={remarks} onChange={event => setRemarks(event.target.value)} className={`${ENTRY_INPUT} mt-1`} /></label>
         {error && <p role="alert" className="text-sm text-red-600">{error}</p>}

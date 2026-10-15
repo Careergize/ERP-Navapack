@@ -40,13 +40,23 @@ export function confirmDispatch(state: FulfillmentLedger, draft: Omit<Dispatch, 
   check(laterDates.every(date => (finishedBalance(product, state.movements.filter(m => m.date <= date)).currentStock ?? 0) >= draft.quantity && (batchPhysical({ ...state, movements: state.movements.filter(m => m.date <= date) }, product.id, a!.batch) ?? 0) >= draft.quantity), 'Backdated dispatch would make a later historical balance negative.');
   check(draft.date >= product.openingDate && draft.destination.trim() && draft.challan.trim(), 'Date must follow opening; destination and delivery note are required.');
   const dispatch: Dispatch = { ...draft, modelId: batchReceipts[0]?.modelId, modelName: batchReceipts[0]?.modelName, number: `DSP-${state.dispatches.length + 1}`, orderId: a!.orderId, itemId: a!.itemId, productId: a!.productId, batch: a!.batch, unit: product.unit, status: 'Confirmed' };
-  return { movements: [...state.movements, { id: `out-${draft.id}`, type: 'OUT', productId: a!.productId, quantity: draft.quantity, unit: product.unit, date: draft.date, salesOrderId: a!.orderId, salesOrderItemId: a!.itemId, dispatchId: draft.id, batch: a!.batch, reference: dispatch.number, remarks: draft.remarks }], allocations: state.allocations.map(row => row.id === a!.id ? { ...row, dispatched: round(row.dispatched + draft.quantity) } : row), dispatches: [...state.dispatches, dispatch] };
+  return { movements: [...state.movements, { id: `out-${draft.id}`, type: 'OUT', movementPurpose: 'sale', modelId: dispatch.modelId, modelName: dispatch.modelName, productId: a!.productId, quantity: draft.quantity, unit: product.unit, date: draft.date, salesOrderId: a!.orderId, salesOrderItemId: a!.itemId, dispatchId: draft.id, batch: a!.batch, reference: dispatch.number, remarks: draft.remarks }], allocations: state.allocations.map(row => row.id === a!.id ? { ...row, dispatched: round(row.dispatched + draft.quantity) } : row), dispatches: [...state.dispatches, dispatch] };
 }
 export function reverseDispatch(state: FulfillmentLedger, id: string, date: string, reason: string): FulfillmentLedger {
   const d = state.dispatches.find(d => d.id === id);
   check(d && reason.trim() && /^\d{4}-\d{2}-\d{2}$/.test(date) && Number.isFinite(Date.parse(date)) && date >= d.date, 'Record a reversal date and reason.');
   if (d!.status === 'Cancelled') return state;
   return { ...state, movements: [...state.movements, { id: `reverse-${id}`, productId: d!.productId, quantity: d!.quantity, unit: d!.unit, date, type: 'IN', batch: d!.batch, salesOrderId: d!.orderId, salesOrderItemId: d!.itemId, dispatchId: id, reversalOf: `out-${id}`, reference: `Reversal ${d!.number}`, remarks: reason }], allocations: state.allocations.map(a => a.id === d!.allocationId ? { ...a, dispatched: round(a.dispatched - d!.quantity) } : a), dispatches: state.dispatches.map(row => row.id === id ? { ...row, status: 'Cancelled' } : row) };
+}
+
+/** Reuse dispatch validation/posting atomically, without a prior reservation step. */
+export function confirmDirectDispatch(state: FulfillmentLedger, order: SalesOrder, item: SalesOrderItem, batch: string, draft: Omit<Dispatch, 'allocationId' | 'status' | 'number' | 'orderId' | 'itemId' | 'productId' | 'batch' | 'unit'>): FulfillmentLedger {
+  const previous = state.dispatches.find(d=>d.id===draft.id);
+  if (previous) { check(previous.orderId===order.id && previous.itemId===item.id && previous.batch===batch && previous.quantity===draft.quantity && previous.date===draft.date && previous.challan===draft.challan && previous.destination===draft.destination && previous.vehicle===draft.vehicle && previous.remarks===draft.remarks, 'Dispatch request ID conflicts with existing dispatch.'); return state; }
+  check(!['Cancelled','Completed','Dispatched'].includes(order.status), 'Order is closed.');
+  const allocated = allocate(state, order, item, draft.quantity, batch, `direct-${draft.id}`);
+  const posted = confirmDispatch(allocated, { ...draft, allocationId:`direct-${draft.id}` });
+  return { ...posted, allocations: posted.allocations.map(a=>a.id===`direct-${draft.id}`?{...a,released:true}:a) };
 }
 
 export function orderFulfillmentStatus(order: SalesOrder, state: FulfillmentLedger, cards: JobCard[]): SalesOrder['status'] {

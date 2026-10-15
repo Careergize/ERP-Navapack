@@ -32,6 +32,8 @@ export interface User {
 
 export type CustomerType = "B2B" | "B2C";
 export interface SalesOrderItem {
+  led?: import('@/lib/led').LEDInput;
+  ledSnapshot?: import('@/lib/led').LEDSnapshot;
   quotationLineId?: string;
   quotationCostEstimateId?: string;
   quotationCostEstimateRevision?: number;
@@ -84,6 +86,7 @@ export interface JobCardStageEntry {
 }
 
 export interface JobCard {
+  productionRuns?: { completesStage?: boolean; id: string; number: string; stageId: string; inputKG?: number; inputQuantity: number; outputQuantity: number; wasteQuantity: number; inputUnit: string; outputUnit: string; wasteUnit: string; startedAt: string; completedAt: string; operator: string; remarks: string }[];
   productionBatches?: { id: string; number: string; stageId: string; quantity: number; unit: string; createdAt: string }[];
   /** Present only on new parent cards; legacy single-product records stay unchanged. */
   manufacturingItems?: JobCard[];

@@ -14,6 +14,7 @@ export const QC_TEMPLATES: QCTemplate[] = [
   template('weekly-recycle-extruder', 'Weekly Recycle Extruder Checklist', 'machine', items(['Electrical Panel', 'Gearbox Oil', 'Bearings', 'Hydraulic Unit', 'Motor Pulley and Belts', 'Screen Changer'], 'ok_not_ok', 'OK'), 'recycle_extruder'),
   template('factory-cleaning', 'Factory/General Area Cleaning Checklist', 'cleaning', [{ id: 'observations', label: 'Cleaning observations / outcome (digital review field)', type: 'text', required: true, allowNA: false }]),
   template('raw-receipt', 'Raw Material Receipt and Analysis Record', 'raw', items(['Appearance', 'Colour', 'Packaging Integrity'], 'ok_not_ok', 'OK')),
+  { ...template('ksec', 'KSEC — checks and meaning pending clarification', 'safety', [{ id:'ksec-pending', label:'Client-confirmed checklist required before activation', type:'text', required:true, allowNA:false }]), active:false, frequency:'on_demand', source:'Undefined client term. Admin must configure confirmed checks, category and frequency before activation.' },
 ];
 export const CLEANING_AREAS = ['Office', 'Main Production — Extruder Section', 'Main Production — Bag Making Section', 'Finished Goods Store', 'Material Store', 'Toilets', 'General Areas', 'Reception'].map((name, index) => ({ id: `area-${index + 1}`, name }));
 export const METADATA_FIELDS: Record<QCCategory, [string, string][]> = {

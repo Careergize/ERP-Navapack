@@ -1,3 +1,5 @@
+import { LEDFields } from '@/components/LEDFields';
+import { calculateCommercialTotals } from '@/lib/commercialPricing';
 import { useCommercial } from '@/context/CommercialContext';
 import { useNavigate } from 'react-router-dom';
 import { useModels } from '@/context/ModelsContext';
@@ -69,6 +71,8 @@ export function NewSalesOrderModal({ onClose, onCreated }: { onClose: () => void
   const liveErrors = attempted ? validateOrder(effective) : {};
   const errorFor = (item: SalesOrderItem, field: string) => liveErrors[`${effective.items.findIndex(value => value.id === item.id)}.${field}`];
   const summary = orderSummary(effective.items);
+  const incompleteLED=effective.items.some(i=>i.led?.applies&&!i.ledSnapshot)||Object.keys(liveErrors).some(k=>k.endsWith('.led'));
+  let totalWithLED:number|undefined;try{totalWithLED=calculateCommercialTotals(effective.items,0,draft.taxRate??0,'exclusive').total;}catch{/* Existing form validation handles incomplete items. */}
   const submit = (event: FormEvent) => {
     event.preventDefault();
     if (locked.current) return;
@@ -110,7 +114,8 @@ export function NewSalesOrderModal({ onClose, onCreated }: { onClose: () => void
             </tr>; })}</tbody>
           </table></div>
         </section>
-        <div className="flex flex-col justify-between gap-4 sm:flex-row"><div><button type="button" onClick={addItem} className="inline-flex items-center gap-1 rounded-card border border-gray-200 px-3 py-2 text-sm text-navy"><Plus size={16} /> Add Item</button>{error(liveErrors.items)}</div><dl className="w-full space-y-3 rounded-card bg-gray-50 p-4 sm:w-72"><div className="flex justify-between text-sm text-gray-600"><dt>Subtotal</dt><dd>{money(summary.subtotal)}</dd></div><div className="flex justify-between border-t border-gray-200 pt-3 font-semibold text-navy"><dt>Order Total</dt><dd><output aria-live="polite">{`${draft.currency ?? ""} ${(summary.total * (1 + (draft.taxRate ?? 0) / 100)).toFixed(2)}`}</output></dd></div></dl></div>
+      <details className="rounded-card border p-3"><summary>Item LED (client-confirmed Higher of the Two)</summary>{draft.items.filter(i=>i.itemId||i.modelId).map(item=><div key={item.id}><h3>{item.itemName}</h3><LEDFields value={item.led} onChange={(led,ledSnapshot)=>updateItem(item.id,{led,ledSnapshot})} productId={item.itemId} modelId={item.modelId} quantity={item.quantity} unit={item.unit} date={draft.date} currency={draft.currency??''} netSelling={item.quantity*item.unitPrice}/>{error(liveErrors[`${draft.items.indexOf(item)}.led`])}</div>)}</details>
+        <div className="flex flex-col justify-between gap-4 sm:flex-row"><div><button type="button" onClick={addItem} className="inline-flex items-center gap-1 rounded-card border border-gray-200 px-3 py-2 text-sm text-navy"><Plus size={16} /> Add Item</button>{error(liveErrors.items)}</div><dl className="w-full space-y-3 rounded-card bg-gray-50 p-4 sm:w-72"><div className="flex justify-between text-sm text-gray-600"><dt>Subtotal</dt><dd>{money(summary.subtotal)}</dd></div><div className="flex justify-between border-t border-gray-200 pt-3 font-semibold text-navy"><dt>Order Total</dt><dd><output aria-live="polite">{incompleteLED?'Complete LED weight/conversion/FX inputs':`${draft.currency ?? ""} ${(totalWithLED??summary.total*(1+(draft.taxRate??0)/100)).toFixed(2)}`}</output></dd></div></dl></div>
         {error(errors.form)}
         <div className="flex justify-end gap-2 border-t border-gray-200 pt-4"><button type="button" onClick={onClose} className="rounded-card border border-gray-200 px-4 py-2 text-sm text-gray-600">Cancel</button><button type="submit" disabled={submitting} className="rounded-card bg-navy px-4 py-2 text-sm font-medium text-white disabled:opacity-50">{submitting ? 'Creating…' : 'Create Order'}</button>{effective.items.some(i => i.fulfillmentSource === 'manufacturing') && <button type="submit" value="costing" disabled={submitting} className="rounded-card border border-navy px-4 py-2 text-sm text-navy">Save &amp; Open Costing / Estimate</button>}</div>
       </form>

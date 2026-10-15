@@ -1,9 +1,10 @@
+import { calculateConfiguredLED, type LEDInput, type LEDSnapshot } from './led';
 import type { JobCardMaterial, Model, SalesOrder, SalesOrderItem } from '../types';
 export type CostCurrency = 'USD' | 'UGX';
 export interface MaterialRecipe { id: string; materialId: string; name: string; quantity: number; unit: string; currency: CostCurrency; price: number; priceUnit: string; exchangeRate: number; percentage: number; costGroup: 'material' | 'ink' }
 export interface ProcessCost { stageId?: string; id: string; name: string; basis: 'per kg' | 'per piece' | 'per batch' | 'fixed'; rate: number; quantity: number; unit: string; remarks: string }
-export interface CostingInput { quotationId?: string; orderId: string; itemId: string; modelId: string; modelRevision: number; customer: string; product: string; specifications: string; quantity: number; unit: string; currency: CostCurrency; recipeMode: 'quantities' | 'percentages'; batchQuantity: number; batchUnit: string; materials: MaterialRecipe[]; processes: ProcessCost[]; wastePercent: number; wasteBasis: 'materials' | 'materials-and-processes'; overheads: number; additionalCosts: number; markupPercent: number; pricingMethod: 'markup' | 'gross-margin'; taxPercent: number; chargePercent: number; minimumCharge: number; taxOnCharges: boolean; validityDate: string; deliveryTerms: string; remarks: string }
-export interface CostingTotals { materials: { id: string; quantity: number; unit: string; mixingPercent: number | null; convertedUnitCost: number; total: number }[]; materialCost: number; inkCost: number; processCosts: number[]; processCost: number; wasteCost: number; costOfProduction: number; profit: number; sellingBeforeTax: number; charges: number; tax: number; grandTotal: number; unitSellingPrice: number }
+export interface CostingInput { led?: LEDInput; quotationId?: string; orderId: string; itemId: string; modelId: string; modelRevision: number; customer: string; product: string; specifications: string; quantity: number; unit: string; currency: CostCurrency; recipeMode: 'quantities' | 'percentages'; batchQuantity: number; batchUnit: string; materials: MaterialRecipe[]; processes: ProcessCost[]; wastePercent: number; wasteBasis: 'materials' | 'materials-and-processes'; overheads: number; additionalCosts: number; markupPercent: number; pricingMethod: 'markup' | 'gross-margin'; taxPercent: number; chargePercent: number; minimumCharge: number; taxOnCharges: boolean; validityDate: string; deliveryTerms: string; remarks: string }
+export interface CostingTotals { led?: LEDSnapshot; materials: { id: string; quantity: number; unit: string; mixingPercent: number | null; convertedUnitCost: number; total: number }[]; materialCost: number; inkCost: number; processCosts: number[]; processCost: number; wasteCost: number; costOfProduction: number; profit: number; sellingBeforeTax: number; charges: number; tax: number; grandTotal: number; unitSellingPrice: number }
 export type EstimateStatus = 'Draft' | 'Pending Review' | 'Approved' | 'Revision Required' | 'Superseded';
 export interface CostEstimate { salesOrderReferences?: { orderId: string; itemId: string }[]; id: string; number: string; revision: number; previousId?: string; usedByJobCardId?: string; status: EstimateStatus; customerAcceptance: 'Pending' | 'Accepted' | 'Rejected'; input: CostingInput; totals: CostingTotals; createdAt: string; generatedAt?: string; approvedBy?: string; approvedAt?: string; reviewReason?: string }
 export const MARKUP_SCENARIOS = [10, 15, 20, 25];
@@ -12,7 +13,8 @@ const requireValue = (ok: unknown, message: string) => { if (!ok) throw new Erro
 export function convertQuantity(quantity: number, from: string, to: string) {
   requireValue(Number.isFinite(quantity) && quantity >= 0, 'Quantity must be finite and nonnegative.');
   if (from === to && from.trim()) return quantity;
-  const mass: Record<string, number> = { kg: 1, g: 0.001, tonne: 1000 };
+  from = from.toLowerCase(); to = to.toLowerCase();
+  const mass: Record<string, number> = { kg: 1, kgs: 1, kilo: 1, kilos: 1, kilogram: 1, kilograms: 1, g: 0.001, tonne: 1000 };
   requireValue(mass[from] && mass[to], `No configured conversion from ${from} to ${to}. Enter an explicit matching unit.`);
   return quantity * mass[from] / mass[to];
 }
@@ -54,10 +56,11 @@ export function calculateCost(input: CostingInput): CostingTotals {
   const sellingBeforeTax = roundMoney(input.pricingMethod === 'gross-margin' ? costOfProduction / (1 - input.markupPercent / 100) : costOfProduction * (1 + input.markupPercent / 100));
   const profit = roundMoney(sellingBeforeTax - costOfProduction);
   const charges = roundMoney(Math.max(input.minimumCharge, sellingBeforeTax * input.chargePercent / 100));
-  const tax = roundMoney((sellingBeforeTax + (input.taxOnCharges ? charges : 0)) * input.taxPercent / 100);
-  const grandTotal = roundMoney(sellingBeforeTax + charges + tax);
+  const led = calculateConfiguredLED(input.led,sellingBeforeTax,costOfProduction,input.currency);
+  const tax = roundMoney((sellingBeforeTax + (input.taxOnCharges ? charges : 0) + (led?.vatOnLED ? led.selectedAmount : 0)) * input.taxPercent / 100);
+  const grandTotal = roundMoney(sellingBeforeTax + charges + (led?.selectedAmount ?? 0) + tax);
   requireValue([materialCost, inkCost, processCost, wasteCost, costOfProduction, sellingBeforeTax, grandTotal].every(Number.isFinite), 'Costing amounts exceed the supported range.');
-  return { materials, materialCost, inkCost, processCosts, processCost, wasteCost, costOfProduction, profit, sellingBeforeTax, charges, tax, grandTotal, unitSellingPrice: roundMoney(grandTotal / input.quantity) };
+  return { led, materials, materialCost, inkCost, processCosts, processCost, wasteCost, costOfProduction, profit, sellingBeforeTax, charges, tax, grandTotal, unitSellingPrice: roundMoney(grandTotal / input.quantity) };
 }
 export function materialRequirements(input: CostingInput): JobCardMaterial[] {
   const totals = calculateCost(input);
@@ -74,7 +77,7 @@ export function newCostingInput(order: SalesOrder, item: SalesOrderItem, model: 
 export function estimateMatchesOrder(e: CostEstimate, orderId: string, itemId?: string) { return (e.input.orderId === orderId && (!itemId || e.input.itemId === itemId)) || !!e.salesOrderReferences?.some(r => r.orderId === orderId && (!itemId || r.itemId === itemId)); }
 export function customerEstimate(estimate: CostEstimate) {
   const i = estimate.input, t = estimate.totals;
-  return { number: estimate.number, revision: estimate.revision, date: (estimate.generatedAt ?? estimate.createdAt).slice(0, 10), customer: i.customer, product: i.product, modelId: i.modelId, modelRevision: i.modelRevision, specifications: i.specifications, quantity: i.quantity, unit: i.unit, unitSellingPrice: t.unitSellingPrice, subtotal: t.sellingBeforeTax, charges: t.charges, tax: t.tax, grandTotal: t.grandTotal, currency: i.currency, validityDate: i.validityDate, deliveryTerms: i.deliveryTerms, remarks: i.remarks };
+  return { number: estimate.number, revision: estimate.revision, date: (estimate.generatedAt ?? estimate.createdAt).slice(0, 10), customer: i.customer, product: i.product, modelId: i.modelId, modelRevision: i.modelRevision, specifications: i.specifications, quantity: i.quantity, unit: i.unit, unitSellingPrice: t.unitSellingPrice, led: t.led ? { selectedAmount:t.led.selectedAmount,vatOnLED:t.led.vatOnLED,method:t.led.method } : undefined, subtotal: t.sellingBeforeTax, charges: t.charges, tax: t.tax, grandTotal: t.grandTotal, currency: i.currency, validityDate: i.validityDate, deliveryTerms: i.deliveryTerms, remarks: i.remarks };
 }
 
 export function buildEstimateRevision(input: CostingInput, all: CostEstimate[], existingId?: string, now = new Date().toISOString()): CostEstimate {

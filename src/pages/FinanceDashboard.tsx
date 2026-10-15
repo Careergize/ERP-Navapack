@@ -1,3 +1,8 @@
+import { useInventory } from '@/context/InventoryContext';
+import { useJobCards } from '@/context/JobCardsContext';
+import { orderFulfillmentStatus } from '@/lib/fulfillment';
+import { useQuality } from '@/context/QualityContext';
+import { effectiveQuotationStatus } from '@/lib/quotations';
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { ArrowDownRight, ArrowUpRight, Banknote, CircleHelp, FileClock, FileText, ReceiptText, ShoppingCart } from "lucide-react";
@@ -18,6 +23,7 @@ export function FinanceDashboard() {
   const { invoices } = useInvoices();
   const { quotations } = useQuotations();
   const { orders } = useSalesOrders();
+  const { ledger } = useInventory();const { cards } = useJobCards();
 
   const totalsByCurrency = useMemo(() => invoices.reduce<Record<string, number>>((totals, invoice) => {
     totals[invoice.currency] = (totals[invoice.currency] ?? 0) + invoice.total;
@@ -25,8 +31,8 @@ export function FinanceDashboard() {
   }, {}), [invoices]);
   const currencyEntries = Object.entries(totalsByCurrency).sort(([a], [b]) => a.localeCompare(b));
   const totalSales = currencyEntries.length === 1 ? money(currencyEntries[0][1], currencyEntries[0][0]) : currencyEntries.length > 1 ? "Multiple currencies" : "—";
-  const pendingQuotationCount = quotations.filter(q => ["Draft", "Pending Internal Approval", "Approved", "Sent"].includes(q.status)).length;
-  const openOrderCount = orders.filter(order => !["Completed", "Cancelled"].includes(order.status)).length;
+  const pendingQuotationCount = quotations.filter(q => !quotations.some(n=>n.rootId===q.rootId&&n.revision>q.revision) && ["Draft", "Pending Internal Approval", "Approved", "Sent"].includes(effectiveQuotationStatus(q))).length;
+  const openOrderCount = orders.filter(order => !["Completed", "Dispatched", "Cancelled"].includes(orderFulfillmentStatus(order,ledger,cards))).length;
 
   const activities = [
     ...invoices.map(invoice => ({ date: invoice.date, title: `Invoice ${invoice.number}`, detail: `${invoice.buyer} · ${money(invoice.total, invoice.currency)}`, href: `/sales-orders/${invoice.orderId}`, kind: "Invoice" })),
@@ -48,7 +54,7 @@ export function FinanceDashboard() {
     <p className="rounded-lg border border-[#dcebe0] bg-white px-3 py-2 text-xs text-[#668075]">Figures use current frontend session records. Sales orders include seeded demo examples; invoices and quotations are session-only. Expenses and payment collections are not recorded here.</p>
 
     <section aria-label="Finance summary" className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-      <Metric label="Total Sales" value={totalSales} icon={Banknote} note={invoices.length ? `${invoices.length} recorded invoice${invoices.length === 1 ? "" : "s"}` : "No invoices recorded in this session"} />
+      <Metric label="Invoiced value" value={totalSales} icon={Banknote} note={invoices.length ? `${invoices.length} recorded invoice${invoices.length === 1 ? "" : "s"}` : "No invoices recorded in this session"} />
       <Metric label="Total Expenses" value="Unavailable" icon={ArrowDownRight} note="Expense records are not available" />
       <Metric label="Profit / Loss" value="Unavailable" icon={CircleHelp} note="Requires recorded sales and expenses" />
       <Metric label="Outstanding Payments" value="Unavailable" icon={ReceiptText} note="Payment collection status is not recorded" />
@@ -86,3 +92,5 @@ function Metric({ label, value, icon: Icon, note }: { label: string; value: stri
     <p className="mt-4 text-xs text-[#87988f]">{label}</p><p className="mt-1 text-xl font-semibold tracking-tight text-[#173b2d]">{value}</p><p className="mt-1 text-[10px] text-[#8a9a91]">{note}</p>
   </Card>;
 }
+
+export function FinanceQualityOverview(){const q=useQuality();return <div className="space-y-4"><h1 className="text-2xl font-semibold text-navy">Finance · Quality summary</h1><p className="text-sm text-gray-500">Read-only session overview. Detailed QC records, inspection entry and quality release retain their existing role permissions.</p><Card><p>Recorded inspections: {q.inspections.length}</p><p>Awaiting review: {q.inspections.filter(i=>i.status==='Submitted').length}</p><p>Failed inspections: {q.inspections.filter(i=>i.status==='Failed').length}</p><p>Open corrective actions: {q.nonConformances.filter(n=>n.status!=='Closed').length}</p></Card><Link to="/" className="underline">Finance Dashboard</Link></div>;}

@@ -1,3 +1,4 @@
+import { GenerateQuotation } from '@/components/GenerateQuotation';
 import { useCommercial } from '@/context/CommercialContext';
 import { useModels } from '@/context/ModelsContext';
 import { ModelManager } from './ModelManager';
@@ -87,7 +88,7 @@ export function MastersPage() {
   const config = configs[selected];
 
   return (
-    <div>
+    <div>{selected==='customers'&&<section className="mb-4 rounded-card border p-3"><h2 className="font-semibold">Customer quotation actions</h2>{customers.map(c=><p key={c.id}>{c.name} · <GenerateQuotation customerId={c.id}/></p>)}</section>}
       <h1 className="text-2xl font-semibold text-navy">Masters</h1>
       <p className="mt-1 text-sm text-gray-500">Manage the reference data used across NavaPack operations.</p>
 

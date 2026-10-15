@@ -21,7 +21,7 @@ import { Dashboard } from "@/pages/Dashboard";
 import { SalesOrderList } from "@/pages/SalesOrders/SalesOrderList";
 import { JobCardList } from "@/pages/JobCards/JobCardList";
 import { JobCardDetail } from "@/pages/JobCards/JobCardDetail";
-import { TrackTrace } from "@/pages/TrackTrace/TrackTrace";
+import { TrackTrace } from "@/pages/TrackTrace/ConnectedTrace";
 import { StockPage } from "@/pages/Stocks/stocks";
 import { RawMaterialPage } from "@/pages/RawMaterials/RawMaterialPage";
 import { InventoryProvider } from "@/context/InventoryContext";
@@ -32,7 +32,7 @@ import { ConsumablesPage } from "@/pages/Consumables/ConsumablesPage";
 import { RecyclingPage } from "@/pages/Recycling/RecyclingPage";
 import { CostingPage } from "@/pages/Costing/CostingPage";
 import { MastersPage } from "@/pages/Masters/MastersPage";
-import { FinanceDashboard } from "@/pages/FinanceDashboard";
+import { FinanceDashboard, FinanceQualityOverview } from "@/pages/FinanceDashboard";
 
 function RequireAuth({ children }: { children: JSX.Element }) {
   const { user } = useAuth();
@@ -47,6 +47,7 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
+      <Route path="/finance/login" element={<Login key="finance" finance />} />
 
       <Route
         element={
@@ -56,6 +57,7 @@ function AppRoutes() {
         }
       >
         <Route path="/" element={user?.role === "accounts" ? <FinanceDashboard /> : <RoleDashboard operations={<Dashboard />} />} />
+        <Route path="/finance/quality" element={user?.role==="accounts"?<FinanceQualityOverview/>:<Navigate to="/" replace/>} />
         <Route path="/qc" element={<QualityGuard><QualityPage /></QualityGuard>} />
         <Route path="/qc/inspections/:id" element={<QualityGuard><InspectionDetail /></QualityGuard>} />
         <Route path="/qc/:section" element={<QualityGuard><QualityPage /></QualityGuard>} />

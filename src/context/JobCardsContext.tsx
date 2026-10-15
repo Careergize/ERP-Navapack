@@ -1,3 +1,4 @@
+import { appendProductionRun, type ProductionRun } from '@/lib/productionRuns';
 import { useQuality } from './QualityContext';
 import { assertMachineQC, assertProductionQC, finishedAuthorization, rawHeldQuantity } from '@/lib/qualityIntegration';
 import { RAW_MATERIALS, rawMaterialBalance } from '@/lib/rawMaterialData';
@@ -18,6 +19,7 @@ import { useSalesOrders } from './SalesOrdersContext';
 import type { JobCard } from '@/types';
 
 interface JobCardsState {
+  recordRun: (id: string, run: ProductionRun, finish: boolean) => void;
   registerBatch: (id: string, stageId: string, number: string, quantity: number) => NonNullable<JobCard['productionBatches']>[number];
   createLinked: (orderId: string, itemId: string, modelId: string, requiredDate: string, specifications: string, materials: NonNullable<JobCard["requiredMaterials"]>, estimateId?: string) => Promise<JobCard>;
   cards: JobCard[];
@@ -172,7 +174,8 @@ export function JobCardsProvider({ children }: { children: ReactNode }) {
       }
       return issueJobMaterials(card, quantities, usable, user!);
     }),
-    updateStage: (id, stageId, update) => mutate(id, card => { assertMachineQC(quality.getState(), card.productionStages?.find(s => s.id === stageId)?.machineId); assertProductionQC(quality.getState(), card, card.productionStages?.find(s => s.id === stageId)?.sequence); return updateJobStage(card, stageId, update, user!); }),
+    recordRun: (id,run,finish) => mutate(id,card=>{assertMachineQC(quality.getState(),card.productionStages?.find(s=>s.id===run.stageId)?.machineId);assertProductionQC(quality.getState(),card,card.productionStages?.find(s=>s.id===run.stageId)?.sequence);return appendProductionRun(card,run,finish,user!);}),
+    updateStage: (id, stageId, update) => mutate(id, card => { if(card.productionRuns?.some(r=>r.stageId===stageId)) throw new Error('Use additional production runs; run aggregates cannot be overwritten.'); assertMachineQC(quality.getState(), card.productionStages?.find(s => s.id === stageId)?.machineId); assertProductionQC(quality.getState(), card, card.productionStages?.find(s => s.id === stageId)?.sequence); return updateJobStage(card, stageId, update, user!); }),
     transfer: (id, accepted, date, receipt) => mutate(id, card => {
       if (!['admin', 'store_keeper'].includes(user!.role) || !receipt) throw new Error('Store/Admin must select an authorized QC batch and explicit accepted/rejected quantities.');
       const repeated = card.stockTransfers?.find(r => r.id === receipt.id);

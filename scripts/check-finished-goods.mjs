@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { createServer } from 'vite';
 
 // Exercise the actual TypeScript data boundary without a browser or backend.
-const server = await createServer({ configFile: false, optimizeDeps: { noDiscovery: true }, server: { middlewareMode: true }, appType: 'custom' });
+const server = await createServer({ configFile: false, optimizeDeps: { noDiscovery: true }, server: { middlewareMode: true, hmr: false }, appType: 'custom' });
 try {
   const { FINISHED_GOODS: products, FINISHED_MOVEMENTS: movements, finishedBalance, findFinishedGood, matchesFinishedGood } =
     await server.ssrLoadModule('/src/lib/finishedGoodsData.ts');

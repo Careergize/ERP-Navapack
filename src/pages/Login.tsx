@@ -1,6 +1,7 @@
+import { demoEnabled, demoRole as resolveDemoRole } from '@/lib/demoAuth';
 import { FormEvent, useRef, useState } from "react";
 import { Eye, EyeOff, LockKeyhole, Mail } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { BrandPanel } from "@/components/login/BrandPanel";
 import { Button } from "@/components/login/Button";
@@ -8,15 +9,13 @@ import { TextField } from "@/components/login/TextField";
 
 // Local Vite runs default to mock mode so the UI works before Django is available.
 // Set VITE_ENABLE_MOCK_LOGIN=false to exercise the real backend during development.
-const MOCK_LOGIN_ENABLED = import.meta.env.VITE_ENABLE_MOCK_LOGIN === "true" || (import.meta.env.DEV && import.meta.env.VITE_ENABLE_MOCK_LOGIN !== "false");
-const MOCK_USERNAMES = ["admin@navapack.com", "admin@navpack.com"];
-const MOCK_PASSWORD = "test@123";
+const MOCK_LOGIN_ENABLED = demoEnabled(import.meta.env.DEV,import.meta.env.VITE_ENABLE_MOCK_LOGIN);
 
-export function Login() {
+export function Login({finance=false}:{finance?:boolean}) {
   const { login, loginAsDemo, loading } = useAuth();
   const navigate = useNavigate();
   const usernameRef = useRef<HTMLInputElement>(null);
-  const [demoRole, setDemoRole] = useState<"admin" | "qc_inspector" | "qc_supervisor" | "production_manager" | "store_keeper">("admin");
+  const [demoRole, setDemoRole] = useState<"admin" | "qc_inspector" | "qc_supervisor" | "production_manager" | "store_keeper" | "accounts">("admin");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
@@ -35,9 +34,8 @@ export function Login() {
     }
     try {
       if (MOCK_LOGIN_ENABLED) {
-        if (!MOCK_USERNAMES.includes(username.trim().toLowerCase()) || password !== MOCK_PASSWORD) throw new Error("credentials");
-        loginAsDemo(demoRole);
-      } else await login(username.trim(), password);
+        loginAsDemo(resolveDemoRole(username,password,demoRole,finance));
+      } else await login(username.trim(), password,finance);
       if (remember) localStorage.setItem("navapack_remember", "true");
       setSuccess(true);
       window.setTimeout(() => navigate("/"), 520);
@@ -56,15 +54,16 @@ export function Login() {
       <section className="flex min-h-screen w-full flex-col px-5 py-6 [padding-bottom:calc(1.5rem+env(safe-area-inset-bottom))] sm:px-10 sm:py-10 lg:w-[45%] lg:justify-center lg:px-14 xl:px-24">
         <div className="mb-12 flex items-center justify-between lg:hidden"><img src="/assets/Nava-logo.png" alt="Nava Pack" className="h-9 w-auto max-w-[175px] object-contain" /><span className="rounded-full bg-navy/5 px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-navy">ERP Portal</span></div>
         <div className={`mx-auto w-full max-w-md animate-rise-in ${shake ? "animate-shake-once" : ""}`}>
-          <div className="mb-9"><p className="mb-3 text-xs font-semibold uppercase tracking-[.2em] text-teal">Welcome back</p><h1 className="text-3xl font-semibold tracking-tight text-navy sm:text-4xl">Sign in to Nava Pack</h1><p className="mt-3 text-sm leading-6 text-slate-500">Access production, stock, orders, and traceability from one place.</p></div>
+          <div className="mb-9"><p className="mb-3 text-xs font-semibold uppercase tracking-[.2em] text-teal">Welcome back</p><h1 className="text-3xl font-semibold tracking-tight text-navy sm:text-4xl">{finance?'Sign in to Finance':'Sign in to Nava Pack'}</h1><p className="mt-3 text-sm leading-6 text-slate-500">{finance?'Access your finance dashboard, quotations, costing and invoice summaries.':'Access production, stock, orders, and traceability from one place.'}</p></div>
           <form onSubmit={handleSubmit} className="space-y-5" noValidate>
             <TextField ref={usernameRef} label="Username or email" type="text" autoComplete="username" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="you@navapack.com" icon={<Mail className="h-4 w-4" />} required />
             <TextField label="Password" type={showPassword ? "text" : "password"} autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter your password" icon={<LockKeyhole className="h-4 w-4" />} required trailing={<button type="button" aria-label={showPassword ? "Hide password" : "Show password"} onClick={() => setShowPassword((visible) => !visible)} className="absolute right-1 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-md text-slate-400 transition hover:bg-slate-50 hover:text-navy">{showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}</button>} />
-            {MOCK_LOGIN_ENABLED && <div><p className="-mt-2 text-xs text-slate-400">Demo mode: admin@navapack.com / test@123</p><label className="text-xs text-slate-500">Demo role<select className="mt-1 block w-full rounded-lg border p-2" value={demoRole} onChange={e => setDemoRole(e.target.value as typeof demoRole)}><option value="admin">Admin</option><option value="qc_inspector">QC Inspector</option><option value="qc_supervisor">QC Supervisor</option><option value="production_manager">Production Manager</option><option value="store_keeper">Store Keeper</option></select></label></div>}
+            {MOCK_LOGIN_ENABLED && <div><p className="-mt-2 text-xs text-slate-400">Demo mode: {finance?'finance@navapack.com':'admin@navapack.com'} / test@123</p>{!finance&&<label className="text-xs text-slate-500">Demo role<select className="mt-1 block w-full rounded-lg border p-2" value={demoRole} onChange={e => setDemoRole(e.target.value as typeof demoRole)}><option value="admin">Admin</option><option value="accounts">Accounts / Finance</option><option value="qc_inspector">QC Inspector</option><option value="qc_supervisor">QC Supervisor</option><option value="production_manager">Production Manager</option><option value="store_keeper">Store Keeper</option></select></label>}</div>}
             <div className="flex items-center justify-between pt-1 text-sm"><label className="flex min-h-11 cursor-pointer items-center gap-2 text-slate-600"><input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} className="h-4 w-4 rounded border-slate-300 accent-teal" /> Remember me</label><a href="mailto:support@navapack.com?subject=Password%20reset" className="font-medium text-blue transition hover:text-navy">Forgot password?</a></div>
             {error && <p role="alert" aria-live="polite" className="rounded-lg border border-red-100 bg-red-50 px-4 py-3 text-sm leading-5 text-red-700">{error}</p>}
             <Button type="submit" loading={loading} success={success} disabled={loading || success}>Sign in</Button>
           </form>
+          <Link className="mt-5 inline-block text-sm text-blue underline" to={finance?'/login':'/finance/login'}>{finance?'Operations login':'Separate Finance login'}</Link>
           <p className="mt-10 border-t border-slate-200 pt-5 text-xs leading-5 text-slate-400">Need access? Contact your department manager or Nava Pack administrator.</p>
         </div>
         <footer className="mx-auto mt-auto flex w-full max-w-md justify-between pt-12 text-xs text-slate-400 lg:absolute lg:bottom-7 lg:right-14 lg:max-w-md xl:right-24"><span>© Nava Pack</span><span>v0.1.0 · Secure operations portal</span></footer>

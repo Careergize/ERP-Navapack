@@ -1,3 +1,4 @@
+import { calculateConfiguredLED } from './led';
 import { calculateCommercialTotals } from './commercialPricing';
 import type { CustomerType, SalesOrder, SalesOrderItem } from '@/types';
 
@@ -32,6 +33,7 @@ export function validateOrder(draft: SalesOrderDraft) {
     if (!['stock', 'manufacturing'].includes(item.fulfillmentSource ?? '')) errors[`${i}.source`] = 'Select a fulfillment source.';
     if ((!item.itemId && !(item.fulfillmentSource === 'manufacturing' && item.modelId)) || !item.itemName.trim()) errors[`${i}.item`] = 'Select an item.';
     if (item.modelId && (!item.requiredDate || !Number.isFinite(Date.parse(item.requiredDate)) || item.requiredDate < draft.date)) errors[`${i}.item`] = 'Enter a required delivery date on or after the order date.';
+    if(item.led?.applies){try{const expected=calculateConfiguredLED(item.led,item.quantity*item.unitPrice,undefined,draft.currency??'');if(JSON.stringify(expected)!==JSON.stringify(item.ledSnapshot)||item.ledSnapshot?.conversion?.originalQuantity!==item.quantity||item.ledSnapshot?.conversion?.originalUnit!==item.unit||item.ledSnapshot?.conversion?.productId!==(item.itemId??''))throw new Error();}catch{errors[`${i}.led`]='LED MAX needs valid weight/conversion, FX and a refreshed snapshot.';}}
     if (!Number.isFinite(item.quantity) || item.quantity <= 0) errors[`${i}.quantity`] = 'Quantity must be greater than 0.';
     if (!item.unit.trim()) errors[`${i}.unit`] = 'Select a unit.';
     if (!Number.isFinite(item.unitPrice) || item.unitPrice < 0) errors[`${i}.price`] = 'Price must be 0 or greater.';
@@ -51,7 +53,8 @@ export function buildSalesOrder(draft: SalesOrderDraft, existing: SalesOrder[]):
     customerName: draft.customerName.trim(), marketingPersonName: draft.marketingPersonName.trim(),
     requisitionOrder: draft.requisitionOrder.trim(), customerType: draft.customerType as CustomerType,
     items: draft.items.map(item => ({ ...item, totalPrice: lineTotal(item.quantity, item.unitPrice) })),
-    orderTotal: draft.commercialPricing ? calculateCommercialTotals(draft.items, draft.commercialPricing.discount, draft.taxRate ?? 0, draft.commercialPricing.taxMode).total : lineTotal(orderTotal(draft.items), 1 + (draft.taxRate ?? 0) / 100), status: 'Draft', jobCardIds: [],
+    commercialPricing:draft.commercialPricing??(draft.items.some(i=>i.ledSnapshot)?{taxMode:'exclusive',discount:0,roundingPolicy:'LED and VAT rounded to 2 decimals; frozen per-line MAX snapshots.'}:undefined),
+    orderTotal: draft.commercialPricing ? calculateCommercialTotals(draft.items, draft.commercialPricing.discount, draft.taxRate ?? 0, draft.commercialPricing.taxMode).total : draft.items.some(i=>i.ledSnapshot)?calculateCommercialTotals(draft.items,0,draft.taxRate??0,'exclusive').total:lineTotal(orderTotal(draft.items), 1 + (draft.taxRate ?? 0) / 100), status: 'Draft', jobCardIds: [],
   };
 }
 

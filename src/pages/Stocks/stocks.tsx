@@ -1,3 +1,4 @@
+import { StockIntelligence } from '@/components/StockIntelligence';
 import { useAuth } from '@/context/AuthContext';
 import { findWorkItem } from '@/lib/parentJobCards';
 import { useJobCards } from '@/context/JobCardsContext';
@@ -78,7 +79,7 @@ export function StockPage() {
     { label: 'Finished Goods', value: `${FINISHED_GOODS.length} variants`, hint: 'Distinct source variants · ctn and kg tracked separately' },
     { label: 'Carrier Bags', value: `${FINISHED_GOODS.filter(product => product.category === 'carrier-bags').length} variants`, hint: 'Brands, packing sizes and customer configurations' },
     { label: 'Flat Bags', value: `${FINISHED_GOODS.filter(product => product.category === 'flat-bags').length} variants`, hint: 'Includes plain, printed, garbage and laundry bags' },
-    { label: 'Out of Stock', value: String(outOfStock), hint: 'Recorded balances at or below zero · minimums not supplied' },
+    { label: 'Out of Stock', value: String(outOfStock), hint: 'Recorded balances at or below zero · product thresholds configured separately' },
   ];
   const resetList = () => { setLimit(25); setExpanded(null); };
   const exportReport = () => downloadCsv(`finished-goods-${category}-${month}.csv`, [
@@ -96,6 +97,7 @@ export function StockPage() {
     </header>
     <section aria-label="Stock summary" className="grid grid-cols-2 gap-4 lg:grid-cols-4 print:hidden">{kpis.map(card => <Card key={card.label}><p className="text-sm text-gray-500">{card.label}</p><p className="mt-1 text-2xl font-semibold text-navy">{card.value}</p><p className="mt-1 text-xs text-gray-500">{card.hint}</p></Card>)}</section>
     {notice && <p role="status" className="rounded-card bg-emerald-50 px-4 py-3 text-sm text-emerald-700">{notice}</p>}
+    <details className="rounded-card border bg-white p-4"><summary className="cursor-pointer font-semibold text-navy">Stock alerts, product conversions & costing summary</summary><StockIntelligence/></details>
     <SalesOrderDemand />
     <div role="tablist" aria-label="Stock views" className="flex gap-6 border-b border-gray-200 print:hidden">{TABS.map(([id, label]) => <button key={id} type="button" role="tab" id={`stock-tab-${id}`} aria-selected={tab === id} aria-controls={`stock-panel-${id}`} onClick={() => { setTab(id); resetList(); }} className={`-mb-px border-b-2 pb-3 text-sm font-medium ${tab === id ? 'border-navy text-navy' : 'border-transparent text-gray-500 hover:text-navy'}`}>{label}</button>)}</div>
     <div role="group" aria-label="Finished goods categories" className="inline-flex flex-wrap rounded-card bg-gray-100 p-1 print:hidden">{([['all', 'All'], ...CATEGORIES] as [CategoryFilter, string][]).map(([id, label]) => <button key={id} type="button" aria-pressed={category === id} onClick={() => { setCategory(id); setBrand('all'); setUnit('all'); resetList(); }} className={`rounded-md px-3 py-1.5 text-sm font-medium ${category === id ? 'bg-white text-navy shadow-sm' : 'text-gray-600 hover:text-navy'}`}>{label}</button>)}</div>
@@ -142,7 +144,7 @@ export function StockPage() {
         detail: `${FINISHED_CATEGORY_LABEL[product.category]} · ${product.subgroup} · Source row ${product.sourceRow}` }))}
       onClose={() => setDirection(null)} onSave={entry => {
         const product = FINISHED_BY_ID.get(entry.materialId)!;
-        addFinishedMovement({ productId: product.id, date: entry.date, type: direction, quantity: entry.quantity, unit: product.unit, reference: entry.reference, remarks: entry.remarks, customer: entry.customer });
+        addFinishedMovement({ productId: product.id, date: entry.date, type: direction, quantity: entry.quantity, unit: product.unit, reference: entry.reference, remarks: entry.remarks, movementPurpose: direction==='OUT'?entry.movementPurpose:'receipt', customer: entry.customer });
         if (direction === 'IN' && entry.pieces !== undefined) updateFinishedPieces(product.id, entry.pieces);
         setNotice(`Stock ${direction} recorded: ${fmt(entry.quantity)} ${product.unit} · ${finishedGoodLabel(product)}.`);
       }} />}

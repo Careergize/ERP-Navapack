@@ -1,3 +1,4 @@
+import { SalesSummary } from '@/components/SalesSummary';
 import { useInventory } from '@/context/InventoryContext';
 import { useJobCards } from '@/context/JobCardsContext';
 import { orderFulfillmentStatus } from '@/lib/fulfillment';
@@ -224,6 +225,7 @@ export function SalesOrderList() {
         </div>
       )}
 
+      <SalesSummary/>
       {/* Summary */}
       <section aria-label="Order summary" className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <Stat label="Total orders" value={stats.total} hint="All time" />

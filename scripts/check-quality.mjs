@@ -20,6 +20,7 @@ try {
   }
   for (const template of QC_TEMPLATES) {
     const subject = { kind: template.category, label: 'Exact source', receiptId: 'receipt', materialId: 'material', quantity: 100, unit: 'kg', batchNumber: 'LOT-1', batchId: 'batch-1', jobCardId: 'parent', manufacturingItemId: 'work-1', stageId: 'stage-1', machineId: 'machine-1', machineType: template.applicable, areaId: 'area-1' };
+    if (!template.active) { assert.equal(template.id, 'ksec'); assert.throws(() => q.createInspection(template, subject, inspector, '2026-10-13', 'Quality')); continue; }
     const inputTemplate = structuredClone(template);
     const i = filled(inputTemplate, subject, template.category === 'production' ? 8 : 1);
     assert.equal(q.inspectionResult(i), 'Pass');

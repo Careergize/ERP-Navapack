@@ -216,3 +216,13 @@ Passed commands: standalone TypeScript check, production build, `scripts/check-q
 - `src/pages/SalesOrders/SalesOrderDetail.tsx`
 - `src/types/index.ts`
 
+
+## Receptionist/customer review and email enhancement — 15 October 2026
+
+Generate Quotation is source-idempotent across customer/prospect/costing/workflow actions and ordinary revisions. Explicit duplicate/create remains intentional new work. Copying order-origin costing creates a new quotation-origin draft requiring existing approval/price import; no approval is cloned. Reviewer rejection and customer Revision Requested are distinct; request changes returns a pending offer to Draft, Edit and Resubmit repeats review, and View Changes compares prior commercial projection. Original accepted/converted snapshots remain.
+
+Email interface saves recipient/CC/subject/message/exact document revision/manual PDF instructions with draft history; optional mailto only prepares the user's email app. Drafts do not change Sent/acceptance/delivery and are excluded from customer projection. No email provider/public link/customer portal was added. Backend needs expiring revocable revision-scoped safe links/access logs and authorized email templates/PDF/provider/outbox/status/retry integration. The canonical new integrity/role/source behavior is in [the integrated report](sales-fulfillment.md#quotation-generation-reviews-customer-preview-and-email).
+
+## Client-confirmed LED MAX follow-up
+
+Applicable quotation lines now carry the shared higher-of-2.5%-or-USD70/tonne calculation snapshot, eligible KG/product-model conversion and saved FX/date. The percentage base is still pending clarification/configurable. Custom lines import approved costing LED; stock lines explicitly apply shared LED inputs. Missing/stale weight/FX/base blocks save/approval with warnings. Base unit prices preserve VAT basis and exclude separately added LED; VAT on LED follows its own flag and is applied once. Internal views show both calculations/selected branch. Public preview includes selected charge/method without confidential cost/base/FX/source IDs. Acceptance/conversion preserves exact history; partial invoices apportion frozen original LED. [Canonical confirmed rule and boundaries](sales-fulfillment.md#client-confirmed-led-max-and-finance-demo--15-october-2026).

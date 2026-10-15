@@ -1,3 +1,4 @@
+import { demoEnabled } from '@/lib/demoAuth';
 import { createContext, useContext, useState, ReactNode } from "react";
 import { loginRequest } from "@/lib/api";
 import type { Role, User } from "@/types";
@@ -5,7 +6,7 @@ import type { Role, User } from "@/types";
 interface AuthContextValue {
   user: User | null;
   loading: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string, finance?:boolean) => Promise<void>;
   loginAsDemo: (role: Role) => void;
   logout: () => void;
 }
@@ -28,10 +29,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(false);
 
-  async function login(email: string, password: string) {
+  async function login(email: string, password: string, finance=false) {
     setLoading(true);
     try {
       const data = await loginRequest({ username: email, password });
+      if(finance&&data.user?.role!=='accounts')throw new Error('credentials');
       localStorage.setItem("navapack_access", data.access);
       localStorage.setItem("navapack_refresh", data.refresh);
       setUser({
@@ -45,11 +47,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  // Dev-only: signs in locally with a fake user, no backend call.
-  // Lets you demo the UI before the Django API exists. Not shipped in
-  // production builds — guarded by import.meta.env.DEV.
+  // Local demo identity, no backend call. Development defaults enabled unless
+  // explicitly disabled; production requires explicit VITE_ENABLE_MOCK_LOGIN=true.
   function loginAsDemo(role: Role) {
-    setUser({ id: `demo-${role}`, name: DEMO_NAMES[role], role, department: "Extrusion" });
+    if(!demoEnabled(import.meta.env.DEV,import.meta.env.VITE_ENABLE_MOCK_LOGIN))throw new Error('Demo login is disabled.');
+    localStorage.removeItem('navapack_access');localStorage.removeItem('navapack_refresh');localStorage.removeItem('navapack_token');
+    setUser({ id: `demo-${role}`, name: DEMO_NAMES[role], role, department: role==='accounts'?'Finance':'Extrusion' });
   }
 
   function logout() {

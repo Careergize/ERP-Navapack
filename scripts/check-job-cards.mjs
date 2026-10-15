@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { createServer } from 'vite';
 import { fileURLToPath } from 'node:url';
 
-const server = await createServer({ configFile: false, resolve: { alias: { '@': fileURLToPath(new URL('../src', import.meta.url)) } }, optimizeDeps: { noDiscovery: true }, server: { middlewareMode: true }, appType: 'custom' });
+const server = await createServer({ configFile: false, resolve: { alias: { '@': fileURLToPath(new URL('../src', import.meta.url)) } }, optimizeDeps: { noDiscovery: true }, server: { middlewareMode: true, hmr: false }, appType: 'custom' });
 try {
   const helpers = await server.ssrLoadModule('/src/lib/jobCards.ts');
   const { MOCK_JOB_CARDS } = await server.ssrLoadModule('/src/lib/mockData.ts');

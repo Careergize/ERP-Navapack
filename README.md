@@ -23,7 +23,7 @@ React 18, TypeScript, Vite, React Router, Tailwind CSS, Axios and Lucide icons. 
 
 ## Development
 
-Run commands from this directory (`navapack-frontend`). Requires Node >=20.19 and npm >=10, as declared in package.json.
+Run commands from this directory (`frontend`). Requires Node >=20.19 and npm >=10, as declared in package.json.
 
 ```powershell
 npm ci
@@ -53,3 +53,7 @@ Quality Control routes, provisional source templates, frontend limits and propos
 Quotations, quotation-origin costing, tax/revision/conversion rules and proposed sales backend contracts are in [quotations.md](docs/quotations.md). Run `node scripts/check-quotations.mjs` for focused checks. The two referenced client documents remain outstanding; new commercial state resets on refresh.
 
 Agent guidance is in [AGENTS.md](AGENTS.md).
+
+Integrated stock/financial/trace/sales/quotation/QC behavior and limitations are in the existing [workflow report](docs/sales-fulfillment.md#integrated-operations-update--15-october-2026). Run `node scripts/check-integrated-operations.mjs` alongside existing regressions. No backend/public customer portal/email delivery/background scheduler is implemented.
+
+Finance demo: run `npm run dev`, open `/finance/login`, and use `finance@navapack.com` / `test@123` when mock login is enabled. This opens the existing Accounts Finance Dashboard; operations login also offers Accounts / Finance. Development defaults to mock unless explicitly disabled; production demo requires `VITE_ENABLE_MOCK_LOGIN=true` at build time. No session restoration or backend account is created. Run `node scripts/check-led-finance.mjs` for confirmed LED MAX/snapshot/VAT and demo-auth regressions. [Rule, pending percentage base and demo boundaries](docs/sales-fulfillment.md#client-confirmed-led-max-and-finance-demo--15-october-2026).

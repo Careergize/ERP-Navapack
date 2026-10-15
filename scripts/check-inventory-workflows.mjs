@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { createServer } from 'vite';
 
-const server = await createServer({ configFile: false, optimizeDeps: { noDiscovery: true }, server: { middlewareMode: true }, appType: 'custom' });
+const server = await createServer({ configFile: false, optimizeDeps: { noDiscovery: true }, server: { middlewareMode: true, hmr: false }, appType: 'custom' });
 try {
   const { RAW_MATERIALS, RAW_MOVEMENTS, rawMaterialBalance } = await server.ssrLoadModule('/src/lib/rawMaterialData.ts');
   const known = RAW_MATERIALS.find(item => item.openingStock !== null);

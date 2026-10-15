@@ -245,3 +245,7 @@ Validation commands: `node ./node_modules/typescript/bin/tsc --noEmit`, `npm run
 - `src/types/index.ts`
 
 Changes are scoped to QC, existing role/navigation/source integration, the focused regression script and relevant documentation. Dependencies, backend code/endpoints, schemas and existing sample/reference ledgers are unchanged.
+
+## Daily inspections / scheduling enhancement — 15 October 2026
+
+Template frequency now includes daily/per-shift/monthly/on-demand while retaining per-receipt/per-batch/weekly/per-activity. Existing weekly templates remain weekly. KSEC is an inactive configurable placeholder, not an invented acronym/checklist. QC Supervisor/Admin configures exact-subject schedules from an existing inspection/latest active template; explicit date generation deduplicates schedule/date/shift, supports pause/resume and assigns a stable QC user ID. Raw/production physical lots cannot recur as daily subjects. Daily dashboard counts and existing form/review/NC/release/hold behavior reuse QualityContext. Submission/review/generation never posts stock. Full field/recurrence/calendar/assignment/backend limits and transactions are in [the integrated report](sales-fulfillment.md#qc-daily-inspections-and-configurable-schedules); no background scheduler/service exists.

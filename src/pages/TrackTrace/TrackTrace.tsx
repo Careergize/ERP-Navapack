@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/Card";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import type { TraceResult } from "@/types";
 
-export function TrackTrace() {
+export function LegacyTrace() {
   const [query, setQuery] = useState("");
   const [result, setResult] = useState<TraceResult | null>(null);
   const [error, setError] = useState("");

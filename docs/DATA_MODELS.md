@@ -33,7 +33,7 @@ Unknown reference opening or a month before openingDate returns null opening/cur
 
 There is no named SalesOrderDemand interface. A derived row extends an open SalesOrderItem with product, available, required, status, orderNumber and customer.
 Product links by variant ID, with unique legacy-name/unit fallback. available is null if unlinked, mismatched or unrecorded.
-required = max(0, quantity - max(0, available)) when available is known. Rows independently compare physical stock; no reservation ledger exists.
+required = max(0, quantity - max(0, available)) when available is known. Rows independently compare physical stock; demand creation itself neither reserves nor posts OUT. Optional allocations and direct confirmed dispatch share InventoryContext.
 
 ## Production and trace (src/types/index.ts)
 
@@ -97,3 +97,17 @@ JobProductionStage adds optional `qcTemplateIds` and `machineId`, preserved in a
 CostingInput adds optional quotationId with logical quotation-line itemId and no fabricated order ID; CostEstimate adds salesOrderReferences for immutable source adoption. `estimateMatchesOrder` resolves original/adopted order-line sources. SalesOrder/Draft add quotation family/revision IDs/number, prospect/contact/terms and commercialPricing (taxMode/discount/rounding); items preserve quotationLineId and original quotationCostEstimateId/revision. Invoices add taxMode, allocated quotationDiscount and explicit roundingAdjustment for final billed reconciliation. Public projection excludes internal costing inputs/source actor IDs.
 
 Future Django sales entities, relationships/constraints/precision/status/permissions/audit and proposed DRF contracts are defined once in [quotations.md](quotations.md); no schema was implemented.
+
+## Integrated operations — 15 October 2026
+
+InventoryContext adds append-only ProductConversion (product/model/unit, KG-per-CTR, pieces, effective date/version), StockThreshold (ordered levels, exact unit, observation window, optional lead/consumption/replenishment settings). New FinishedGoodsMovement saves QuantitySnapshot original quantity/unit, nullable KG and exact rule/version/product/model, plus explicit movementPurpose. Old movements remain unchanged. Direct confirmed dispatch reuses closed allocation provenance with zero reservation.
+
+CostingContext adds StockPriceSnapshot: batch/product/model/date/quantity/unit/UGX amount; immutable PricePolicy VAT/LED/base/FX/profit settings; QuantitySnapshot; computed breakdown; optional evidenced actual COP; revision/author/time. No cost estimate or commercial order snapshot is rewritten. JobCard adds append-only productionRuns with stage ID, execution quantities/approved units/times/operator/remarks and completesStage; existing stage aggregates/handover remain authoritative.
+
+Quotation adds generationKey, session emailDrafts and distinct Internally Rejected/Revision Requested states. Generate source key survives ordinary revisions; deliberate duplicates start a new family. Email drafts retain exact number/revision/recipient/CC/subject/message/manual attachment note, author/time and Draft — not sent status, never public projection. QC template frequencies extend without changing existing seeds; QCSchedule references exact subject/latest template/configured frequency/date range/assignment/shift/active state/creator/time. QCInspection.scheduleKey deduplicates occurrences. KSEC starts inactive pending defined checks/category.
+
+Canonical formulas, field semantics, ownership, role checks, server capabilities and transaction boundaries are in [the integrated report](sales-fulfillment.md#integrated-operations-update--15-october-2026). These are frontend state models, not migrations.
+
+## Confirmed LED / finance follow-up
+
+Optional CostingInput.led and QuotationLine.led capture applicability, provisional percentage base, eligible KG, conversion, FX/date and VAT-on-LED. CostingTotals.led, QuotationLine.ledSnapshot and SalesOrderItem.ledSnapshot retain LEDSnapshot (confirmed higher method/rates, base value/choice, KG, both comparison amounts, selected raw/rounded amount/branch, FX/date, conversion identity/version, VAT flag). CommercialTotals optionally adds led/ledTax; accepted order totals include them. Invoice retains apportioned per-line snapshots/LED total and final reconciliation. Existing historical records without LED fields retain prior behavior; no migration/backend model was added. Finance uses the existing accounts Role/User; no parallel user entity.

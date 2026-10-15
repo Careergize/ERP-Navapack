@@ -1,9 +1,14 @@
+import { generateScheduled, validateSchedule, type QCSchedule } from '@/lib/qualitySchedule';
 import { createContext, useContext, useRef, useState, type ReactNode } from 'react';
 import { useAuth } from './AuthContext';
 import { QC_TEMPLATES, CLEANING_AREAS } from '@/lib/qualityTemplates';
 import { createInspection, saveInspection, submitInspection, reviewInspection, reinspect, releaseInspection, createNonConformance, updateNonConformance, validateTemplate, type QCState, type QCTemplate, type QCInspection, type QCSubject, type QCApproval, type QCRelease, type QCNonConformance } from '@/lib/quality';
 
 interface QualityValue extends QCState {
+  schedules: QCSchedule[];
+  addSchedule: (sourceId:string,startDate:string,endDate:string|undefined,shift:string|undefined,assignedTo:string)=>void;
+  toggleSchedule: (id:string)=>void;
+  generateSchedule: (id:string,date:string)=>void;
   templates: QCTemplate[];
   areas: { id: string; name: string }[];
   getState: () => QCState;
@@ -22,6 +27,7 @@ interface QualityValue extends QCState {
 const Context = createContext<QualityValue | undefined>(undefined);
 export function QualityProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
+  const [schedules,setSchedules]=useState<QCSchedule[]>([]); const scheduleRef=useRef(schedules);
   const [state, setState] = useState<QCState>({ inspections: [], releases: [], nonConformances: [] });
   const current = useRef(state);
   const [templates, setTemplates] = useState(QC_TEMPLATES); const templateRef = useRef(templates);
@@ -30,7 +36,11 @@ export function QualityProvider({ children }: { children: ReactNode }) {
   const publish = (next: QCState) => { current.current = next; setState(next); };
   const get = (id: string) => { const i = current.current.inspections.find(i => i.id === id); if (!i) throw new Error('Inspection not found.'); return i; };
   const replace = (i: QCInspection) => publish({ ...current.current, inspections: current.current.inspections.map(row => row.id === i.id ? i : row) });
-  return <Context.Provider value={{ ...state, templates, areas, getState: () => current.current,
+  return <Context.Provider value={{ schedules,
+    addSchedule:(sourceId,startDate,endDate,shift,assignedTo)=>{const u=actor();if(!['admin','qc_supervisor'].includes(u.role))throw new Error('QC Supervisor/Admin configures schedules.');const i=get(sourceId),t=templateRef.current.filter(t=>t.id===i.template.id).sort((a,b)=>b.revision-a.revision)[0];const s:QCSchedule={id:crypto.randomUUID(),templateId:t.id,subject:structuredClone(i.subject),frequency:t.frequency,startDate,endDate,shift,assignedTo,department:i.department,active:true,createdBy:u.id,createdAt:new Date().toISOString()};validateSchedule(s,t);if(scheduleRef.current.some(n=>n.active&&n.templateId===s.templateId&&JSON.stringify(n.subject)===JSON.stringify(s.subject)&&n.startDate===s.startDate&&n.shift===s.shift))throw new Error('An active matching schedule already exists.');scheduleRef.current=[...scheduleRef.current,s];setSchedules(scheduleRef.current);},
+    toggleSchedule:id=>{if(!['admin','qc_supervisor'].includes(actor().role))throw new Error('QC Supervisor/Admin manages schedules.');scheduleRef.current=scheduleRef.current.map(s=>s.id===id?{...s,active:!s.active}:s);setSchedules(scheduleRef.current);},
+    generateSchedule:(id,date)=>{const u=actor();if(!['admin','qc_supervisor'].includes(u.role))throw new Error('QC Supervisor/Admin generates schedules.');const s=scheduleRef.current.find(s=>s.id===id);if(!s)throw new Error('Schedule not found.');const t=templateRef.current.filter(t=>t.id===s.templateId).sort((a,b)=>b.revision-a.revision)[0];const i=generateScheduled(s,t,date,current.current.inspections,u);if(i)publish({...current.current,inspections:[...current.current.inspections,i]});},
+    ...state, templates, areas, getState: () => current.current,
     create: (template, subject, date, department, samples) => { const selected = templateRef.current.find(t => t.id === template.id && t.revision === template.revision); if (!selected || templateRef.current.some(t => t.id === template.id && t.revision > template.revision)) throw new Error('Select the latest template revision.'); const i = createInspection(selected, subject, actor(), date, department, samples); publish({ ...current.current, inspections: [...current.current.inspections, i] }); return i; },
     save: (id, draft) => replace(saveInspection(get(id), draft, actor())),
     submit: id => replace(submitInspection(get(id), actor())),
