@@ -32,6 +32,7 @@ import { ConsumablesPage } from "@/pages/Consumables/ConsumablesPage";
 import { RecyclingPage } from "@/pages/Recycling/RecyclingPage";
 import { CostingPage } from "@/pages/Costing/CostingPage";
 import { MastersPage } from "@/pages/Masters/MastersPage";
+import { FinanceDashboard } from "@/pages/FinanceDashboard";
 
 function RequireAuth({ children }: { children: JSX.Element }) {
   const { user } = useAuth();
@@ -42,6 +43,7 @@ function RequireAuth({ children }: { children: JSX.Element }) {
 }
 
 function AppRoutes() {
+  const { user } = useAuth();
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
@@ -53,7 +55,7 @@ function AppRoutes() {
           </RequireAuth>
         }
       >
-        <Route path="/" element={<RoleDashboard operations={<Dashboard />} />} />
+        <Route path="/" element={user?.role === "accounts" ? <FinanceDashboard /> : <RoleDashboard operations={<Dashboard />} />} />
         <Route path="/qc" element={<QualityGuard><QualityPage /></QualityGuard>} />
         <Route path="/qc/inspections/:id" element={<QualityGuard><InspectionDetail /></QualityGuard>} />
         <Route path="/qc/:section" element={<QualityGuard><QualityPage /></QualityGuard>} />

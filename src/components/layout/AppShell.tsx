@@ -39,9 +39,22 @@ const NAV_ITEMS: NavItem[] = [
   { to: "/masters", label: "Masters", icon: Settings, roles: ["admin"] },
 ];
 
+const FINANCE_NAV_ITEMS: NavItem[] = [
+  { to: "/consumables", label: "Consumables", icon: Package, roles: ["accounts"] },
+  { to: "/costing", label: "Costing", icon: Calculator, roles: ["accounts"] },
+  { to: "/masters", label: "Masters", icon: Settings, roles: ["accounts"] },
+  { to: "/qc", label: "Quality", icon: ClipboardList, roles: ["accounts"] },
+  { to: "/quotations", label: "Quotations", icon: FileText, roles: ["accounts"] },
+  { to: "/raw-materials", label: "Raw Materials", icon: Package, roles: ["accounts"] },
+  { to: "/recycling", label: "Recycling", icon: Recycle, roles: ["accounts"] },
+  { to: "/sales-orders", label: "Sales Orders", icon: FileText, roles: ["accounts"] },
+  { to: "/stock", label: "Stocks", icon: Boxes, roles: ["accounts"] },
+  { to: "/track-trace", label: "Track & Trace", icon: Search, roles: ["accounts"] },
+];
+
 export function AppShell() {
   const { user, logout } = useAuth();
-  const items: NavItem[] = isQCRole(user?.role) ? [{ to: "/qc", label: "QC Dashboard", icon: LayoutDashboard, roles: QC_VIEW_ROLES }, ...QC_SECTIONS.map(([key, label]) => ({ to: `/qc/${key}`, label, icon: ClipboardList, roles: QC_VIEW_ROLES }))] : NAV_ITEMS.filter((item) => !user || item.roles.includes(user.role));
+  const items: NavItem[] = isQCRole(user?.role) ? [{ to: "/qc", label: "QC Dashboard", icon: LayoutDashboard, roles: QC_VIEW_ROLES }, ...QC_SECTIONS.map(([key, label]) => ({ to: `/qc/${key}`, label, icon: ClipboardList, roles: QC_VIEW_ROLES }))] : user?.role === "accounts" ? FINANCE_NAV_ITEMS : NAV_ITEMS.filter((item) => !user || item.roles.includes(user.role));
 
   return (
     <div className="min-h-screen bg-[radial-gradient(circle_at_72%_0%,#2dbb4c_0%,#16803d_42%,#0b3c2a_100%)] p-3 sm:p-5">
