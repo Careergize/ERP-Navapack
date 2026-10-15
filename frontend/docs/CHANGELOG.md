@@ -1,5 +1,12 @@
 # Changelog
 
+## Monorepo layout — 2026-10-15
+
+- Preserved frontend files/history while moving the Git root to Navapack-ERP and
+  including the separate Django Phase 1 foundation under backend/.
+- Added root setup/ignore guidance and documented the coordinated Vercel Root Directory
+  change to frontend. Frontend functionality and API integration remain unchanged.
+
 ## Confirmed LED MAX / Finance demo — 2026-10-15
 
 - Made client-confirmed Higher of the Two the default for applicable LED; centralized 2.5% versus USD 70/tonne × saved FX with mandatory weight/conversion validation and configurable pending percentage base.

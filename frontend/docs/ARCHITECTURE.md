@@ -2,7 +2,10 @@
 
 ## Actual frontend structure
 
-The application lives in `frontend`, which has its own Git repository and package.json. No backend code is part of this frontend repository; the sibling backend directory was not modified by this task.
+The application lives in `frontend` with its own package.json and build configuration.
+The Git root is the parent Navapack-ERP directory, shared with the separate Django
+Phase 1 foundation in backend/. Frontend session/demo behavior and API consumers are
+unchanged by the monorepo move. See [repository and deployment boundaries](../../docs/MONOREPO_MIGRATION.md).
 
 src/main.tsx mounts React StrictMode and BrowserRouter. src/App.tsx composes AuthProvider → SalesOrdersProvider → ModelsProvider → CommercialProvider → QualityProvider → InventoryProvider → CostingProvider → QuotationsProvider → ConsumablesProvider → JobCardsProvider → InvoicesProvider. RequireAuth checks the in-memory user; AppShell hosts nested routes and role-filtered navigation. Navigation visibility is not server authorization.
 

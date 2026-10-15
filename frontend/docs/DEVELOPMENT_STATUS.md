@@ -1,5 +1,15 @@
 # Development Status
 
+## Monorepo layout — 15 October 2026
+
+The parent Navapack-ERP directory is the shared Git root for frontend/ and backend/.
+Frontend source and demo behavior are preserved. Continue running npm commands from
+frontend/. The Django Phase 1 foundation is tracked independently in backend/;
+its existence does not establish frontend API integration or domain persistence.
+Vercel Root Directory must become frontend when the migration reaches the deployed
+branch. See [migration and deployment](../../docs/MONOREPO_MIGRATION.md); remote
+deployment settings are unchanged by this local migration.
+
 ## Client-confirmed LED MAX / Finance demo follow-up — 15 October 2026
 
 Higher of the Two is now the default for new applicable LED records: MAX(2.5% × chosen base, eligible KG/1,000 × USD 70 × saved FX). Percentage base is still pending clarification/configurable; applicability and VAT-on-LED stay explicit. Shared led.ts is connected to stock reverse-price analysis, recipe costing, stock/custom quotations, direct/converted Sales Orders, dispatch-value metrics and partial invoices. Both alternatives/selected branch/FX/date/conversion remain immutable snapshots. Missing weight/conversion/FX/base/date blocks finalization rather than percentage fallback. Base VAT-inclusive/exclusive logic remains, with LED and optional VAT on LED added once. Historical records are preserved.

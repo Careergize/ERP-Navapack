@@ -1,6 +1,41 @@
-node_modules/
-dist/
-*.tsbuildinfo
-.vercel/
+# Environment and credentials; examples remain tracked.
 .env
-.env.local
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Application dependencies, builds and caches.
+node_modules/
+.venv/
+venv/
+dist/
+build/
+*.tsbuildinfo
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.vercel/
+staticfiles/
+test-results/
+
+# Local PostgreSQL clusters, exports and verification artifacts.
+.local/
+pgdata/
+postgres-data/
+*.dump
+*.backup
+*.log
+
+# Local history backup and unused pre-monorepo root npm lockfile.
+/.migration-backup/
+/package-lock.json
+
+# OS metadata.
+.DS_Store
+Thumbs.db
