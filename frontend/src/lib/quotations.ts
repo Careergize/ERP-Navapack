@@ -54,11 +54,7 @@ export function validateQuotationSources(q: Quotation, estimates: CostEstimate[]
     const e = estimates.find(e => e.id === line.estimateId);
     const approvedPrice = e ? quotedCostPrice(e, q) : undefined;
     const latest = Math.max(...versions.filter(m => m.id === line.modelId).map(m => m.revision ?? 1));
-<<<<<<< HEAD:src/lib/quotations.ts
-    if (!e || e.revision !== line.estimateRevision || !matchesQuotationCost(e, q, line) || latest !== line.modelRevision || (!line.manualPriceOverride && Math.abs((approvedPrice ?? 0) - line.unitPrice) > 1e-9)) throw new Error('Custom model/costing/quantity/price changed or is not approved. Revise/review this quotation and explicitly apply the approved price.');
-=======
-    if (!e || e.revision !== line.estimateRevision || !matchesQuotationCost(e, q, line) || latest !== line.modelRevision || Math.abs(quotedCostPrice(e, q) - line.unitPrice) > 1e-9 || JSON.stringify(e.totals.led)!==JSON.stringify(line.ledSnapshot)) throw new Error('Custom model/costing/quantity/price changed or is not approved. Revise/review this quotation and explicitly apply the approved price.');
->>>>>>> 34ecef126e16762b3c91dbf7bdf790e011046938:frontend/src/lib/quotations.ts
+    if (!e || e.revision !== line.estimateRevision || !matchesQuotationCost(e, q, line) || latest !== line.modelRevision || (!line.manualPriceOverride && Math.abs((approvedPrice ?? 0) - line.unitPrice) > 1e-9) || (e.totals.led !== undefined && JSON.stringify(e.totals.led) !== JSON.stringify(line.ledSnapshot))) throw new Error('Custom model/costing/quantity/price changed or is not approved. Revise/review this quotation and explicitly apply the approved price.');
   });
 }
 export function submitQuotation(q: Quotation, estimates: CostEstimate[], models: Model[], user: User, date = today()): Quotation {
@@ -87,11 +83,7 @@ export function publicQuotation(q: Quotation) {
   return { number: q.number, revision: q.revision, documentType: q.documentType, date: q.date, validityDays: q.validityDays, validUntil: q.validUntil, deliveryDays: q.deliveryDays, currency: q.currency, taxRate: q.taxRate, taxMode: q.taxMode, status: effectiveQuotationStatus(q), salesRepresentative: q.salesRepresentative,
     company: { tradingName: q.company.tradingName, legalName: q.company.legalName, logo: q.company.logo, address: q.company.address, telephone: q.company.telephone, email: q.company.email, tin: q.company.tin, signatory: q.company.signatory, banks: structuredClone(q.company.banks) },
     customer: { name: q.customer.name, billingAddress: q.customer.billingAddress, deliveryAddress: q.customer.deliveryAddress, contactPerson: q.customer.contactPerson, telephone: q.customer.telephone, email: q.customer.email, customerType: q.customer.customerType, tin: q.customer.tin },
-<<<<<<< HEAD:src/lib/quotations.ts
-    lines: q.lines.map(l => ({ description: l.description, group: l.group, specifications: l.specifications, quantity: l.quantity, unit: l.unit, ...(l.unitId ? { unit_id: l.unitId } : {}), unitPrice: l.unitPrice })), terms: structuredClone(q.terms), totals: structuredClone(q.approval?.totals ?? quotationTotals(q)) };
-=======
-    lines: q.lines.map(l => ({ description: l.description, group: l.group, specifications: l.specifications, quantity: l.quantity, unit: l.unit, unitPrice: l.unitPrice, led: l.ledSnapshot ? {method:l.ledSnapshot.method,selectedAmount:l.ledSnapshot.selectedAmount,vatOnLED:l.ledSnapshot.vatOnLED} : undefined })), terms: structuredClone(q.terms), totals: structuredClone(q.approval?.totals ?? quotationTotals(q)) };
->>>>>>> 34ecef126e16762b3c91dbf7bdf790e011046938:frontend/src/lib/quotations.ts
+    lines: q.lines.map(l => ({ description: l.description, group: l.group, specifications: l.specifications, quantity: l.quantity, unit: l.unit, ...(l.unitId ? { unit_id: l.unitId } : {}), unitPrice: l.unitPrice, led: l.ledSnapshot ? { method: l.ledSnapshot.method, selectedAmount: l.ledSnapshot.selectedAmount, vatOnLED: l.ledSnapshot.vatOnLED } : undefined })), terms: structuredClone(q.terms), totals: structuredClone(q.approval?.totals ?? quotationTotals(q)) };
 }
 export function reviseQuotation(q: Quotation, all: Quotation[], company: CompanySettings, user: User, duplicate = false): Quotation {
   if (!QUOTATION_EDIT_ROLES.includes(user.role) || (!duplicate && ['Converted to Sales Order', 'Superseded'].includes(q.status))) throw new Error('Revise the current unconverted quotation, or duplicate into a new offer.');

@@ -1,6 +1,5 @@
 # Changelog
 
-<<<<<<< HEAD:docs/CHANGELOG.md
 ## Persistent quotation drafts — 16 October 2026
 
 Connected quotation Save Draft, edit and list reload to Django database storage. Added QuotationDraft model/admin/API, source-preserving editor serialization, optimistic edit checks, submitted-draft freeze and server decision restoration. Replaced session-only save success wording for real users with confirmed database-save messages.
@@ -40,7 +39,6 @@ Fixed the redirect to login caused by memory-only user state. Added startup prof
 
 Added native reference-style A4 PDF, public snapshot persistence and structured sales-order extraction in the sibling Django backend. Quotation detail now offers PDF / Email / WhatsApp with independent checkboxes and editable +916282744675 recipient. Server PDF approval, SMTP attachment, Meta document-template submission and durable per-channel attempt results prevent false success and duplicate replay. Updated contact field types and photo-derived company/bank defaults. Live provider configuration remains required; existing frontend commercial records remain session-only.
 
-=======
 ## Monorepo layout — 2026-10-15
 
 - Preserved frontend files/history while moving the Git root to Navapack-ERP and
@@ -62,7 +60,6 @@ Added native reference-style A4 PDF, public snapshot persistence and structured 
 - Replaced static operational dashboard aggregates with six current-state sections; added shared sales summary, connected ID-based trace navigation, stage timelines and multiple execution runs.
 - Added source-idempotent quotation generation, reviewer rejection/change comparison and customer-safe email drafts/mailto without delivery claims.
 - Added configurable QC frequencies, explicit idempotent schedules/daily counts and inactive KSEC placeholder. Updated report/backend requirements and integrated regression coverage; all state remains session-only.
->>>>>>> 34ecef126e16762b3c91dbf7bdf790e011046938:frontend/docs/CHANGELOG.md
 
 ## Quotations / Proforma Invoice — 2026-10-13
 

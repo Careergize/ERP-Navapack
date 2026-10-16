@@ -1,6 +1,5 @@
 # Development Status
 
-<<<<<<< HEAD:docs/DEVELOPMENT_STATUS.md
 ## Persistent quotation drafts — 16 October 2026
 
 Save Draft now writes owner-scoped QuotationDraft records through /api/quotation-drafts/ and awaits a confirmed database response before reporting success. Real sessions load all saved drafts after login/refresh; edit/detail routes wait for loading. Editor metadata retains product/model/costing references, unit identity, prices, contacts and terms. Server snapshot review state reconstructs pending/approved/rejected/sent status. Repeated edits use row versions, conflicts return 409, and submitted snapshot IDs are frozen. Demo drafts remain session-only. Full costing/model/master persistence and commercial customer-response/order-conversion lifecycle remain separate.
@@ -40,7 +39,6 @@ Authentication now restores saved backend identity before protected routes redir
 
 The detail screen now has PDF / Email / WhatsApp controls with independent opt-in checkboxes, customer email and editable +916282744675 WhatsApp recipient. The sibling `../Backend` Django service persists immutable public PDF snapshots, computes decimal totals, extracts persisted order/customer/line details, requires server PDF approval and records per-channel delivery results. SMTP and Meta WhatsApp Business template credentials must be configured; no real transmission was tested. Existing quotation editing, commercial lifecycle and conversion remain session-only. Native A4 reference PDF was rendered and inspected; full browser interaction is not verified. See `../Backend/quotations/README.md`.
 
-=======
 ## Monorepo layout — 15 October 2026
 
 The parent Navapack-ERP directory is the shared Git root for frontend/ and backend/.
@@ -72,7 +70,6 @@ Validation: all eight scripts passed (`check-integrated-operations`, `check-quot
 Browser smoke on the local Admin demo verified six-section dashboard rendering, saved product `ctn` conversion, saved financial snapshot and Trace navigation showing matching KG/estimated COP, repeated Generate Quotation returning QT-1, and a QC source/schedule with duplicate generation retaining the same count. No email was sent, public portal accessed or production stock posted. This is targeted smoke coverage, not all-role/end-to-end or print-layout verification. Initial localhost attempt timed out before Vite was ready; retry succeeded. A dashboard screenshot was saved outside source in the chat visualization directory.
 
 Canonical formulas, roles, changed-file inventory, backend ownership/capabilities/atomicity and unresolved business rules are in [the existing report](sales-fulfillment.md#integrated-operations-update--15-october-2026). All new state resets on refresh. Actual total costs need manual evidence; material-batch consumption/process expenses are not invented. Backend persistence/server permissions/locks, email PDF/provider/outbox/delivery, secure customer links and background recurrence remain future work. LED percentage base/applicability/VAT treatment (MAX comparison is now confirmed), conversion weights, thresholds, KSEC/shift/calendar rules and missing reference documents/photos require confirmation. No dependencies/backend files or automatic commit.
->>>>>>> 34ecef126e16762b3c91dbf7bdf790e011046938:frontend/docs/DEVELOPMENT_STATUS.md
 
 ## Quotations and Proforma Invoice module — 13 October 2026
 
