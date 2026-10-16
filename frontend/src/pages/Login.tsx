@@ -9,27 +9,11 @@ import { BrandPanel } from "@/components/login/BrandPanel";
 import { Button } from "@/components/login/Button";
 import { TextField } from "@/components/login/TextField";
 
-<<<<<<< HEAD:src/pages/Login.tsx
-// Real Django login is the default; demo login requires explicit opt-in.
-const MOCK_USERNAMES = ["admin@navapack.com", "admin@navpack.com"];
-const MOCK_PASSWORD = "test@123";
-
-export function Login() {
+export function Login({ finance = false }: { finance?: boolean }) {
   const { user, login, loginAsDemo, loading, sessionError, retrySession } = useAuth();
   const navigate = useNavigate();
   const usernameRef = useRef<HTMLInputElement>(null);
-  const [demoRole, setDemoRole] = useState<"project_manager" | "admin" | "qc_inspector" | "qc_supervisor" | "production_manager" | "store_keeper">("admin");
-=======
-// Local Vite runs default to mock mode so the UI works before Django is available.
-// Set VITE_ENABLE_MOCK_LOGIN=false to exercise the real backend during development.
-const MOCK_LOGIN_ENABLED = demoEnabled(import.meta.env.DEV,import.meta.env.VITE_ENABLE_MOCK_LOGIN);
-
-export function Login({finance=false}:{finance?:boolean}) {
-  const { login, loginAsDemo, loading } = useAuth();
-  const navigate = useNavigate();
-  const usernameRef = useRef<HTMLInputElement>(null);
-  const [demoRole, setDemoRole] = useState<"admin" | "qc_inspector" | "qc_supervisor" | "production_manager" | "store_keeper" | "accounts">("admin");
->>>>>>> 34ecef126e16762b3c91dbf7bdf790e011046938:frontend/src/pages/Login.tsx
+  const [demoRole, setDemoRole] = useState<"project_manager" | "admin" | "qc_inspector" | "qc_supervisor" | "production_manager" | "store_keeper" | "accounts">("admin");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
@@ -48,15 +32,9 @@ export function Login({finance=false}:{finance?:boolean}) {
     }
     try {
       if (MOCK_LOGIN_ENABLED) {
-<<<<<<< HEAD:src/pages/Login.tsx
-        if (!MOCK_USERNAMES.includes(username.trim().toLowerCase()) || password !== MOCK_PASSWORD) throw new Error("credentials");
-        loginAsDemo(demoRole);
-      } else await login(username.trim(), password, remember);
-=======
-        loginAsDemo(resolveDemoRole(username,password,demoRole,finance));
-      } else await login(username.trim(), password,finance);
+        loginAsDemo(resolveDemoRole(username, password, demoRole, finance));
+      } else await login(username.trim(), password, remember, finance);
       if (remember) localStorage.setItem("navapack_remember", "true");
->>>>>>> 34ecef126e16762b3c91dbf7bdf790e011046938:frontend/src/pages/Login.tsx
       setSuccess(true);
       window.setTimeout(() => navigate("/"), 520);
     } catch (cause) {
