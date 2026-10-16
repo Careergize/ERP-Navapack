@@ -21,14 +21,16 @@ Copy-Item .env.example .env  # Fresh setup only; preserve an existing .env.
 npm run dev
 ```
 
-<<<<<<< HEAD
-Vite uses port 5173. Set `VITE_ENABLE_MOCK_LOGIN=true` in .env for frontend testing; the example sets it to false. Demo credentials are shown on the login screen. Without an explicit value, login uses the real Django backend. Production mock login also becomes enabled if explicitly set to true.
-
-Authentication restores the current backend profile before protected routes render and renews expired access tokens using the saved refresh token. Without Remember me, real tokens stay in this tab’s sessionStorage; with Remember me, they persist in localStorage until logout/expiry. Demo identity survives refresh in the same tab only while mock mode is enabled, and never authenticates backend requests. Run `node scripts/check-auth.mjs` for focused session/refresh checks.
-=======
 Build with `npm run build`; output is frontend/dist. Vite development uses port 5173.
 See [frontend setup and demo boundaries](frontend/README.md).
->>>>>>> 34ecef126e16762b3c91dbf7bdf790e011046938
+
+Set `VITE_ENABLE_MOCK_LOGIN=true` in .env to opt into demo login; without it, login uses
+the real Django backend. Authentication restores the current backend profile before
+protected routes render and renews expired access tokens using the saved refresh token.
+Without Remember me, real tokens stay in this tab’s sessionStorage; with Remember me,
+they persist in localStorage until logout/expiry. Demo identity survives refresh in the
+same tab only while mock mode is enabled and never authenticates backend requests. Run
+`node scripts/check-auth.mjs` for focused session/refresh checks.
 
 ## Backend
 
