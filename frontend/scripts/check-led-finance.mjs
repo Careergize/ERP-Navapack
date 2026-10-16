@@ -4,7 +4,7 @@ import {fileURLToPath} from 'node:url';
 const server=await createServer({configFile:false,resolve:{alias:{'@':fileURLToPath(new URL('../src',import.meta.url))}},optimizeDeps:{noDiscovery:true},server:{middlewareMode:true,hmr:false},appType:'custom'});
 try{
  const led=await server.ssrLoadModule('/src/lib/led.ts'),stock=await server.ssrLoadModule('/src/lib/stockIntelligence.ts'),cost=await server.ssrLoadModule('/src/lib/customCosting.ts'),quote=await server.ssrLoadModule('/src/lib/quotations.ts'),sales=await server.ssrLoadModule('/src/lib/salesOrders.ts'),pricing=await server.ssrLoadModule('/src/lib/commercialPricing.ts'),invoicing=await server.ssrLoadModule('/src/lib/invoices.ts'),auth=await server.ssrLoadModule('/src/lib/demoAuth.ts');
- const date=sales.today(),admin={id:'a',name:'Admin',role:'admin'};
+ const date=sales.today(),admin={id:'a',name:'Admin',role:'admin'},reviewer={id:'pm',name:'Project Manager',role:'project_manager'};
  const calc=(base,kg,fx=100)=>led.calculateLED(base,kg,fx,date,'net-selling',false);
  assert.equal(stock.EXAMPLE_PRICE_POLICY.ledMode,'higher');
  const higherPercent=calc(10000,1),higherWeight=calc(100,1000),equal=calc(280,1,100);
@@ -27,7 +27,7 @@ try{
  const exclusive={...q,taxMode:'exclusive',lines:q.lines.map(l=>({...l,unitPrice:10000}))};assert.equal(quote.quotationTotals(exclusive).total,12095);
  const noVatLED={...q,lines:q.lines.map(l=>({...l,led:{...l.led,vatOnLED:false},ledSnapshot:{...l.ledSnapshot,vatOnLED:false}}))};assert.equal(quote.quotationTotals(noVatLED).tax,1800);assert.equal(quote.quotationTotals(noVatLED).total,12050);
  const frozen=JSON.stringify(q.lines[0].ledSnapshot);input.led.usdToUGX=9999;assert.equal(JSON.stringify(q.lines[0].ledSnapshot),frozen);assert.equal(q.lines[0].ledSnapshot.usdToUGX,100);
- q=quote.submitQuotation(q,[estimate],[model],admin);q=quote.approveQuotation(q,[estimate],[model],admin);q=quote.sendQuotation(q,[estimate],[model],admin);q=quote.recordQuotationResponse(q,{response:'Accepted',date,respondedBy:'Buyer',remarks:'Accepted exact revision',reference:'test'},admin);
+ q=quote.submitQuotation(q,[estimate],[model],admin);q=quote.approveQuotation(q,[estimate],[model],reviewer);q=quote.sendQuotation(q,[estimate],[model],admin);q=quote.recordQuotationResponse(q,{response:'Accepted',date,respondedBy:'Buyer',remarks:'Accepted exact revision',reference:'test'},admin);
  const order=sales.buildSalesOrder(quote.quotationConversionDraft(q,'customer',date,[],[estimate],[model]),[]);assert.equal(order.orderTotal,12095);assert.deepEqual(order.items[0].ledSnapshot,q.lines[0].ledSnapshot);
  const publicView=quote.publicQuotation(q);assert.equal(publicView.lines[0].led.selectedAmount,250);assert.equal(publicView.lines[0].led.baseAmount,undefined);assert.equal(publicView.lines[0].led.usdToUGX,undefined);
  const item=order.items[0],dispatch=(id,quantity)=>({id,number:id,orderId:order.id,itemId:item.id,productId:'p',batch:'B',unit:item.unit,date,challan:'DN',destination:'Buyer',vehicle:'',remarks:'',status:'Confirmed',quantity});
