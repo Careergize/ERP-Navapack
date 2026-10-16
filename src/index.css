@@ -41,6 +41,7 @@ body {
   body:has(.qc-report) .qc-report { width: 100%; }
 }
 
+.quotation-grid th, .quotation-grid td { border: 1px solid black; }
 @page quotation { size: A4 portrait; margin: 14mm; }
 @media print {
   body:has(.quotation-sheet) * { visibility: hidden; }

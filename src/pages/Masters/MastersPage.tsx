@@ -1,3 +1,6 @@
+import { UnitsManager } from './UnitsManager';
+import { UsersManager } from './UsersManager';
+import { useSearchParams } from 'react-router-dom';
 import { useCommercial } from '@/context/CommercialContext';
 import { useModels } from '@/context/ModelsContext';
 import { ModelManager } from './ModelManager';
@@ -6,7 +9,7 @@ import { MasterTable, type MasterColumn } from "@/pages/Masters/MasterTable";
 import { MOCK_DEPARTMENTS, MOCK_ITEMS, MOCK_SUPPLIERS, MOCK_USERS } from "@/lib/mockData";
 import type { Customer, Department, Item, MasterUser, Model, Supplier } from "@/types";
 
-type MasterKey = "items" | "models" | "customers" | "suppliers" | "departments" | "users";
+type MasterKey = "units" | "items" | "models" | "customers" | "suppliers" | "departments" | "users";
 type MasterData = Item | Model | Customer | Supplier | Department | MasterUser;
 
 interface MasterConfig {
@@ -16,6 +19,7 @@ interface MasterConfig {
 }
 
 const CONFIG_COLUMNS: Record<MasterKey, MasterColumn[]> = {
+  units: [],
   items: [
     { key: "name", label: "Name" },
     { key: "unit", label: "Unit" },
@@ -28,8 +32,12 @@ const CONFIG_COLUMNS: Record<MasterKey, MasterColumn[]> = {
   ],
   customers: [
     { key: "name", label: "Name" },
-    { key: "contactPerson", label: "Contact Person" },
-    { key: "phone", label: "Phone" },
+    { key: "contactPerson", label: "Contact Person", required: false },
+    { key: "phone", label: "Phone", required: false },
+    { key: "email", label: "Email", required: false },
+    { key: "billingAddress", label: "Billing Address", required: false },
+    { key: "deliveryAddress", label: "Delivery Address", required: false },
+    { key: "tin", label: "TIN", required: false },
   ],
   suppliers: [
     { key: "name", label: "Name" },
@@ -49,15 +57,17 @@ const CONFIG_COLUMNS: Record<MasterKey, MasterColumn[]> = {
 };
 
 export function MastersPage() {
-  const [selected, setSelected] = useState<MasterKey>("items");
+  const [params] = useSearchParams();
+  const [selected, setSelected] = useState<MasterKey>(params.get("section") === "units" ? "units" : "items");
   const [items, setItems] = useState<Item[]>(MOCK_ITEMS);
   const { models } = useModels();
-  const { customers, saveCustomer } = useCommercial();
+  const { customers, saveCustomer, customersLoading, customersError } = useCommercial();
   const [suppliers, setSuppliers] = useState<Supplier[]>(MOCK_SUPPLIERS);
   const [departments, setDepartments] = useState<Department[]>(MOCK_DEPARTMENTS);
   const [users, setUsers] = useState<MasterUser[]>(MOCK_USERS);
 
   const configs: Record<MasterKey, MasterConfig> = {
+    units: { label: "Units", columns: [], rows: [] },
     items: { label: "Items", columns: CONFIG_COLUMNS.items, rows: items },
     models: { label: "Models", columns: CONFIG_COLUMNS.models, rows: models },
     customers: { label: "Customers", columns: CONFIG_COLUMNS.customers, rows: customers },
@@ -66,19 +76,19 @@ export function MastersPage() {
     users: { label: "Users", columns: CONFIG_COLUMNS.users, rows: users },
   };
 
-  function addRow(row: MasterData) {
+  async function addRow(row: MasterData) {
     if (selected === "items") setItems((current) => [...current, row as Item]);
 
-    if (selected === "customers") saveCustomer(row as Customer);
+    if (selected === "customers") await saveCustomer(row as Customer);
     if (selected === "suppliers") setSuppliers((current) => [...current, row as Supplier]);
     if (selected === "departments") setDepartments((current) => [...current, row as Department]);
     if (selected === "users") setUsers((current) => [...current, row as MasterUser]);
   }
 
-  function editRow(row: MasterData) {
+  async function editRow(row: MasterData) {
     if (selected === "items") setItems((current) => current.map((item) => item.id === row.id ? row as Item : item));
 
-    if (selected === "customers") saveCustomer(row as Customer);
+    if (selected === "customers") await saveCustomer(row as Customer);
     if (selected === "suppliers") setSuppliers((current) => current.map((item) => item.id === row.id ? row as Supplier : item));
     if (selected === "departments") setDepartments((current) => current.map((item) => item.id === row.id ? row as Department : item));
     if (selected === "users") setUsers((current) => current.map((item) => item.id === row.id ? row as MasterUser : item));
@@ -90,6 +100,8 @@ export function MastersPage() {
     <div>
       <h1 className="text-2xl font-semibold text-navy">Masters</h1>
       <p className="mt-1 text-sm text-gray-500">Manage the reference data used across NavaPack operations.</p>
+      {selected === 'customers' && customersLoading && <p role="status">Loading saved customers…</p>}
+      {selected === 'customers' && customersError && <p role="alert" className="text-red-700">{customersError}</p>}
 
       <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-[190px_minmax(0,1fr)]">
         <nav aria-label="Master data types" className="space-y-1">
@@ -100,7 +112,7 @@ export function MastersPage() {
           })}
         </nav>
 
-        {selected === "models" ? <ModelManager /> : <MasterTable
+        {selected === "users" ? <UsersManager /> : selected === "units" ? <UnitsManager /> : selected === "models" ? <ModelManager /> : <MasterTable
           title={config.label}
           columns={config.columns}
           rows={config.rows}

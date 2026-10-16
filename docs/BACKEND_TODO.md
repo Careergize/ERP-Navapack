@@ -1,5 +1,40 @@
 # Backend Integration TODO
 
+## Persistent quotation drafts — 16 October 2026
+
+Implemented durable editable draft storage and read/save endpoints using quotation view/add permissions and owner scoping. Optimistic versions plus row locking prevent stale overwrite; exact save replay is idempotent. Submitted snapshot IDs cannot be edited. Manager approval/delivery still uses immutable Quotation snapshots. Existing historical PDF snapshots without editor metadata are not automatically reconstructed as editable drafts. Full family numbering/lifecycle/conversion services remain pending.
+
+
+## User roles and quotation rejection — 16 October 2026
+
+Implemented accounts.Role (active named code and permission set), User.assigned_role, role permission backend, superuser-only /api/users/ and read-only /api/roles/. Seeded/mapped existing roles. Quotation reject action stores reason/actor/time with terminal snapshot guards; pending/all-submitted filters support the manager review inbox. Full immutable review-event history, quotation-family revision service and persistent editor drafts remain separate follow-ups.
+
+
+## Editable quotation selling price — 16 October 2026
+
+Frontend now supports explicitly entered custom selling prices with approved-source checks. The existing backend snapshot manager reviews final public prices; authoritative backend custom-cost source/override policy remains part of the pending full commercial service.
+
+
+## Quotation units and line totals — 16 October 2026
+
+Implemented erp.Unit and /api/units/ CRUD without deletion, active filtering, unique case-insensitive stable codes and default unit seed migration. Quotation snapshots validate active unit identity and store unit_id/code plus server-computed lineTotal and unitPriceInclVat. Product.unit remains the existing legacy text field; product/stock conversion services and normalized line tables are outside this change.
+
+
+## Quotation manager approval and saved customers — 16 October 2026
+
+Implemented snapshot submit, pending-manager list, manager-role/permission approval, and server-enforced delivery approval. Backend Customer now stores full quotation contact fields with generated codes/idempotent creation; quotations can link to the saved master. Full family revision/supersession, acceptance/conversion backend and production delivery configuration remain pending.
+
+
+## Authentication session integration — 15 October 2026
+
+The frontend now restores GET /auth/me/ identity and uses POST /auth/refresh/ for access expiry against the sibling Django backend. Invalid refresh credentials clear local tokens; outages retain them for retry. Mocked transport checks and browser demo refresh/logout are verified. Production authentication deployment, cross-tab refresh coordination and remote token revocation at frontend logout remain separate follow-up work.
+
+
+## Implemented PDF delivery slice — 15 October 2026
+
+The sibling `../Backend/quotations` app now exposes structured order extraction, public snapshot create/list/detail, native PDF, server PDF approval and selected-channel send endpoints. Email/WhatsApp submissions use configured SMTP/Meta transports with durable attempts and request replay protection. Setup is required before live delivery. This does not complete the proposed six-entity quotation lifecycle, backend custom-cost source checks, conversion or family revision service listed below. See `../Backend/quotations/README.md` for actual contracts.
+
+
 Planned work, not implemented APIs or database design. Check items only after verified integration.
 
 ## Sales Orders

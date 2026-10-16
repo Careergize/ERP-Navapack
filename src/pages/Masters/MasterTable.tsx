@@ -5,14 +5,14 @@ import type { Stage } from "@/types";
 export const ALL_MASTER_STAGES: Stage[] = ["Extrusion", "Printing", "Packaging", "Stock", "Ready to Sale"];
 
 export type MasterRow = { id: string };
-export type MasterColumn = { key: string; label: string; kind?: "text" | "stages" };
+export type MasterColumn = { key: string; label: string; kind?: "text" | "stages"; required?: boolean };
 
 interface MasterTableProps<T extends MasterRow> {
   title: string;
   columns: MasterColumn[];
   rows: T[];
-  onAdd: (row: T) => void;
-  onEdit: (row: T) => void;
+  onAdd: (row: T) => void | Promise<void>;
+  onEdit: (row: T) => void | Promise<void>;
 }
 
 type FormValue = string | Stage[];
@@ -36,6 +36,7 @@ function renderValue(value: unknown, column: MasterColumn) {
 export function MasterTable<T extends MasterRow>({ title, columns, rows, onAdd, onEdit }: MasterTableProps<T>) {
   const [editingRow, setEditingRow] = useState<T | null>(null);
   const [formValues, setFormValues] = useState<Record<string, FormValue>>({});
+  const [saving, setSaving] = useState(false), [error, setError] = useState('');
 
   useEffect(() => {
     if (!editingRow) return;
@@ -49,7 +50,7 @@ export function MasterTable<T extends MasterRow>({ title, columns, rows, onAdd, 
   }, [columns, editingRow]);
 
   function openAdd() {
-    const blank: MasterRow = { id: `master-${Date.now()}` };
+    const blank: MasterRow = { id: `master-${crypto.randomUUID()}` };
     const blankValues = blank as Record<string, unknown>;
     columns.forEach((column) => { blankValues[column.key] = column.kind === "stages" ? [] : ""; });
     setEditingRow(blank as T);
@@ -58,6 +59,7 @@ export function MasterTable<T extends MasterRow>({ title, columns, rows, onAdd, 
   function closeModal() {
     setEditingRow(null);
     setFormValues({});
+    setError('');
   }
 
   function toggleStage(stage: Stage) {
@@ -65,13 +67,17 @@ export function MasterTable<T extends MasterRow>({ title, columns, rows, onAdd, 
     setFormValues({ ...formValues, stages: selected.includes(stage) ? selected.filter((item) => item !== stage) : [...selected, stage] });
   }
 
-  function handleSubmit(event: FormEvent) {
+  async function handleSubmit(event: FormEvent) {
     event.preventDefault();
-    if (!editingRow) return;
+    if (!editingRow || saving) return;
     const saved = { ...editingRow, ...formValues } as T;
-    if (rows.some((row) => row.id === editingRow.id)) onEdit(saved);
-    else onAdd(saved);
-    closeModal();
+    setSaving(true); setError('');
+    try {
+      if (rows.some((row) => row.id === editingRow.id)) await onEdit(saved);
+      else await onAdd(saved);
+      closeModal();
+    } catch(e) { setError(e instanceof Error ? e.message : 'Unable to save.'); }
+    finally { setSaving(false); }
   }
 
   return (
@@ -110,7 +116,7 @@ export function MasterTable<T extends MasterRow>({ title, columns, rows, onAdd, 
               <h3 className="text-lg font-semibold text-navy">{rows.some((row) => row.id === editingRow.id) ? "Edit" : "Add"} {title.slice(0, -1)}</h3>
               <button type="button" onClick={closeModal} className="rounded-full p-1 text-gray-400 hover:bg-gray-100 hover:text-navy" aria-label="Close"><X size={18} /></button>
             </div>
-            <form onSubmit={handleSubmit} className="mt-5 space-y-4">
+            <form onSubmit={handleSubmit} className="mt-5 space-y-4"><fieldset disabled={saving} className="space-y-4">
               {columns.map((column) => (
                 <label key={column.key} className="block text-sm text-gray-600">
                   {column.label}
@@ -122,15 +128,15 @@ export function MasterTable<T extends MasterRow>({ title, columns, rows, onAdd, 
                       })}
                     </div>
                   ) : (
-                    <input required={column.key !== "department"} value={String(formValues[column.key] ?? "")} onChange={(event) => setFormValues({ ...formValues, [column.key]: event.target.value })} className="mt-1 block w-full rounded-card border border-gray-200 px-3 py-2 text-sm text-ink focus:border-blue focus:outline-none" />
+                    <input type={column.key === 'email' ? 'email' : column.key === 'phone' ? 'tel' : 'text'} required={column.required ?? column.key !== "department"} value={String(formValues[column.key] ?? "")} onChange={(event) => setFormValues({ ...formValues, [column.key]: event.target.value })} className="mt-1 block w-full rounded-card border border-gray-200 px-3 py-2 text-sm text-ink focus:border-blue focus:outline-none" />
                   )}
                 </label>
               ))}
-              <div className="flex justify-end gap-2 pt-2">
+              {error && <p role="alert" className="text-sm text-red-700">{error}</p>}<div className="flex justify-end gap-2 pt-2">
                 <button type="button" onClick={closeModal} className="rounded-card border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 hover:border-navy hover:text-navy">Cancel</button>
                 <button type="submit" className="rounded-card bg-navy px-4 py-2 text-sm font-medium text-white hover:opacity-90">Save</button>
               </div>
-            </form>
+            </fieldset></form>
           </div>
         </div>
       )}

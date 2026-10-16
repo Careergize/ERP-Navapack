@@ -31,7 +31,9 @@ Copy-Item .env.example .env
 npm run dev
 ```
 
-Vite uses port 5173. Set `VITE_ENABLE_MOCK_LOGIN=true` in .env for frontend testing; the example sets it to false. Demo credentials are shown on the login screen. Without an explicit value, development defaults to mock login. Production mock login also becomes enabled if explicitly set to true.
+Vite uses port 5173. Set `VITE_ENABLE_MOCK_LOGIN=true` in .env for frontend testing; the example sets it to false. Demo credentials are shown on the login screen. Without an explicit value, login uses the real Django backend. Production mock login also becomes enabled if explicitly set to true.
+
+Authentication restores the current backend profile before protected routes render and renews expired access tokens using the saved refresh token. Without Remember me, real tokens stay in this tab’s sessionStorage; with Remember me, they persist in localStorage until logout/expiry. Demo identity survives refresh in the same tab only while mock mode is enabled, and never authenticates backend requests. Run `node scripts/check-auth.mjs` for focused session/refresh checks.
 
 `VITE_API_BASE_URL` configures Axios. Defaults: http://localhost:8000/api in development, /api in production. These are client expectations, not evidence of a deployed backend. Do not put secrets in VITE variables.
 

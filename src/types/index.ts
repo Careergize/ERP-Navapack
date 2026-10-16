@@ -2,6 +2,7 @@ export type Role =
   | "qc_inspector"
   | "qc_supervisor"
   | "receptionist"
+  | "project_manager"
   | "production_manager"
   | "store_keeper"
   | "production_operator"
@@ -258,6 +259,7 @@ export interface Model {
 }
 
 export interface Customer {
+  code?: string;
   prospectId?: string;
   billingAddress?: string;
   deliveryAddress?: string;

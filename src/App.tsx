@@ -34,8 +34,10 @@ import { CostingPage } from "@/pages/Costing/CostingPage";
 import { MastersPage } from "@/pages/Masters/MastersPage";
 
 function RequireAuth({ children }: { children: JSX.Element }) {
-  const { user } = useAuth();
+  const { user, loading, sessionError, retrySession } = useAuth();
   const location = useLocation();
+  if (loading) return <p role="status" className="p-8">Restoring your session…</p>;
+  if (sessionError) return <div className="space-y-3 p-8"><p role="alert">{sessionError}</p><button className="rounded border px-4 py-2" onClick={retrySession}>Retry</button></div>;
   if (!user) return <Navigate to="/login" replace />;
   if (isQCRole(user.role) && location.pathname !== "/" && !location.pathname.startsWith("/qc") && !location.pathname.startsWith("/job-cards")) return <Navigate to="/qc" replace />;
   return children;

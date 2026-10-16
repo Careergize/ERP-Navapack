@@ -1,5 +1,35 @@
 # Business Rules
 
+## Persistent quotation drafts — 16 October 2026
+
+Save Draft succeeds only after durable backend confirmation for real users. Saved drafts reload across page refresh and later sign-in under their owner. Same UUID edits update one row; conflicting versions fail with 409 instead of silently overwriting. Once a snapshot for that draft ID is submitted, changed content requires a new revision/UUID. Draft content cannot assert manager approval or authorize sending. Demo saves are explicitly labeled as session-only.
+
+
+## User roles and quotation rejection — 16 October 2026
+
+Only Project Manager or Production Manager roles with review permission may review quotations. Manager role assignment uses real database role records and does not grant user-administration access. Pending submissions can be approved or rejected with a nonblank reason. Rejected decisions cannot be overwritten, approved, sent or resubmitted as the same snapshot; submit a revised quotation. Approval never automatically sends. User create/change endpoints are superuser-only and never accept client superuser/staff flags.
+
+
+## Editable quotation selling price — 16 October 2026
+
+A draft custom quotation may override the public selling price manually. Approved current costing/model/customer/quantity/unit dependencies remain required. The manager reviews the entered selling price, and changing approved content still creates a new snapshot requiring approval.
+
+
+## Quotation units and line totals — 16 October 2026
+
+Quotation line total equals quantity × entered unit price, rounded to two decimals. Inclusive prices already contain VAT; exclusive prices add VAT once at document totals. The inclusive unit-price readout is informational and is never multiplied again to double-charge tax. New quotation snapshots require an active registered unit; mismatched unit ID/code is rejected. Stock units follow the exact product variant, and no kg/carton/piece conversions are inferred. Unit deactivation hides it from new selections without rewriting old documents.
+
+
+## Quotation manager approval and saved customers — 16 October 2026
+
+Quotation delivery requires submission and approval of the exact snapshot by a Production Manager with approval permission. Admin/Accounts/sales cannot bypass it; approval does not automatically send. Changed content needs new approval. New quotation customers are explicitly saved to the shared database master; existing contact edits on a quote do not overwrite the master.
+
+
+## Quotation PDF delivery — 15 October 2026
+
+PDF generation and delivery use only public customer/company/items/terms fields. Only checked Email/WhatsApp channels are submitted, after server approval of the exact unexpired immutable PDF snapshot. Provider acceptance is not recipient delivery or customer acceptance. Missing configuration prevents both selected channels from starting. Failed/unknown/pending results are explicit; exact request replay does not resend. The default WhatsApp recipient is +916282744675 and must be checked/edited for each intended recipient. No order, job or stock posting occurs. Photo-derived company/bank defaults are editable; no photographed signature is reproduced.
+
+
 This separates verified frontend behavior from decisions still needing confirmation.
 
 ## Sales Orders

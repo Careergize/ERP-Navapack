@@ -1,5 +1,45 @@
 # Changelog
 
+## Persistent quotation drafts — 16 October 2026
+
+Connected quotation Save Draft, edit and list reload to Django database storage. Added QuotationDraft model/admin/API, source-preserving editor serialization, optimistic edit checks, submitted-draft freeze and server decision restoration. Replaced session-only save success wording for real users with confirmed database-save messages.
+
+
+## User roles and quotation rejection — 16 October 2026
+
+Added the Role master and Project Manager user assignment. Connected Masters → Users to real user/role APIs with password validation. Expanded quotation manager review to show document details and Approve/Reject actions, rejection reasons and decision history filters. Rejected quotations are blocked from email/WhatsApp delivery.
+
+
+## Editable quotation selling price — 16 October 2026
+
+Removed the custom-product unit-price read-only restriction on quotation drafts. Added decimal-friendly entry and explicit manual-price handling while retaining costing checks and manager approval.
+
+
+## Real superuser login — 16 October 2026
+
+Real Django login is now the default; demo mode requires explicit VITE_ENABLE_MOCK_LOGIN=true. Added local frontend API configuration and clearer credential/backend/throttle errors. Existing superusers carrying the inherited receptionist default are presented as admin in the authenticated profile; backend permission/manager approval rules remain enforced. No password was changed.
+
+
+## Quotation units and line totals — 16 October 2026
+
+Added backend Unit model, default units, admin/API and Masters → Units management. Quotations load units from the backend, show VAT-inclusive unit price and quantity × unit-price line totals. Server validates unit identity and computes line amounts; PDF headers explicitly state VAT basis and preserve six-decimal entered price precision.
+
+
+## Quotation manager approval and saved customers — 16 October 2026
+
+Added manager approval inbox and durable quotation submission; only the Production Manager can authorize email/WhatsApp delivery. Removed sender PDF self-approval; changed snapshots require fresh approval. Added persistent new-customer creation from quotations, extended customer fields, shared customer API loading/master editing and quotation-master links.
+
+
+## 2026-10-15 — Keep login across refresh
+
+Fixed the redirect to login caused by memory-only user state. Added startup profile restoration/loading guard, shared JWT renewal, complete invalid-session cleanup, tab/persistent Remember me behavior and guarded demo-session restoration. Verified browser refresh/logout, focused authentication checks, TypeScript and production build.
+
+
+## 2026-10-15 — Reference quotation PDF and selected delivery
+
+Added native reference-style A4 PDF, public snapshot persistence and structured sales-order extraction in the sibling Django backend. Quotation detail now offers PDF / Email / WhatsApp with independent checkboxes and editable +916282744675 recipient. Server PDF approval, SMTP attachment, Meta document-template submission and durable per-channel attempt results prevent false success and duplicate replay. Updated contact field types and photo-derived company/bank defaults. Live provider configuration remains required; existing frontend commercial records remain session-only.
+
+
 ## Quotations / Proforma Invoice — 2026-10-13
 
 - Added dedicated commercial quotation screens, approvals, customer responses, immutable revisions, A4 preview and accepted-revision order conversion.

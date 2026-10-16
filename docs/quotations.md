@@ -1,5 +1,10 @@
 # Quotations and Proforma Invoice implementation / proposed backend contract
 
+## Reference PDF / delivery implementation — 15 October 2026
+
+One reference photograph is now supplied and used for the native PDF layout and editable company/bank defaults. The sibling `../Backend/quotations` app implements a focused public PDF snapshot/extraction/delivery slice, not the full proposed commercial schema below. Detail screen PDF / Email / WhatsApp opens independent unchecked delivery options; default WhatsApp recipient is +916282744675. The PDF snapshot requires explicit backend approval and configured SMTP and/or Meta Business template credentials. Real delivery was not exercised; provider transports are tested with mocks and an in-memory email attachment check. See `../Backend/quotations/README.md` for actual API contracts and limitations; older statements below that no native PDF or communications service exists are superseded for this slice only.
+
+
 Updated 13 October 2026. Canonical module specification; the existing ERP report summarizes this work in sales-fulfillment.md. Frontend only: no backend, database, new endpoints or dependencies were implemented.
 
 ## Source references and dependency review

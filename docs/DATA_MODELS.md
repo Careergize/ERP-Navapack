@@ -1,5 +1,35 @@
 # Frontend Data Models
 
+## Persistent quotation drafts — 16 October 2026
+
+QuotationDraft stores client UUID primary key, created_by, validated editor_data JSON, positive version and timestamps. Draft schemas preserve editable public fields and source identity metadata, exclude caller-supplied approval/status/audits, support blank customer/zero lines, and validate entered line units/quantities/prices. Saved editor decimals are strings and restored to numeric frontend fields. Frontend Quotation adds optional draftVersion. Snapshot review status remains derived from backend Quotation decisions.
+
+
+## User roles and quotation rejection — 16 October 2026
+
+accounts.Role stores unique supported role code, name, active flag and permission M2M. User.assigned_role references Role with PROTECT; legacy role text remains as a fallback. effective_role resolves active assignment; JWT profile emits its code. Quotation adds rejected_by, rejected_at and rejection_reason; approval and rejection are mutually exclusive through locked review actions. Responses expose reviewed_by and rejection state.
+
+
+## Editable quotation selling price — 16 October 2026
+
+QuotationLine adds optional manualPriceOverride for explicit manual custom selling-price edits. It bypasses only equality to the calculated public costing price, not costing approval/currency/revision/source checks. It is excluded from the customer public projection.
+
+
+## Quotation units and line totals — 16 October 2026
+
+erp.Unit extends Record with unique code (max 30), name (max 100), is_active and a case-insensitive code constraint. QuotationLine optionally stores frontend unitId; public requests send unit_id. Backend resolves active master IDs/codes, rejects mismatches and snapshots canonical code/id. Derived lineTotal and unitPriceInclVat are server-controlled decimal strings. Historical snapshot unit strings remain unchanged if the unit is later deactivated.
+
+
+## Quotation manager approval and saved customers — 16 October 2026
+
+Added Quotation.submitted_at and manager-role approval checks. Customer adds contact_person, delivery_address, tin, customer_type, unique nullable creation_key and generated code default. Quotation.customer_master optionally references erp.Customer using PROTECT; public contact snapshots remain independent. Frontend backend customer IDs use db:{id}.
+
+
+## Persisted quotation PDF slice — 15 October 2026
+
+Sibling Django models `quotations.Quotation` (immutable validated public document JSON, content fingerprint, creator, server approval actor/time) and `quotations.Delivery` (request UUID, selected channel, recipient, provider submission result and actor/time) persist independently of session-only commercial frontend records. Server totals use decimal arithmetic; client approval/status/private costing are not adopted. Unique snapshot fingerprint and quotation/request/channel constraints prevent exact replay duplication. See `../Backend/quotations/README.md` for boundaries.
+
+
 These are current TypeScript/frontend or mock models, not database schemas. API consumer types are not proof of implemented backend contracts.
 
 ## Sales orders (src/types/index.ts; src/lib/salesOrders.ts)

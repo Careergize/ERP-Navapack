@@ -4,7 +4,7 @@
 
 The application lives in navapack-frontend, which has its own Git repository and package.json. No backend code is present.
 
-src/main.tsx mounts React StrictMode and BrowserRouter. src/App.tsx composes AuthProvider → SalesOrdersProvider → ModelsProvider → CommercialProvider → QualityProvider → InventoryProvider → CostingProvider → QuotationsProvider → ConsumablesProvider → JobCardsProvider → InvoicesProvider. RequireAuth checks the in-memory user; AppShell hosts nested routes and role-filtered navigation. Navigation visibility is not server authorization.
+src/main.tsx mounts React StrictMode and BrowserRouter. src/App.tsx composes AuthProvider → SalesOrdersProvider → ModelsProvider → CommercialProvider → QualityProvider → InventoryProvider → CostingProvider → QuotationsProvider → ConsumablesProvider → JobCardsProvider → InvoicesProvider. RequireAuth waits for session restoration and then checks the authenticated user; AppShell hosts nested routes and role-filtered navigation. Navigation visibility is not server authorization.
 
 Routes: / (Dashboard), /sales-orders and /sales-orders/new, /job-cards and /job-cards/:id, /stock, /raw-materials, /recycling, /costing, /track-trace, /masters and /login. The new-order route opens the modal on the list page. Placeholder.tsx remains in source but is not wired to these module routes.
 
@@ -25,7 +25,7 @@ Types are in src/types/index.ts and domain data/helper files. Balance functions 
 
 ## Authentication
 
-AuthContext keeps the user in memory and stores real-login access/refresh tokens in localStorage; it does not restore a user session on refresh or refresh tokens automatically. Login supports mock credentials under the conditions documented in README.md. Axios attaches a stored access/legacy token. Its 401 handler removes the legacy token and redirects outside login; complete token cleanup is currently in logout.
+AuthContext initializes with a loading state, restores real identity via GET /api/auth/me/, and delays protected-route redirects until restoration finishes. Axios renews expired access tokens through one shared POST /api/auth/refresh/ request, stores rotated tokens and retries each failed request once. Invalid refresh credentials clear all real/demo/legacy session keys; network failures retain tokens and show a retry option during startup. Real tokens use sessionStorage unless Remember me selects localStorage. Demo identity uses sessionStorage and restores only when the shared mock-mode flag is enabled; tokenless mock API failures do not clear it. Login routes redirect already authenticated users to the dashboard; logout clears the saved session and in-memory identity. Backend permissions remain authoritative.
 
 ## Future Backend Integration
 
