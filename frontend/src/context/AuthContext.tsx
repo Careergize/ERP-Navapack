@@ -1,24 +1,15 @@
-<<<<<<< HEAD:src/context/AuthContext.tsx
 import { createContext, useContext, useEffect, useRef, useState, ReactNode } from "react";
 import { currentUserRequest, loginRequest, type LoginResponse } from "@/lib/api";
 import { AUTH_CLEARED_EVENT, MOCK_LOGIN_ENABLED, clearSession, readToken, saveTokens } from '@/lib/authSession';
-=======
-import { demoEnabled } from '@/lib/demoAuth';
-import { createContext, useContext, useState, ReactNode } from "react";
-import { loginRequest } from "@/lib/api";
->>>>>>> 34ecef126e16762b3c91dbf7bdf790e011046938:frontend/src/context/AuthContext.tsx
+import { demoEnabled, demoRole } from '@/lib/demoAuth';
 import type { Role, User } from "@/types";
 
 interface AuthContextValue {
   user: User | null;
   loading: boolean;
-<<<<<<< HEAD:src/context/AuthContext.tsx
   sessionError: string;
   retrySession: () => void;
-  login: (email: string, password: string, remember?: boolean) => Promise<void>;
-=======
-  login: (email: string, password: string, finance?:boolean) => Promise<void>;
->>>>>>> 34ecef126e16762b3c91dbf7bdf790e011046938:frontend/src/context/AuthContext.tsx
+  login: (email: string, password: string, remember?: boolean, finance?: boolean) => Promise<void>;
   loginAsDemo: (role: Role) => void;
   logout: () => void;
 }
@@ -50,7 +41,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [restoreAttempt, setRestoreAttempt] = useState(0);
   const generation = useRef(0);
 
-<<<<<<< HEAD:src/context/AuthContext.tsx
   useEffect(() => {
     const onClear = () => { generation.current++; setUser(null); setSessionError(''); setLoading(false); };
     window.addEventListener(AUTH_CLEARED_EVENT, onClear);
@@ -84,51 +74,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => { generation.current++; };
   }, [restoreAttempt]);
 
-  async function login(email: string, password: string, remember = false) {
+  async function login(email: string, password: string, remember = false, finance = false) {
     setLoading(true);
     try {
+      if (MOCK_LOGIN_ENABLED) {
+        loginAsDemo(demoRole(email, password, 'admin', finance));
+        return;
+      }
       const data = await loginRequest({ username: email, password });
-      saveTokens(data.access, data.refresh, remember);
       const profile = data.user ?? await currentUserRequest();
+      const nextUser = toUser(profile);
+      if (finance && nextUser.role !== 'accounts') throw new Error('credentials');
+      saveTokens(data.access, data.refresh, remember);
       generation.current++;
-      setSessionError(''); setUser(toUser(profile));
-=======
-  async function login(email: string, password: string, finance=false) {
-    setLoading(true);
-    try {
-      const data = await loginRequest({ username: email, password });
-      if(finance&&data.user?.role!=='accounts')throw new Error('credentials');
-      localStorage.setItem("navapack_access", data.access);
-      localStorage.setItem("navapack_refresh", data.refresh);
-      setUser({
-        id: String(data.user?.id ?? email),
-        name: data.user?.name ?? data.user?.username ?? email,
-        role: (data.user?.role as Role) ?? "receptionist",
-        department: data.user?.department,
-      });
->>>>>>> 34ecef126e16762b3c91dbf7bdf790e011046938:frontend/src/context/AuthContext.tsx
+      setSessionError(''); setUser(nextUser);
     } finally {
       setLoading(false);
     }
   }
 
-<<<<<<< HEAD:src/context/AuthContext.tsx
-  // Demo identity is restored only while mock mode is explicitly enabled
-  // in configuration. It never supplies a backend token.
   function loginAsDemo(role: Role) {
-    if (!MOCK_LOGIN_ENABLED) throw new Error('Demo login is disabled.');
+    if (!demoEnabled(import.meta.env.DEV, import.meta.env.VITE_ENABLE_MOCK_LOGIN)) throw new Error('Demo login is disabled.');
     clearSession();
     const demo = { id: `demo-${role}`, name: DEMO_NAMES[role], role, department: 'Extrusion' };
     sessionStorage.setItem('navapack_demo_user', JSON.stringify(demo));
     setUser(demo);
-=======
-  // Local demo identity, no backend call. Development defaults enabled unless
-  // explicitly disabled; production requires explicit VITE_ENABLE_MOCK_LOGIN=true.
-  function loginAsDemo(role: Role) {
-    if(!demoEnabled(import.meta.env.DEV,import.meta.env.VITE_ENABLE_MOCK_LOGIN))throw new Error('Demo login is disabled.');
-    localStorage.removeItem('navapack_access');localStorage.removeItem('navapack_refresh');localStorage.removeItem('navapack_token');
-    setUser({ id: `demo-${role}`, name: DEMO_NAMES[role], role, department: role==='accounts'?'Finance':'Extrusion' });
->>>>>>> 34ecef126e16762b3c91dbf7bdf790e011046938:frontend/src/context/AuthContext.tsx
   }
 
   function logout() {
