@@ -1,0 +1,12 @@
+import { publicQuotation, effectiveQuotationStatus, quotationEvent, QUOTATION_APPROVE_ROLES, type Quotation } from './quotations';
+import type { User } from '../types';
+export interface QuotationEmailDraft { id:string; recipient:string; cc:string; subject:string; message:string; quotationNumber:string; revision:number; attachment:string; status:'Draft — not sent'; createdBy:string; createdAt:string }
+export function emailDraft(q:Quotation,recipient:string,cc:string,subject:string,message:string,user:User):QuotationEmailDraft {
+ if(!['admin','accounts','receptionist'].includes(user.role)||!['Approved','Sent','Accepted'].includes(effectiveQuotationStatus(q)))throw new Error('Prepare email only for an internally approved revision.');
+ const valid=(v:string)=>/^[^\s@,;]+@[^\s@,;]+\.[^\s@,;]+$/.test(v);
+ if(!valid(recipient)||cc.split(',').map(v=>v.trim()).filter(Boolean).some(v=>!valid(v))||/[\r\n]/.test(subject)||!subject.trim()||!message.trim())throw new Error('Enter a valid recipient, comma-separated CC, single-line subject and message.');
+ return {id:crypto.randomUUID(),recipient,cc,subject,message,quotationNumber:q.number,revision:q.revision,attachment:`${q.number}-revision-${q.revision}.pdf (save and attach manually)`,status:'Draft — not sent',createdBy:user.name,createdAt:new Date().toISOString()};
+}
+export function emailMailto(d:QuotationEmailDraft){return `mailto:${encodeURIComponent(d.recipient)}?cc=${encodeURIComponent(d.cc)}&subject=${encodeURIComponent(d.subject)}&body=${encodeURIComponent(d.message+'\n\n'+d.quotationNumber+' / revision '+d.revision+'\nAttachment: '+d.attachment+'\nNo public customer link exists in frontend mode.')}`;}
+export function rejectQuotation(q:Quotation,remarks:string,user:User):Quotation {if(!QUOTATION_APPROVE_ROLES.includes(user.role)||q.status!=='Pending Internal Approval'||!remarks.trim())throw new Error('Authorized reviewer rejects a pending quotation with remarks.');return {...q,status:'Internally Rejected',events:[...q.events,quotationEvent(user,'Internally rejected',remarks)]};}
+export function quotationChanges(previous:Quotation,current:Quotation){const a=publicQuotation(previous),b=publicQuotation(current);return (['customer','lines','terms','currency','taxRate','taxMode','company','validUntil','deliveryDays','totals'] as const).filter(k=>JSON.stringify(a[k])!==JSON.stringify(b[k])).map(k=>({field:k,before:JSON.stringify(a[k]),after:JSON.stringify(b[k])}));}

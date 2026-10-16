@@ -1,57 +1,77 @@
 # Navapack ERP
 
-ERP frontend for sales, production, finished-goods inventory and raw-material workflows.
+One Git repository with independently built and deployed frontend and backend applications.
 
-Current modules: Dashboard, Sales Orders, Job Cards, Stock, Raw Material, Recycling, Costing, Track & Trace, Masters, Quality Control, and Quotations/Proforma Invoice. All have routed pages; this does not mean complete production workflows.
+```text
+Navapack-ERP/              Git root
+  frontend/               React, TypeScript and Vite application
+  backend/                Django/DRF Phase 1 foundation
+  docs/                   Repository and deployment guidance
+  AGENTS.md               Repository-wide agent guidance
+```
 
-## Current phase
+## Frontend
 
-Frontend workflows are being implemented and validated. Sales Orders, Stock and Raw Material use frontend/reference data with in-memory changes that reset on refresh. Other pages use static data or API attempts with mock fallbacks. No backend implementation or database migrations are present in this repository; production persistence is not verified.
-
-## Stack and structure
-
-React 18, TypeScript, Vite, React Router, Tailwind CSS, Axios and Lucide icons. Capacitor packages and a sync script exist, but no native Android project or Capacitor configuration is checked in.
-
-- `src/pages/`: module screens.
-- `src/components/`: layout, login and reusable UI.
-- `src/context/`: authentication, sales-order and inventory state.
-- `src/lib/`: API client, calculations, mock and workbook-derived reference data.
-- `src/types/index.ts`: shared frontend types.
-- `scripts/`: workbook extraction and finished-goods checks.
-- `public/assets/`: branding.
-- `docs/`: architecture, business rules, models, status and integration work.
-
-## Development
-
-Run commands from this directory (`navapack-frontend`). Requires Node >=20.19 and npm >=10, as declared in package.json.
+Requires Node >=20.19 and npm >=10. Run from frontend, using its own package-lock.json:
 
 ```powershell
+Set-Location frontend
 npm ci
-Copy-Item .env.example .env
+Copy-Item .env.example .env  # Fresh setup only; preserve an existing .env.
 npm run dev
 ```
 
+<<<<<<< HEAD
 Vite uses port 5173. Set `VITE_ENABLE_MOCK_LOGIN=true` in .env for frontend testing; the example sets it to false. Demo credentials are shown on the login screen. Without an explicit value, login uses the real Django backend. Production mock login also becomes enabled if explicitly set to true.
 
 Authentication restores the current backend profile before protected routes render and renews expired access tokens using the saved refresh token. Without Remember me, real tokens stay in this tab’s sessionStorage; with Remember me, they persist in localStorage until logout/expiry. Demo identity survives refresh in the same tab only while mock mode is enabled, and never authenticates backend requests. Run `node scripts/check-auth.mjs` for focused session/refresh checks.
+=======
+Build with `npm run build`; output is frontend/dist. Vite development uses port 5173.
+See [frontend setup and demo boundaries](frontend/README.md).
+>>>>>>> 34ecef126e16762b3c91dbf7bdf790e011046938
 
-`VITE_API_BASE_URL` configures Axios. Defaults: http://localhost:8000/api in development, /api in production. These are client expectations, not evidence of a deployed backend. Do not put secrets in VITE variables.
+## Backend
+
+Requires Python 3.11+ and PostgreSQL 16+. Run from backend:
 
 ```powershell
-npm run build
-npm run preview
-node ./node_modules/typescript/bin/tsc --noEmit
-node scripts/check-finished-goods.mjs
+Set-Location backend
+python -m venv .venv
+.venv/Scripts/python -m pip install -r requirements/lock.txt
+Copy-Item .env.example .env  # Fresh setup only; preserve an existing .env.
+# Configure independent secrets and PostgreSQL credentials before continuing.
+.venv/Scripts/python manage.py migrate
+.venv/Scripts/python manage.py runserver 127.0.0.1:8000
 ```
 
-Build runs TypeScript then Vite. There is no lint script or lint configuration. Python/openpyxl is needed only to regenerate workbook references, not to run the app.
+See [backend setup](backend/README.md) for PostgreSQL provisioning, tests, production
+settings and deployment. Phase 1 provides authentication and technical foundation;
+stock, sales, production, QC and financial posting remain unimplemented. Frontend demo
+and session workflows are preserved and are not automatically connected to the backend.
 
-## Documentation
+## Independent deployment
 
-Start with [development status](docs/DEVELOPMENT_STATUS.md) and [architecture](docs/ARCHITECTURE.md).
-See [business rules](docs/BUSINESS_RULES.md), [frontend models](docs/DATA_MODELS.md), [backend TODO](docs/BACKEND_TODO.md), [changelog](docs/CHANGELOG.md) and [finished-goods source interpretation](docs/finished-goods-reference.md).
-Quality Control routes, provisional source templates, frontend limits and proposed Django/DRF contracts are in [quality.md](docs/quality.md). QC Inspector/Supervisor use the existing login; mock mode includes a role selector. QC state resets on refresh and the eight reference photos remain outstanding. Run `node scripts/check-quality.mjs` for focused QC checks.
+- Frontend: Vercel project Root Directory **frontend**, install `npm ci`, build
+  `npm run build`, output `dist`; keep frontend/vercel.json beside the app.
+- Backend: separate Python deployment using backend as its working directory, its own
+  environment and PostgreSQL database; follow backend/README.md.
 
-Quotations, quotation-origin costing, tax/revision/conversion rules and proposed sales backend contracts are in [quotations.md](docs/quotations.md). Run `node scripts/check-quotations.mjs` for focused checks. The two referenced client documents remain outstanding; new commercial state resets on refresh.
+Coordinate the Vercel Root Directory cutover when the new layout reaches the deployed
+branch. No remote settings or deployments are changed by the local migration.
+[Migration and deployment instructions](docs/MONOREPO_MIGRATION.md).
 
-Agent guidance is in [AGENTS.md](AGENTS.md).
+## Repository conventions
+
+Run Git commands from this directory or either application; both resolve to this root.
+Run npm and Django commands from their respective application directories. There is no
+root npm workspace, package.json or combined build. The pre-existing empty root npm
+lockfile is retained locally and ignored; frontend/package-lock.json is authoritative.
+
+Keep .env, virtual environments, local PostgreSQL data, dependencies, builds, caches and
+history backups out of Git. Commit only sanitized environment examples. Each application
+retains its own .gitignore in addition to repository-wide rules.
+
+The existing frontend history and origin remote are preserved through an ordinary
+layout commit; older commits retain their original root-relative paths. The eight
+[backend-planning documents](frontend/docs/backend-planning/BACKEND_READINESS_REPORT.md)
+remain historical proposals, not SOP approval or proof of production persistence.
