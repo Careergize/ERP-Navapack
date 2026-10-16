@@ -8,7 +8,6 @@ import { ENTRY_INPUT } from '@/components/ui/SearchSelect';
 import { EMPTY_TERMS, type QuotationTerms } from '@/lib/quotations';
 import { QUOTE_BUTTON } from './QuotationPrint';
 import { TermsFields } from './QuotationEditor';
-import { GenerateQuotation } from '@/components/GenerateQuotation';
 export function QuotationSettings() {
   const c = useCommercial(); const { user } = useAuth();
   const [company, setCompany] = useState(() => structuredClone(c.company)); const [terms, setTerms] = useState<QuotationTerms>({ ...EMPTY_TERMS }); const [error, setError] = useState(''), [notice, setNotice] = useState('');

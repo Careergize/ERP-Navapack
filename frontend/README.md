@@ -31,7 +31,10 @@ Copy-Item .env.example .env
 npm run dev
 ```
 
-Vite uses port 5173. Set `VITE_ENABLE_MOCK_LOGIN=true` in .env for frontend testing; the example sets it to false. Demo credentials are shown on the login screen. Without an explicit value, development defaults to mock login. Production mock login also becomes enabled if explicitly set to true.
+Vite uses port 5173. Real Django login is the default; set
+`VITE_ENABLE_MOCK_LOGIN=true` in .env to explicitly enable demo login. Demo credentials
+are shown on the login screen only when demo mode is enabled. Demo identities remain
+local to the browser and never authenticate backend requests.
 
 `VITE_API_BASE_URL` configures Axios. Defaults: http://localhost:8000/api in development, /api in production. These are client expectations, not evidence of a deployed backend. Do not put secrets in VITE variables.
 
@@ -65,4 +68,9 @@ environment scopes/domains. Coordinate the setting change with the deployed bran
 see [migration and cutover](../docs/MONOREPO_MIGRATION.md). No Vercel settings were
 changed by the local restructure, and the backend remains independently deployable.
 
-Finance demo: run `npm run dev`, open `/finance/login`, and use `finance@navapack.com` / `test@123` when mock login is enabled. This opens the existing Accounts Finance Dashboard; operations login also offers Accounts / Finance. Development defaults to mock unless explicitly disabled; production demo requires `VITE_ENABLE_MOCK_LOGIN=true` at build time. No session restoration or backend account is created. Run `node scripts/check-led-finance.mjs` for confirmed LED MAX/snapshot/VAT and demo-auth regressions. [Rule, pending percentage base and demo boundaries](docs/sales-fulfillment.md#client-confirmed-led-max-and-finance-demo--15-october-2026).
+Finance demo: run `npm run dev`, open `/finance/login`, and use
+`finance@navapack.com` / `test@123` when mock login is enabled. This opens the existing
+Accounts Finance Dashboard; operations login also offers Accounts / Finance. Demo mode
+requires `VITE_ENABLE_MOCK_LOGIN=true` in development and production. No backend account
+is created. Run `node scripts/check-led-finance.mjs` for confirmed LED MAX/snapshot/VAT
+and demo-auth regressions. [Rule, pending percentage base and demo boundaries](docs/sales-fulfillment.md#client-confirmed-led-max-and-finance-demo--15-october-2026).

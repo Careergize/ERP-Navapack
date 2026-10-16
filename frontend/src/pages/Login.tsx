@@ -2,7 +2,7 @@ import { demoRole as resolveDemoRole } from '@/lib/demoAuth';
 import { FormEvent, useRef, useState } from "react";
 import axios from 'axios';
 import { Eye, EyeOff, LockKeyhole, Mail } from "lucide-react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { MOCK_LOGIN_ENABLED } from '@/lib/authSession';
 import { useAuth } from "@/context/AuthContext";
 import { BrandPanel } from "@/components/login/BrandPanel";

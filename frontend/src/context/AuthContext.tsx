@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useRef, useState, ReactNode } from "react";
 import { currentUserRequest, loginRequest, type LoginResponse } from "@/lib/api";
 import { AUTH_CLEARED_EVENT, MOCK_LOGIN_ENABLED, clearSession, readToken, saveTokens } from '@/lib/authSession';
-import { demoEnabled, demoRole } from '@/lib/demoAuth';
+import { demoRole } from '@/lib/demoAuth';
 import type { Role, User } from "@/types";
 
 interface AuthContextValue {
@@ -94,7 +94,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   function loginAsDemo(role: Role) {
-    if (!demoEnabled(import.meta.env.DEV, import.meta.env.VITE_ENABLE_MOCK_LOGIN)) throw new Error('Demo login is disabled.');
+    if (!MOCK_LOGIN_ENABLED) throw new Error('Demo login is disabled.');
     clearSession();
     const demo = { id: `demo-${role}`, name: DEMO_NAMES[role], role, department: 'Extrusion' };
     sessionStorage.setItem('navapack_demo_user', JSON.stringify(demo));
