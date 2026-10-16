@@ -1,10 +1,7 @@
-<<<<<<< HEAD:src/pages/Masters/MastersPage.tsx
 import { UnitsManager } from './UnitsManager';
 import { UsersManager } from './UsersManager';
 import { useSearchParams } from 'react-router-dom';
-=======
 import { GenerateQuotation } from '@/components/GenerateQuotation';
->>>>>>> 34ecef126e16762b3c91dbf7bdf790e011046938:frontend/src/pages/Masters/MastersPage.tsx
 import { useCommercial } from '@/context/CommercialContext';
 import { useModels } from '@/context/ModelsContext';
 import { ModelManager } from './ModelManager';
