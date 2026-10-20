@@ -1,0 +1,10 @@
+import { api } from './api';
+export type OperationKind='IN'|'OUT'|'OPENING'|'OPENING_CORRECTION'|'TRANSFER'|'RETURN'|'COUNT'|'ADJUSTMENT';
+export type OperationLine={id?:string;source_line?:string|null;stock:string;unit:string;location:string;destination?:string|null;quantity:string;quality:'HELD'|'RELEASED';original_line?:string|null;baseline?:string|null;original_quantity?:string|null;difference?:string|null;balance_version?:number};
+export type Operation={id:string;version:number;kind:OperationKind;status:string;warehouse:string;destination_warehouse:string|null;requested_by:string;requested_at:string;reason:string;evidence_reference:string;source_reference:string;related:string|null;count_session:string|null;recording_employee:string|null;ledger_transaction:string|null;qc_status:string;lines:OperationLine[];decisions:{id:string;action:string;actor:string;reason:string;evidence_reference:string;timestamp:string}[]};
+export type OperationPage={count:number;next:string|null;previous:string|null;results:Operation[]};
+export async function operationMode(){return (await api.get<{synthetic_enabled:boolean;operational_posting:false;message:string}>('/inventory/operations/mode/')).data;}
+export async function operationPage(kind:OperationKind,page:number){return (await api.get<OperationPage>('/inventory/operations/',{params:{kind,page}})).data;}
+export async function submitOperation(body:Record<string,unknown>,key:string){return (await api.post<Operation>('/inventory/operations/',body,{headers:{'Idempotency-Key':key},timeout:15000})).data;}
+export async function operationTransition(record:Operation,step:string,body:Record<string,unknown>,key:string){return (await api.post<Operation>(`/inventory/operations/${record.id}/${step}/`,body,{headers:{'Idempotency-Key':key,'If-Match':`"${record.version}"`},timeout:15000})).data;}
+export async function operationHistory(id:string,page:number){return (await api.get<{count:number;next:string|null;previous:string|null;results:{id:string;actor:string;action:string;reason:string;timestamp:string;summary:unknown}[]}>(`/inventory/operations/${id}/history/`,{params:{page}})).data;}

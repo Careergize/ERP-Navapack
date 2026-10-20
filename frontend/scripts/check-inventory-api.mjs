@@ -9,6 +9,7 @@ try {
   const {backendProfile}=await server.ssrLoadModule('/src/lib/backendProfile.ts');
   const {saveTokens}=await server.ssrLoadModule('/src/lib/authSession.ts');
   const {inventoryPage,saveInventory}=await server.ssrLoadModule('/src/lib/inventoryApi.ts');
+  const {operationMode,operationPage,submitOperation,operationTransition,operationHistory}=await server.ssrLoadModule('/src/lib/inventoryOperationsApi.ts');
   const id='dc36d419-7edf-4479-8174-8d0ce7992303';
   const profile=backendProfile({id,name:'Synthetic employee',roles:['configured-role-a','configured-role-b'],permissions:['inventory.view_warehouse']});
   assert.equal(profile.role,'authenticated');assert.equal(profile.backendSession,true);assert.equal(profile.roles.length,2);
@@ -26,8 +27,17 @@ try {
   await saveInventory('warehouses',body,'same-intent',{id,version:1});
   await saveInventory('warehouses',body,'same-intent',{id,version:1});
   for(const r of requests.slice(-2)){assert.equal(r.headers['If-Match'],'"1"');assert.equal(r.headers['Idempotency-Key'],'same-intent');assert.equal(r.url,`/inventory/warehouses/${id}/`);}
+  await operationMode();assert.equal(requests.at(-1).url,'/inventory/operations/mode/');
+  await operationPage('OPENING_CORRECTION',2);assert.deepEqual(requests.at(-1).params,{kind:'OPENING_CORRECTION',page:2});
+  await submitOperation({kind:'OPENING_CORRECTION',related:id},'workflow-intent');
+  assert.equal(requests.at(-1).headers['Idempotency-Key'],'workflow-intent');
+  await operationTransition({id,version:3},'verify',{reason:'Synthetic Stores evidence'},'verify-intent');
+  assert.equal(requests.at(-1).url,`/inventory/operations/${id}/verify/`);
+  assert.equal(requests.at(-1).headers['If-Match'],'"3"');
+  await operationHistory(id,2);assert.equal(requests.at(-1).url,`/inventory/operations/${id}/history/`);
   api.defaults.adapter=async()=>{throw new Error('synthetic denial');};
   await assert.rejects(saveInventory('warehouses',body,'denied'));
+  await assert.rejects(submitOperation({kind:'IN'},'denied-workflow'));
   api.defaults.adapter=async config=>{requests.push(config);return {config,data:{},status:200,statusText:'OK',headers:{}};};
   saveTokens('access','synthetic-refresh',false);await logoutRequest();
   assert.equal(requests.at(-1).url,'/auth/logout/');assert.equal(JSON.parse(requests.at(-1).data).refresh,'synthetic-refresh');

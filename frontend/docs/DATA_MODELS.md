@@ -1,5 +1,13 @@
 # Frontend Data Models
 
+## Phase 3C-1 source/cutoff remediation — 20 October 2026
+
+OperationLine transport adds source_line UUID; backend snapshot retains immutable canonical namespace/document/occurrence/line identity. COUNT/OPENING omit caller cutoff; backend records CURRENT_LOCKED cutoff under stock-root locks. Other workflow timestamps remain EVIDENCE_ONLY. Legacy values are LEGACY_UNVERIFIED and are not silently upgraded. Source registration models are fixture-only and have no frontend publisher; UUID request correlation cannot mint physical identities.
+
+## Phase 3C-1 transport models — 20 October 2026
+
+inventoryOperationsApi defines Operation/OperationLine/OperationPage for actual Django UUID/version/status/warehouse/requester/source/evidence/original/count/recorder/final-ledger fields. Decimal quantities/original/baseline/proposal/difference stay strings. Immutable stage decisions include actor/time/reason/evidence. No frontend stock projection or fake balance. Backend schema is authoritative; all workflow data/actions test-gated. [Contract](../../docs/phase3-planning/PHASE_3C_IMPLEMENTATION_REPORT.md).
+
 ## Phase 3A persisted configuration DTOs — 20 October 2026
 
 InventoryRecord uses opaque UUID id, numeric optimistic version, warehouse/location UUIDs, metadata/activity or generated immutable stock reference/typed item/unit/owner/parent references. Quantity fields are absent; operational_status is unavailable. Lists use count/next/previous/results; writes use stable Idempotency-Key and quoted If-Match plus reason. Real User profiles retain roles[]/permissions[] and backendSession; legacy Role `authenticated` is a neutral presentation marker, never an authority or selected business role. Inventory history exposes only server-authorized safe comparisons with actor/request context. See backend/docs/PHASE3A_API.md.

@@ -1,5 +1,13 @@
 # Phase 3 ledger and stock rules
 
+## Phase 3C-1 workflow enforcement — 20 October 2026
+
+Sealed requests/Stores verification/physical confirmation/independent review do not move stock. Only selected authorized recording invokes unchanged test-only ledger, rechecking versions/availability/coverage/approval. Receipts/returns/positive corrections or variances remain held; explicit root batch selection, no automatic allocation or order/job deduction. Original openings remain immutable; corrections use original quantity/current target/proposal/difference and compensating entries. Held-opening reductions are captured but approval blocked. Returns match original OUT line/current remaining quantity. Counts require investigation and never post directly; at most one adjustment may post per count, stale/reused counts require recount. No operational/backdated/QC release workflow. [Actual slice and limitations](PHASE_3C_IMPLEMENTATION_REPORT.md).
+
+## Phase 3B implemented test engine — 20 October 2026
+
+The internal synthetic engine supports OPENING/IN/OUT/TRANSFER/RETURN/ADJUSTMENT/CORRECTION/REVERSAL, with sealed source events, exact primary units, opening coverage, current-custody keys, independently bound correction evidence, deterministic locks, versions, idempotency and atomic audit. New receipts/restored quantities remain held except explicitly released synthetic opening/IN fixtures. Held transfers move held custody without release. No backdating, opening reversal/replacement, independently posted children, partial QC release, stock allocation or real workflow is enabled. Returns bind original OUT lines and outstanding quantity; corrections compensate current feasible balances and preserve original entries. Full [implemented invariants and future gates](PHASE_3B_IMPLEMENTATION_REPORT.md) supersede earlier no-engine statements; the broader operational rules below are still proposals.
+
 Classification: **A — Proposed architecture** unless marked S/I/D. [Convention](PHASE_3_REQUIREMENTS_TRACEABILITY.md). These rules own ledger semantics for the document set.
 
 ## Authority and dimensions

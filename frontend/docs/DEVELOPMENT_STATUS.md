@@ -1,5 +1,13 @@
 # Development Status
 
+## Phase 3C-1 remediation — 20 October 2026
+
+Inventory workflow forms now require a controlled source-line reference for receipts/counts/openings, show server-current count capture instead of historical cutoff entry, and distinguish physical evidence/review from posting. API quantities remain exact strings; controlled409 errors expose stale/unavailable issues. Same session and synthetic-only mode. See [report](../../docs/phase3-planning/PHASE_3C_IMPLEMENTATION_REPORT.md); no browser/deployment acceptance or live publisher claimed.
+
+## Phase 3C-1 — 20 October 2026
+
+InventoryOperations embedded in existing real-session Admin inventory page; actual guarded Django request/review/status/history APIs for IN/OUT/openings/corrections/transfers/returns/counts/adjustments. Same login; capability controls; no fabricated totals/local saves. Outside isolated synthetic mode, unavailable state/forms disabled. Production posting/QC release absent. API contract checks are mocked transport tests; real backend APIClient/PostgreSQL cases are separate, no deployed browser acceptance. [Report](../../docs/phase3-planning/PHASE_3C_IMPLEMENTATION_REPORT.md).
+
 ## Phase 3A inventory configuration — 20 October 2026
 
 Real backend sessions now use /api/v1, email, opaque UUIDs, roles[]/permissions[] and backend logout. Legacy /api environment values normalize to /api/v1; .env is unchanged. `/admin/inventory` adds persisted warehouse/location management and scoped stock-identity reference/history viewing. Capabilities control actions; backend requires independent warehouse scope too. Real sessions are isolated from unintegrated demo routes, while opt-in demos remain intact. No live stock quantities, opening correction, issue/receipt, split/merge or QC release is enabled. Scope grant publication remains blocked pending governance. See repository Phase 3 progress/test reports for acceptance evidence and deployment limitations.

@@ -1,5 +1,17 @@
 # Phase 3 SOP permission matrix
 
+## Phase 3C-1 synthetic workflow capabilities — 20 October 2026
+
+Definitions only, no grants: inventory.view_operationrequest, submit_operation, request_opening_correction, verify_operation, investigate_operation, confirm_operation, approve_operation, record_operation and view_operation_history. Active Employee plus unexpired scopes required; cross-warehouse full request/history requires both sides. Separate operational scope provisioning remains unimplemented. Every data/action route also requires isolated test context.
+
+Requester cannot verify own evidence. Approver/rejector cannot be requester, verifier, investigator, confirmer or selected recorder. Recorder cannot be verifier/investigator/confirmer; must have explicit record_operation plus3B post capability and be selected by independent review. Ledger-specific independent evidence/capability still enforced; review authority/scope rechecked at record. Admin/staff/superuser titles confer no authority. Named Stores/Procurement/QC assignments, independent approval ceiling and real policy publication remain client/management gates. The conservative test stage order is technical, not adopted SOP authority. [Exact implementation](PHASE_3C_IMPLEMENTATION_REPORT.md).
+
+## Phase 3B internal-only capability boundary — 20 October 2026
+
+New capability definitions: inventory.post_synthetic_transaction, approve_synthetic_transaction, view_synthetic_custody and rebuild_synthetic_projection. No grants/memberships were seeded. Active employee identity, explicit capabilities and unexpired custody warehouse scopes are required; opening additionally checks registration scope. Rebuild requires explicit company-wide scope. Independent approval is maker != approver by UUID, exact intent digest/policy and current reviewer capability/scope, with no Admin/superuser exception.
+
+Synthetic approval rows are isolated fixture evidence, not a published approval/rejection workflow. The engine has no API/Admin/management-command/background-job posting adapter. Default-disabled service and database gates apply to all callers. Existing scope-publication/revocation and actual Stores → independent approval → Procurement/QC assignments remain blockers for operational use. Temporary restricted database-role tests do not provision a deployment runtime role. See [Phase 3B report](PHASE_3B_IMPLEMENTATION_REPORT.md).
+
 ## Phase 3A implemented capability boundary
 
 20 October 2026: authenticated active User with an Employee profile, explicit capability and unexpired scope are required together. No title/superuser shortcut. `inventory.configure_warehouses` controls warehouse POST/PATCH; creation also requires separate company-wide scope. `inventory.view_warehouse`, `view_storagelocation`, `view_stockidentity` control scoped reads. `add_storagelocation`/`change_storagelocation`, `add_stockidentity`/`change_stockidentity` control writes; identity change supports retirement only. Standard model permission definitions are created, **no memberships or grants**.

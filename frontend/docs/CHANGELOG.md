@@ -1,5 +1,13 @@
 # Changelog
 
+## 20 October 2026 — Phase 3C-1 boundary remediation
+
+Added controlled physical-source line input and current-count guidance; removed unsupported custom count cutoff entry. Clarified unposted physical-confirmation/review status and surfaced backend feasibility errors. No production posting/QC release or new login.
+
+## 20 October 2026 — Phase 3C-1 isolated workflow foundation
+
+Added existing-session inventory evidence/request/review/history screens for receipts/issues/opening/corrections/transfers/returns/counts/adjustments. Real Django APIs, capability/version/idempotency checks and explicit unavailable state outside synthetic tests. No live stock posting or QC release enabled. Existing demo modules preserved.
+
 ## 20 October 2026 — Phase 3A foundation
 
 Added real warehouse/location management, stock-identity reference viewer and scope-aware configuration history under existing login. Corrected backend email/multi-role/UUID/session contracts and request/version headers. Real sessions are limited to integrated configuration pages; demos remain separate. Opening corrections and all quantity operations remain unavailable. No real scope grants, migrations to the application DB or deployment were performed.

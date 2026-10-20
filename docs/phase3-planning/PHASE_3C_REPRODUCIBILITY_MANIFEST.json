@@ -1,0 +1,2719 @@
+{
+  "schema_version": 1,
+  "recorded_date": "2026-10-20",
+  "scope": "Exact current source working tree, not production release approval",
+  "baseline_head": "82a32a1410ebbc13207b39f1325f8ddff4d64301",
+  "branch": "main",
+  "manifest_self_excluded": "docs/phase3-planning/PHASE_3C_REPRODUCIBILITY_MANIFEST.json",
+  "source_entry_count": 327,
+  "source_snapshot_sha256": "38474b562f9b7d937b730e01b3b432b97b317af46631be8950f168b99752e209",
+  "excluded": "Existing ignored secrets/environments/databases/logs/build/dependency caches; client originals separately verified below; manifest itself excluded to avoid circular hashing.",
+  "runtime_observed": {
+    "python": "3.11.0",
+    "django": "5.2.18",
+    "drf": "3.17.2",
+    "psycopg": "3.3.6",
+    "node": "v24.14.0",
+    "npm": "11.9.0",
+    "postgresql": "16.3 (disposable local test cluster)"
+  },
+  "pending_application_migrations": 17,
+  "application_migrations_applied_by_task": false,
+  "index_empty": true,
+  "files": [
+    {
+      "path": ".gitignore",
+      "size_bytes": 636,
+      "sha256": "51ef0504fb694afc5195d669b9375d253755f704bf82cd5ba0519f0746d6cb19",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "AGENTS.md",
+      "size_bytes": 1626,
+      "sha256": "7356916bdad88456a8882a202777365501e793acfa46fc88f64d8f8893ac384f",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "README.md",
+      "size_bytes": 3764,
+      "sha256": "73643f182a407337f19edae4e64831fe7cf9d40bdbd87f2c4ecb74325eaf3a56",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/.env.example",
+      "size_bytes": 672,
+      "sha256": "cd0ba2516f88e21ba4ea09014923a846801b73f1e8ba1308222ec6779b1da7d1",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/.gitignore",
+      "size_bytes": 116,
+      "sha256": "3b90491c98b75d7df5ceab16efb3ae6eb737e419e19afa113e7183e07ed24b94",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/AGENTS.md",
+      "size_bytes": 1475,
+      "sha256": "2bb4917b3a7b5b59e9d591541b933b1b8174bfc551f3732b82bdf44d663700d9",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/README.md",
+      "size_bytes": 7704,
+      "sha256": "891af6c0ef8f6f5dc559eab2d5836b0360d3f112822fbb989aae33edc960b381",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/__init__.py",
+      "size_bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/accounts/__init__.py",
+      "size_bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/accounts/admin_urls.py",
+      "size_bytes": 407,
+      "sha256": "5520f7e56cd761884605f67ffc53ce53c3aba0b6620ac88a2c166a40a0fa6373",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/accounts/backends.py",
+      "size_bytes": 2013,
+      "sha256": "211ab58169a4b4b209cfddd476937a15f5c0995eb125bb5eca0a4a6879a69ae5",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/accounts/employee_serializers.py",
+      "size_bytes": 5689,
+      "sha256": "2bda28f73496bc682e820f351342838925096c97431a7a44a46f3033c984191d",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/accounts/employee_services.py",
+      "size_bytes": 7114,
+      "sha256": "cd4426833c371605970fc3b63f1bbe92d1f260e894d5eb624bf6250815bcb85c",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/accounts/employee_views.py",
+      "size_bytes": 13168,
+      "sha256": "7dea9231415fc4f1ee49df94e2bc21860d1c40bd6061cc338921b682e4fa915e",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/accounts/management/__init__.py",
+      "size_bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/accounts/management/commands/__init__.py",
+      "size_bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/accounts/management/commands/complete_employee_password_reset.py",
+      "size_bytes": 3777,
+      "sha256": "6cf639ed242681f29f2b5875db5caec008f5fd4503656d1b7995dc594f9f75ff",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/accounts/management/commands/configure_employee_role.py",
+      "size_bytes": 2873,
+      "sha256": "af757b7069755e4898f83badd43262b4ecd8733461955b974aa5b35a650798f7",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/accounts/management/commands/provision_master_admin.py",
+      "size_bytes": 2681,
+      "sha256": "c85fc6f43424e954222251cc1de6961d576f1ec2b6cb10ce5a9459606517ce0a",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/accounts/management/password_input.py",
+      "size_bytes": 668,
+      "sha256": "730a618b88c4a83bdc46ec9f24a6324b3ccb90cd669f80cfd616be4e811f6050",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/accounts/migrations/0001_initial.py",
+      "size_bytes": 3735,
+      "sha256": "5b0f5a0b128d31a831b03675cd794478cd925b618437a2f563d28ee0f309ec42",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/accounts/migrations/0002_user_is_master_admin_employee_employeeresetrequest_and_more.py",
+      "size_bytes": 8322,
+      "sha256": "d76dac5b1562c440d484e22a0a5c38e7e53d7e0f2e44142951aeb9e9b63d3118",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/accounts/migrations/0003_employeeresetrequest_one_pending_employee_reset_and_more.py",
+      "size_bytes": 2344,
+      "sha256": "11dfa6b747d837e39fb2e30ffe4a89696514a47049ed105cd43bad05797b29fb",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/accounts/migrations/0004_alter_role_options_role_governed_role_updated_at_and_more.py",
+      "size_bytes": 4036,
+      "sha256": "a32e4778bc0cd252246d3fb825c82e58c4cb82b4727bb3a4076741ff092bf9b3",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/accounts/migrations/0005_immutable_capability_reviews.py",
+      "size_bytes": 1193,
+      "sha256": "285063b4e42a616e61f0859a35f87663f6e223f1567dec6f54d7cca77e00558a",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/accounts/migrations/__init__.py",
+      "size_bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/accounts/models.py",
+      "size_bytes": 9293,
+      "sha256": "6e9b6535f0cfe18be458b9086e30d5a7ac6ca96448222c9430675eb49ec64c47",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/accounts/permissions.py",
+      "size_bytes": 1160,
+      "sha256": "bf4134192166767a07eb78c9c0826524250a33277518fdb4bf8a53ff7abf126d",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/accounts/role_views.py",
+      "size_bytes": 12188,
+      "sha256": "a0c0576f80bd243b975afdfe5d8e1c86f9be49d29f42392ab96a5042a7d30e9c",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/accounts/serializers.py",
+      "size_bytes": 1190,
+      "sha256": "61ce3ca1a84d6e28489be86026ca8fa9637ebefd5815132b7dd541db7115741c",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/accounts/throttles.py",
+      "size_bytes": 1389,
+      "sha256": "4513b696efa72ea8a128b09fdbca04c30cd1325b7802bcdb94da5b60153d50f0",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/accounts/views.py",
+      "size_bytes": 4403,
+      "sha256": "427a5c92ad4e8d66a539ec9aad4a75ad91a247a94fb7baf8072a57f4f8334738",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/core/__init__.py",
+      "size_bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/core/api.py",
+      "size_bytes": 2304,
+      "sha256": "f2d54b4af64a05fe73f6835fae616eb27d63aadeb0215a0bd71c53f998c00e17",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/core/audit.py",
+      "size_bytes": 4007,
+      "sha256": "e355db4f8ec0e8fcddaeb8b86b219dae95df169a270a5a5a487347b547f78b01",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/core/commands.py",
+      "size_bytes": 3369,
+      "sha256": "669bfe00051874963b03202664d809b96c07f73d554face2119903187ee70897",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/core/logging.py",
+      "size_bytes": 671,
+      "sha256": "01529f1af19e45659e01d99a60304e09cb5694e974851a38ba766f2a3e167208",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/core/middleware.py",
+      "size_bytes": 1379,
+      "sha256": "c0b2c10e5db1664808bcb7ba7cbc0ac71cb2b6f3b98232dab1fa0f76bae2d5cc",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/core/migrations/0001_initial.py",
+      "size_bytes": 2841,
+      "sha256": "3d635d4ce100bea63a8617388fba39098cca224cd61dfdac21fe53eac340cdba",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/core/migrations/0002_audit_append_only.py",
+      "size_bytes": 608,
+      "sha256": "0fe5fe27ee65f5a99233da60026099b989c5e6e4553de550e695455fed80c250",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/core/migrations/0003_auditevidence.py",
+      "size_bytes": 850,
+      "sha256": "ca65b56a4c11449f547df5928f6c0b7aea0e46b6fb05886a532ad89bc6306bb3",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/core/migrations/0004_protect_audit_evidence.py",
+      "size_bytes": 581,
+      "sha256": "afccf41d9b90c5604c9ce86a91e222a5eb2ae8885be78a1074d1ffc1adb89377",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/core/migrations/__init__.py",
+      "size_bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/core/models.py",
+      "size_bytes": 3694,
+      "sha256": "7543e76d73d39e44076cf7836bf14d7446920e9ad4234d857c8771f0c29d2205",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/core/views.py",
+      "size_bytes": 1087,
+      "sha256": "6da433a2d9458b296e13f4ffae2f64caac5c8b9fda8b27e210d3f75108303072",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/imports/__init__.py",
+      "size_bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/imports/migrations/0001_initial.py",
+      "size_bytes": 3810,
+      "sha256": "dd0d22ecea664c7d7a5583de796cdf0ee119f2d838f14a3c0344bf21b11ec421",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/imports/migrations/0002_preserve_source_evidence.py",
+      "size_bytes": 1776,
+      "sha256": "ab9b5ee1f3a845cb9c91cb82890f650a292bea82424c6884ce191ca00ecd7e28",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/imports/migrations/0003_seal_staged_rows.py",
+      "size_bytes": 745,
+      "sha256": "c2ff0503023a5da207078d42b18278112fcb5083cc52892433c15c58f53c3251",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/imports/migrations/0004_alter_importbatch_status_alter_importbatch_target.py",
+      "size_bytes": 701,
+      "sha256": "d16faf39855968acbadbb48466b29926dbb3369ac796ce487e99d0d2fa4c3428",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/imports/migrations/0005_importbatch_applied_plan_importreview_and_more.py",
+      "size_bytes": 1557,
+      "sha256": "5b83b2c358f0353c12de38393281eca835d68e93e71fb2bcd053a64980c06149",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/imports/migrations/0006_immutable_reviews.py",
+      "size_bytes": 617,
+      "sha256": "dc5d8d7655ce9cb1e9c6271fe9177cf27d6f82ace6ed394e985e3c58229ff92b",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/imports/migrations/__init__.py",
+      "size_bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/imports/models.py",
+      "size_bytes": 2451,
+      "sha256": "be3ab09e54682c74ee6a1ea834c4ec49b3a9e142714c6b041c689839efcb5c74",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/imports/readers.py",
+      "size_bytes": 5211,
+      "sha256": "698b5dfa09175fdd3bb50e748c4364fb270fd8e1c2527d31ce808ba3110fd940",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/imports/views.py",
+      "size_bytes": 17024,
+      "sha256": "613f554c402c08d119a48dddccc28b53502ecf84a84af6a21d5a203572a034b1",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/inventory/__init__.py",
+      "size_bytes": 2,
+      "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/inventory/authorization.py",
+      "size_bytes": 2090,
+      "sha256": "ad432613adff58989967f128f5acb14942b886b6a294029f2e41f1b69ef70665",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/inventory/ledger.py",
+      "size_bytes": 23211,
+      "sha256": "a2d801dd759c2e154479e10265b9d4fe56de9951ad9fa83acf952d232ea592ee",
+      "git_status": "??",
+      "tracked": false
+    },
+    {
+      "path": "backend/apps/inventory/ledger_guard.py",
+      "size_bytes": 1992,
+      "sha256": "75d7f1a3701c7cce2a6034008db7f170af3e64a7072d093cf3280f95641d39e3",
+      "git_status": "??",
+      "tracked": false
+    },
+    {
+      "path": "backend/apps/inventory/ledger_models.py",
+      "size_bytes": 8691,
+      "sha256": "d9336218af38cdfbc54a730d239a24b66e0da77370953b3ea9215f0bb72c87d6",
+      "git_status": "??",
+      "tracked": false
+    },
+    {
+      "path": "backend/apps/inventory/migrations/0001_initial.py",
+      "size_bytes": 12170,
+      "sha256": "51246f207942037c9ba04b3d98d29adbc4876d488ef1d64885fc5fc577844c35",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/inventory/migrations/0002_configuration_guards.py",
+      "size_bytes": 6112,
+      "sha256": "18e0445e6e90efcf2f89c2e7f7f93090a25c06023c40b8587693121440ddb74d",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/inventory/migrations/0003_warehouse_custody_department.py",
+      "size_bytes": 616,
+      "sha256": "4f4a8881015e07d5decb193f800ce10ed860d9b4568d0c3f24c70c18a2261188",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/inventory/migrations/0004_alter_warehouse_options.py",
+      "size_bytes": 579,
+      "sha256": "5f91fb253c9e0871b6d477d1885b2562017b3f8c3c5712cc8e1c7a718c8f2f81",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/inventory/migrations/0005_stockidentity_source_document_reference_and_more.py",
+      "size_bytes": 1102,
+      "sha256": "ace598e881a253e80ea3c422b8b06cc3f8adcdd3cdd5196610c93639120cd18e",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/inventory/migrations/0006_postingpolicy_ledgerapproval_sourceevent_and_more.py",
+      "size_bytes": 14432,
+      "sha256": "51bf0c269aeb349bcb5e287e7c279ed2f693a4363d4c4fc0584ad9938aa360d2",
+      "git_status": "??",
+      "tracked": false
+    },
+    {
+      "path": "backend/apps/inventory/migrations/0007_synthetic_ledger_guards.py",
+      "size_bytes": 12284,
+      "sha256": "bb65d9b85775d35b45c40853cec5b54edbbb62b3bb03ebf8d5e05b3326c70af1",
+      "git_status": "??",
+      "tracked": false
+    },
+    {
+      "path": "backend/apps/inventory/migrations/0008_operationrequest_operationline_operationdecision_and_more.py",
+      "size_bytes": 9294,
+      "sha256": "998f911afeb58118cde8f2ea7a051b7a94bfcd60bd85ce47e6238506aab4caad",
+      "git_status": "??",
+      "tracked": false
+    },
+    {
+      "path": "backend/apps/inventory/migrations/0009_operation_guards.py",
+      "size_bytes": 5568,
+      "sha256": "06d8471e85b81ba380a81b480475c09f990a38684433191cf8f7ce8ce8705361",
+      "git_status": "??",
+      "tracked": false
+    },
+    {
+      "path": "backend/apps/inventory/migrations/0010_operationrequest_cutoff_basis_physicalsourcedocument_and_more.py",
+      "size_bytes": 4285,
+      "sha256": "4d85304a2a33fee923631b4ccb9cc37798e31db2a10919dd8bf2d3269dee90da",
+      "git_status": "??",
+      "tracked": false
+    },
+    {
+      "path": "backend/apps/inventory/migrations/0011_physical_source_guards.py",
+      "size_bytes": 3810,
+      "sha256": "1de439b3250ea6dfb758d9fdf9d097f3c331ebdb683e08d1bd56524d22b95365",
+      "git_status": "??",
+      "tracked": false
+    },
+    {
+      "path": "backend/apps/inventory/migrations/__init__.py",
+      "size_bytes": 2,
+      "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/inventory/models.py",
+      "size_bytes": 7690,
+      "sha256": "2b938321aee5b77f217e3243bce8dc1847fd96e92978c03e34a52adc4dd2c4c4",
+      "git_status": " M",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/inventory/serializers.py",
+      "size_bytes": 5422,
+      "sha256": "5d44780978a30fff8d322ab0be1821d5ac5fcf954bca37daa01684a81f39bfd2",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/inventory/urls.py",
+      "size_bytes": 530,
+      "sha256": "dcd026a6a59a8fce75fd8c74a713b1294e120f05206acb9698da208762bbdb49",
+      "git_status": " M",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/inventory/views.py",
+      "size_bytes": 8358,
+      "sha256": "7aa7a8b5cb7740282722ebddb3085601af95374c378366a4b7f875067bb915dc",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/inventory/workflow_models.py",
+      "size_bytes": 7628,
+      "sha256": "bf93ee8f144146cab5308c62319e464065c3e1440a2caadf7af67df2e48d79b6",
+      "git_status": "??",
+      "tracked": false
+    },
+    {
+      "path": "backend/apps/inventory/workflow_views.py",
+      "size_bytes": 4466,
+      "sha256": "2d3fd5354ab0dfefa58d162b35ed3d73ca2f6660a72cc157eec1826b817b49d1",
+      "git_status": "??",
+      "tracked": false
+    },
+    {
+      "path": "backend/apps/inventory/workflows.py",
+      "size_bytes": 27884,
+      "sha256": "494ba55f5433a037bddc7d200c2b489b37f3da31ee95fa9635bb9a782dc67077",
+      "git_status": "??",
+      "tracked": false
+    },
+    {
+      "path": "backend/apps/masters/__init__.py",
+      "size_bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/masters/migrations/0001_initial.py",
+      "size_bytes": 34274,
+      "sha256": "e654c210d2aa8d2a2cc24f44794b72c3a8612c34a0ae72b86210fd8f7dac4748",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/masters/migrations/0002_alter_area_name_alter_consumable_category_and_more.py",
+      "size_bytes": 3304,
+      "sha256": "07fe74e970c0880d503af8b0f1d57473bc3c1d615785ec01c458852ff7882879",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/masters/migrations/__init__.py",
+      "size_bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/masters/models.py",
+      "size_bytes": 6072,
+      "sha256": "dc3301a98755ac6bf2a1e21e63691c4398bcdb35253c080ff7d3a93f59796405",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/masters/serializers.py",
+      "size_bytes": 4808,
+      "sha256": "6825f01466c39d87c10c2f60f46e83f85217daf2cfc76fd6824b48d88877d1de",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/masters/urls.py",
+      "size_bytes": 884,
+      "sha256": "b1f28cd4f7a3ce786db303ea22112cf2ad57c1059213427c5e37a14af2816b48",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/masters/views.py",
+      "size_bytes": 8067,
+      "sha256": "a2adb52d3dd587a0029cc0181c794f4b576c84dbff87f780dfa790ee13fa9298",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/specifications/__init__.py",
+      "size_bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/specifications/migrations/0001_initial.py",
+      "size_bytes": 13906,
+      "sha256": "9f5dd59b25a68c1d59dde4c528cbbf186e955424416a9a2e62e239fcb6a89d2c",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/specifications/migrations/0002_modelroutestage_modelroutestage_expected_input_range_and_more.py",
+      "size_bytes": 4733,
+      "sha256": "77f279485b28f5bd98c5d942809f210de067d4f0deca47e4142c486421a91412",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/specifications/migrations/0003_immutable_revisions.py",
+      "size_bytes": 1732,
+      "sha256": "0f90c5800e610437e5e129d62aa8f47916abc601de82e0c4fb08dc43e8c9f5ac",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/specifications/migrations/0004_modelroutestage_instructions_and_more.py",
+      "size_bytes": 902,
+      "sha256": "dfca7e66835e26c860213dd65720099e1f642d0eaded7318545780cbd6ade253",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/specifications/migrations/0005_alter_productmodel_name.py",
+      "size_bytes": 451,
+      "sha256": "5cb9e7a9652f97d04d497f21745d6f2a931c9ad226d8574df2e4a5f82e229c0c",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/specifications/migrations/__init__.py",
+      "size_bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/specifications/models.py",
+      "size_bytes": 5972,
+      "sha256": "ad28287ab97c105b5fe26d90d6993982e525b2e905bfd3f2da10840cdb90ad9c",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/apps/specifications/views.py",
+      "size_bytes": 9752,
+      "sha256": "4074588b3efd311033a7112f68d1c46b0cc20876aff00294d782e1733195a203",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/config/__init__.py",
+      "size_bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/config/asgi.py",
+      "size_bytes": 179,
+      "sha256": "0867870dbe954ff2c57d9a06eedf10e06f7a8be1869a9e48c827c64a194705de",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/config/environment.py",
+      "size_bytes": 1708,
+      "sha256": "ecff734098e92a2e2dcf6e29ff0e73032044eb6b31779e1e130699b6dd59dfd0",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/config/settings/__init__.py",
+      "size_bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/config/settings/base.py",
+      "size_bytes": 4594,
+      "sha256": "4e6b9c1bedf59a92860999bccd2d39012108e319e8a523d5bb2edfe67bbd932e",
+      "git_status": " M",
+      "tracked": true
+    },
+    {
+      "path": "backend/config/settings/development.py",
+      "size_bytes": 169,
+      "sha256": "e3434c08a447c5b2a0f04cc0e7d406dde02853e49bce07512795906d6a778b9d",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/config/settings/production.py",
+      "size_bytes": 1256,
+      "sha256": "c168337c7d06b0740e9f17ba423aadc5ffe42c66a615330ccf96a4c092ab73c1",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/config/settings/test.py",
+      "size_bytes": 437,
+      "sha256": "863c393df2aaf1ce03e246acaf99e79a62c16cfe2f5e9075bcc5e406e4b6d0fb",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/config/urls.py",
+      "size_bytes": 776,
+      "sha256": "365911cd4b6c9df01d84535031a9523a09dc57236d513130f8a024ed7182e468",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/config/wsgi.py",
+      "size_bytes": 179,
+      "sha256": "e9749d910f3be6f66dfec6d876e0be2e8dabf1e21995be1ccb9325631f5d9204",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/docs/API_CONVENTIONS.md",
+      "size_bytes": 4303,
+      "sha256": "18c24805576cb41e1503b8a7c82f3251c9bf6e4dcdf5ff9906b92e2ec83afd3e",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/docs/ARCHITECTURE.md",
+      "size_bytes": 8653,
+      "sha256": "6c9d148d402a754562c971886874a5b9e3c9da394f70eddda7ab41c2c6b530c2",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/docs/AUTH_AND_PERMISSIONS.md",
+      "size_bytes": 6422,
+      "sha256": "2ad112955c3742b695daa35b60ba515021be0c733f4afae4f12646ee8563e6df",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/docs/DATABASE_SCHEMA.md",
+      "size_bytes": 7947,
+      "sha256": "ad27895a039fd74a56cf16e1110ce2c1de8079dd14a45a711f20c0440e25ae14",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/docs/DECISION_LOG.md",
+      "size_bytes": 10005,
+      "sha256": "f19d15c4b756f9f2786fa3e3162761ffaa39ff27891b6996c4797a745719e733",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/docs/DEVELOPMENT_STATUS.md",
+      "size_bytes": 21226,
+      "sha256": "4a4dfc4070363ec897bc144600b0d5c7a8a0577e226d68460e408632cbc8494d",
+      "git_status": " M",
+      "tracked": true
+    },
+    {
+      "path": "backend/docs/EMPLOYEE_ADMIN.md",
+      "size_bytes": 20563,
+      "sha256": "ea6f1176c119f1caafeb0426d7c7ccc50673d8d7d5c93238406411b24f0feda1",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/docs/FRONTEND_ADAPTER.md",
+      "size_bytes": 2947,
+      "sha256": "8f7bbccd7be7291e87e590288f181a10a3617a0d0b49893b381627ac93d447e3",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/docs/FRONTEND_MAPPING.md",
+      "size_bytes": 10414,
+      "sha256": "b736ab2ff8373194e373a09f7ccd4ae8c446ed94d2635e790ad0c2d026b2e75e",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/docs/PHASE21_FRONTEND_CONTRACT_PLAN.md",
+      "size_bytes": 4924,
+      "sha256": "bbb0d3107d15c2b029a6d4c2296a52c4b708a156b2e8ba975e200dc95b16e195",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/docs/PHASE2_API.md",
+      "size_bytes": 12625,
+      "sha256": "301fa7a9da8fdb79b588805340ae7baabf2faa3cc4548f2c4678f8be26cd9278",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/docs/PHASE3A_API.md",
+      "size_bytes": 7178,
+      "sha256": "667f6ad00e5d4125fcc2770ac0d32821207e0fb5d3b352ecfce5ea1a23cd2761",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/docs/PHASE3_DEPENDENCIES.md",
+      "size_bytes": 6657,
+      "sha256": "6179703eb192898bf0d6a4d89528f9c5ec653023cd2333cd88c08995709f9b3b",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/manage.py",
+      "size_bytes": 244,
+      "sha256": "e48656a95a6c547d1e4bbca3bc199a5134883e608a3f8dec8b4c7722d902029b",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/requirements/base.txt",
+      "size_bytes": 211,
+      "sha256": "90c7a3e2e8ddb98f113571c1295abe9cde16981ce099662abed1fa887ca9eda6",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/requirements/development.txt",
+      "size_bytes": 13,
+      "sha256": "c411fecddb3262deb049ee39631a3537981ad5083fac7981c6148124da6f6a4d",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/requirements/lock.txt",
+      "size_bytes": 302,
+      "sha256": "39ffbc0b54b77bf80f755bf23908f71d51b813acdc2882afe38066997734e531",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/requirements/production.txt",
+      "size_bytes": 13,
+      "sha256": "c411fecddb3262deb049ee39631a3537981ad5083fac7981c6148124da6f6a4d",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/scripts/test_isolated.py",
+      "size_bytes": 2470,
+      "sha256": "528bab38cf7e7eb365994b0de785ec0e4c011da89770b2aefc516f8a23dae4ab",
+      "git_status": " M",
+      "tracked": true
+    },
+    {
+      "path": "backend/tests/__init__.py",
+      "size_bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/tests/test_audit_remediation.py",
+      "size_bytes": 5020,
+      "sha256": "cdc93879668e6b8cb7e7292a6b6531cb87c92abaebda9b935ded54bade20925f",
+      "git_status": " M",
+      "tracked": true
+    },
+    {
+      "path": "backend/tests/test_auth.py",
+      "size_bytes": 9387,
+      "sha256": "131826ce37b2ae1813e934a51b950870815864a17ca50fae8fbc6ee4f5e2fb3d",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/tests/test_commands.py",
+      "size_bytes": 7330,
+      "sha256": "d07ea48e5186a1465c97c7d138cd019a110e5a9132e2c3326d676663f304d831",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/tests/test_core.py",
+      "size_bytes": 5308,
+      "sha256": "640fbfc55145447f97558698a97c2b5ff0501e16df9da5a349a7f8bf8b752fc6",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/tests/test_employees.py",
+      "size_bytes": 27315,
+      "sha256": "ebaaa6bdb0c490a6db3bae45969d8ae57702401010e269d018ea8e7e7eb2519e",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/tests/test_inventory.py",
+      "size_bytes": 15554,
+      "sha256": "6a34d5b5724a6b7325ecef057272756ba6d4d6bcf207ea4024f6f3eb2ba9d3ef",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/tests/test_ledger.py",
+      "size_bytes": 26434,
+      "sha256": "e2e3b017a0a35e4ed4b8cacb56e7f60170345faca29e66050284b85571ac1472",
+      "git_status": "??",
+      "tracked": false
+    },
+    {
+      "path": "backend/tests/test_operations.py",
+      "size_bytes": 21197,
+      "sha256": "6b4256b8d35b1382347cefa9422c6c5800ea9885d4cdc30111f3e921a17306cd",
+      "git_status": "??",
+      "tracked": false
+    },
+    {
+      "path": "backend/tests/test_phase2.py",
+      "size_bytes": 23154,
+      "sha256": "cc502448801af8d8bc81b5521f434ea2b165b1e188b91d64bcef8e7d2bd5ca79",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/tests/test_phase21_imports.py",
+      "size_bytes": 11557,
+      "sha256": "e7455e2f84176e909dfa0ff827e4a2cb907f25db316518a88c3cb1f08c65e918",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/tests/test_production_configuration.py",
+      "size_bytes": 2070,
+      "sha256": "343e04f5e5893571b9f012d4ef078e2b53ee58671143e59623bfc0c3956d18b7",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/tests/test_role_capabilities.py",
+      "size_bytes": 12956,
+      "sha256": "03a278aa25417dc956dfb4149eab620660a6f755070998e3c17e2becc9c2fc7c",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "backend/tests/test_workflow_remediation.py",
+      "size_bytes": 9434,
+      "sha256": "405af46efcf65e389f1c86dc7b6002941e4cef4f218423e850c680f724d58ff9",
+      "git_status": "??",
+      "tracked": false
+    },
+    {
+      "path": "docs/CLIENT_SOURCE_MANIFEST.json",
+      "size_bytes": 9307,
+      "sha256": "ab60399d6440f4a19f63dcaee533fa157a847c57114a7597109cdf1778f2e251",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "docs/CLIENT_SOURCE_REVIEW.md",
+      "size_bytes": 20592,
+      "sha256": "c79848fe2964a7a76468c8b4935055c2a9d10a1a2dd3801345990da1b86fc35a",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "docs/MONOREPO_MIGRATION.md",
+      "size_bytes": 6435,
+      "sha256": "05cc7b995e1d5ef3ecf8486199e4adcce8d49e7c79fc64b4878b8520c76a9f8d",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "docs/PHASE_2_1_REMEDIATION_REPORT.md",
+      "size_bytes": 16843,
+      "sha256": "4e30c1bf26c12442070348d41a14d250c0c1f5317d7507b04c3511fb50980d4b",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "docs/PHASE_2_EXIT_AUDIT.md",
+      "size_bytes": 36651,
+      "sha256": "3863b8f4f81d3b43319c92d0a943fdd536cb13c008d960ef1a54d52d9aeb3041",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "docs/PHASE_2_RELEASE_PLAN.md",
+      "size_bytes": 5887,
+      "sha256": "620d2da610936f1ef1eccb556edb91c556e73f84462f63840049d37fde59c3f5",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "docs/phase3-planning/PHASE_3A_COMPLETION_HANDOVER_REPORT.md",
+      "size_bytes": 33550,
+      "sha256": "f6097394edc569d544a5189d4cef99c0ca60d0c77c37ca312b4db49eeefd4dea",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "docs/phase3-planning/PHASE_3B_IMPLEMENTATION_REPORT.md",
+      "size_bytes": 25239,
+      "sha256": "a94182f19b93753149db2101eadd87af0d1ba55009d42b6eb68b9ea4e548505d",
+      "git_status": "??",
+      "tracked": false
+    },
+    {
+      "path": "docs/phase3-planning/PHASE_3C_GIT_CHECKPOINT_PLAN.md",
+      "size_bytes": 5363,
+      "sha256": "5871239683792babc7855abbe12e86d323bfcd03a5955743a5ca955e3a15606d",
+      "git_status": "??",
+      "tracked": false
+    },
+    {
+      "path": "docs/phase3-planning/PHASE_3C_IMPLEMENTATION_REPORT.md",
+      "size_bytes": 61519,
+      "sha256": "0d8964df76394ba55509c816a9d813ccaff89058deb409d745234f5d75e304ad",
+      "git_status": "??",
+      "tracked": false
+    },
+    {
+      "path": "docs/phase3-planning/PHASE_3_AUDIT_TRAIL_SPECIFICATION.md",
+      "size_bytes": 15547,
+      "sha256": "47d1adc6b0e1a3c03f242f74ef33b504b9b422accb56c7ea7b6601cbbb8449c4",
+      "git_status": " M",
+      "tracked": true
+    },
+    {
+      "path": "docs/phase3-planning/PHASE_3_CLIENT_DECISIONS.md",
+      "size_bytes": 27792,
+      "sha256": "47dd8822387c71ce9bd913cb8bea31a23de275c9c6b029b61a1326f81dd8077b",
+      "git_status": " M",
+      "tracked": true
+    },
+    {
+      "path": "docs/phase3-planning/PHASE_3_DATABASE_DESIGN.md",
+      "size_bytes": 27360,
+      "sha256": "bf404b9a0d36ac3b22b23dfa8cf79f93c8de5daccfc9cdf8c64acc1f606bc7e0",
+      "git_status": " M",
+      "tracked": true
+    },
+    {
+      "path": "docs/phase3-planning/PHASE_3_EXCEL_MAPPING.md",
+      "size_bytes": 43023,
+      "sha256": "e07c334440a50e18369092a2c059b994d75f2b8ccd82040dc10e89be5c2b6933",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "docs/phase3-planning/PHASE_3_FRONTEND_INTEGRATION.md",
+      "size_bytes": 11328,
+      "sha256": "fb453e4137e830823352c7c5d3a4ef970bbbf430f226fc8e1ba9a7e4f63ff703",
+      "git_status": " M",
+      "tracked": true
+    },
+    {
+      "path": "docs/phase3-planning/PHASE_3_IMPLEMENTATION_PLAN.md",
+      "size_bytes": 18151,
+      "sha256": "e57bcca803cb7696c4996be979970514e7cb7c92facc49a1383486281374366f",
+      "git_status": " M",
+      "tracked": true
+    },
+    {
+      "path": "docs/phase3-planning/PHASE_3_IMPLEMENTATION_PROGRESS.md",
+      "size_bytes": 17307,
+      "sha256": "304bfbd59f8dad88d1ae3bb9477764bfd79a82933c8aeee348b17b54f0cf28e9",
+      "git_status": " M",
+      "tracked": true
+    },
+    {
+      "path": "docs/phase3-planning/PHASE_3_INVENTORY_ARCHITECTURE.md",
+      "size_bytes": 10855,
+      "sha256": "4a6f499c02006f085880d68f2eb6b438d91473ad82e11dd7a92c9a92f741903a",
+      "git_status": " M",
+      "tracked": true
+    },
+    {
+      "path": "docs/phase3-planning/PHASE_3_LEDGER_AND_STOCK_RULES.md",
+      "size_bytes": 14570,
+      "sha256": "f07e975a4aaa3f8138985aeeecc50c26ba1710ed3612af6edf8f24cb33837afd",
+      "git_status": " M",
+      "tracked": true
+    },
+    {
+      "path": "docs/phase3-planning/PHASE_3_QC_FOUNDATION.md",
+      "size_bytes": 8912,
+      "sha256": "c73ba5a56a079cc4704e723173083154a6f43821d8225faffdfb91de65903a2b",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "docs/phase3-planning/PHASE_3_READINESS_REPORT.md",
+      "size_bytes": 19465,
+      "sha256": "41bfcdbc874a71ebe1267ea717fc6e8ce6b176131f9f23b822cf6039879c1870",
+      "git_status": " M",
+      "tracked": true
+    },
+    {
+      "path": "docs/phase3-planning/PHASE_3_REQUIREMENTS_TRACEABILITY.md",
+      "size_bytes": 15826,
+      "sha256": "d9dc4288d806e7a731ccde893388767214b7cbe914e1b9a18edf3f7f370255db",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "docs/phase3-planning/PHASE_3_SOP_PERMISSION_MATRIX.md",
+      "size_bytes": 16150,
+      "sha256": "8df082a810cfb951e16718bf8b21c2bbaa05ebb87d0f4282ff9b22834a67b8ac",
+      "git_status": " M",
+      "tracked": true
+    },
+    {
+      "path": "docs/phase3-planning/PHASE_3_TEST_REPORT.md",
+      "size_bytes": 22153,
+      "sha256": "62b5f37f9b38f974b5921a6062bf8a798bf41eda038cc484d2800ea2e046f873",
+      "git_status": " M",
+      "tracked": true
+    },
+    {
+      "path": "frontend/.env.example",
+      "size_bytes": 78,
+      "sha256": "c7eac6b683e14aabb5998b65926ff6f54457a7fe6d7129d7a7aac4bfe640757b",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/.gitignore",
+      "size_bytes": 65,
+      "sha256": "91baef3aa744018f9530968dccac4f9499692bd22113e61ae514048a6bd8ae37",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/AGENTS.md",
+      "size_bytes": 2407,
+      "sha256": "e6eec2213179026b0eed721afeddf2eb9c29a850c2d852302d9710b2c87d4c67",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/README.md",
+      "size_bytes": 5173,
+      "sha256": "94bdb21feacc6e4f6bba846b24df80d37394cd43a13d0d031e011160caa096aa",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/docs/ARCHITECTURE.md",
+      "size_bytes": 12697,
+      "sha256": "51fa12cff13961a77c297ed1370daac5fc3c9f4d678b7d97a757f8e7f04583c9",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/docs/BACKEND_TODO.md",
+      "size_bytes": 16505,
+      "sha256": "98c6590d049348343540a380b10eb09d4aae4b3545859618d4c5214af06ac909",
+      "git_status": " M",
+      "tracked": true
+    },
+    {
+      "path": "frontend/docs/BUSINESS_RULES.md",
+      "size_bytes": 21013,
+      "sha256": "109a7e81e4b3ce7cd845fed31e2a6b9189e960bcc76acb4f94340db5ae9d5e51",
+      "git_status": " M",
+      "tracked": true
+    },
+    {
+      "path": "frontend/docs/CHANGELOG.md",
+      "size_bytes": 10950,
+      "sha256": "2b8ae0385cee8f25b069b543c88cbac31d579cf32eb49b07f449b33c8b48c041",
+      "git_status": " M",
+      "tracked": true
+    },
+    {
+      "path": "frontend/docs/DATA_MODELS.md",
+      "size_bytes": 20529,
+      "sha256": "d9f7220fe0d7a49d5e3d1607068e10476861910b366595acad20ee9f2a3c6daa",
+      "git_status": " M",
+      "tracked": true
+    },
+    {
+      "path": "frontend/docs/DEVELOPMENT_STATUS.md",
+      "size_bytes": 23771,
+      "sha256": "489eb52fd998375da02d5ed41bef988424d004974cac2b9f9f9cbb05211a5d98",
+      "git_status": " M",
+      "tracked": true
+    },
+    {
+      "path": "frontend/docs/backend-planning/API_CONTRACT_BLUEPRINT.md",
+      "size_bytes": 27428,
+      "sha256": "55e2f9d2a9e3492b61b12f71a256cfead88f71d94545aca37d969778f53ef835",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/docs/backend-planning/BACKEND_DATABASE_BLUEPRINT.md",
+      "size_bytes": 21801,
+      "sha256": "a76e72fec97739a3c7ad20e9633b46058aab3b8f464ebabd0dcdfd19e02f60d4",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/docs/backend-planning/BACKEND_IMPLEMENTATION_ROADMAP.md",
+      "size_bytes": 10903,
+      "sha256": "357cb6294f4e694f803bc72564a1c21f6bb75356a73625405c19be6f24a03fdd",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/docs/backend-planning/BACKEND_READINESS_REPORT.md",
+      "size_bytes": 13410,
+      "sha256": "20d99277d240b1a6aec0fa423a8f9dd139127b283c5d605153c8eaa51c62ea98",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/docs/backend-planning/FRONTEND_ARCHITECTURE_AUDIT.md",
+      "size_bytes": 188709,
+      "sha256": "2742bb2ca614d175f0f2ef269479859d3e9bf507db93765d86656661a5bc3127",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/docs/backend-planning/FRONTEND_DATA_MODELS.md",
+      "size_bytes": 59769,
+      "sha256": "7fd00c6dc2925c971f7562cbfb9ba1b2462a96f4a7912b18f8ccf1f0199eb281",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/docs/backend-planning/FRONTEND_WORKFLOWS.md",
+      "size_bytes": 158724,
+      "sha256": "a7aaea764cce22b61689a461eb224e6d9d8c1f8f156d060c4dad7c1ad30be3bb",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/docs/backend-planning/SOP_FRONTEND_GAP_ANALYSIS.md",
+      "size_bytes": 8877,
+      "sha256": "d10a45648a08e9419e2e9d7ed1560eaa1cc08bfeb56013bd09b5f98746826256",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/docs/custom-costing-routing.md",
+      "size_bytes": 14446,
+      "sha256": "66c8e623537fc865baebab0d82c7277c78901d2d607bdcdf7aaf0f0c22a2a206",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/docs/finished-goods-reference.md",
+      "size_bytes": 3998,
+      "sha256": "be21a8fc73140e93ebc40fe66848fa9b91726b3dc530d8662827793696bf7bc6",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/docs/quality.md",
+      "size_bytes": 39028,
+      "sha256": "1988628238b8e860481a1f3dc4aa6aecd42bd35da09d0b5814279443fd695892",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/docs/quotations.md",
+      "size_bytes": 35227,
+      "sha256": "971edc16c6266a448b6269a600dc5ca42580397a614a4f212f4c702fa1b8e46e",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/docs/sales-fulfillment.md",
+      "size_bytes": 65359,
+      "sha256": "e2ad2bd3449fafa0c3acd07f335f5074313b6721845e9b917df6afd74cf2d7ee",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/index.html",
+      "size_bytes": 529,
+      "sha256": "0ec6daae8f43873bcc9d9b6afb4b58b1b34cc21d4a8f5e3c7ca4cd4884a8b1e4",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/package-lock.json",
+      "size_bytes": 121953,
+      "sha256": "ba9292e8d5f5083e6bcc0698c463014d9cc8d8cbab1c65a4fd899642f39f38cb",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/package.json",
+      "size_bytes": 964,
+      "sha256": "3f79c42393baaced1e94abd3779c0900701f1ad099411afea2ac9e43dd6cd66e",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/postcss.config.js",
+      "size_bytes": 87,
+      "sha256": "98e8d8a143f16216f4b50a2520024f6254987049b2e199026742a96e16ba411e",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/public/assets/Nava-logo.png",
+      "size_bytes": 79103,
+      "sha256": "5afd871f621503d28a711e727ebc407cb3fbe91c493b836e7975158e8dc82825",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/scripts/check-auth.mjs",
+      "size_bytes": 4238,
+      "sha256": "ad00c5f9ecd90c3d40b30e8ebd4423ee95edcfc282f58a9cc5f695945663b5a7",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/scripts/check-custom-costing.mjs",
+      "size_bytes": 11163,
+      "sha256": "1ae413572f51fc116a4fa57732b6e53ffbb26e2ef2b9ebc032326639780dd85a",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/scripts/check-customers.mjs",
+      "size_bytes": 2785,
+      "sha256": "0aeb62cf6d99fb9ffb2df11aa782d4de36eebaa41920e1125688880fe64d2278",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/scripts/check-finished-goods.mjs",
+      "size_bytes": 3948,
+      "sha256": "811979eefdffda3c37405f976715b4ec2902d1b9ecee942e2851cdc1716df3a7",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/scripts/check-integrated-operations.mjs",
+      "size_bytes": 13174,
+      "sha256": "2c9afc79f6eb7f956a90a9c5ceff31b7fd7a204dbf9fcb274082615f1f65f89a",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/scripts/check-inventory-api.mjs",
+      "size_bytes": 4222,
+      "sha256": "b841e1820d24533972df3caf20d2b0fd57f1f90b167f5c39e08450f843a7b1ea",
+      "git_status": " M",
+      "tracked": true
+    },
+    {
+      "path": "frontend/scripts/check-inventory-workflows.mjs",
+      "size_bytes": 2333,
+      "sha256": "6e4ff7f10773ec9196f8e1536519825c1e5e2a4a0673153be42d4815f75b8699",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/scripts/check-job-cards.mjs",
+      "size_bytes": 8234,
+      "sha256": "778f860139b60f37dc39e3100751a92466eba8da4164d4939077acccf18922c8",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/scripts/check-led-finance.mjs",
+      "size_bytes": 7772,
+      "sha256": "69c3623460e9e432cc661ca9fbca8ad145fc5bde04849961aeecd558745ef698",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/scripts/check-quality.mjs",
+      "size_bytes": 13340,
+      "sha256": "3f904f76a17e0e4b65757f0b1944396b7418cbdb4c75d0515e3928458ec54906",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/scripts/check-quotation-persistence.mjs",
+      "size_bytes": 2751,
+      "sha256": "142c548197ee856d47b468d9ed0a7be99ceccf80860a0385505e882a8d83a41b",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/scripts/check-quotations.mjs",
+      "size_bytes": 13359,
+      "sha256": "05fd1478553e96c74779f0e0b9a0aeccc9b9d9bb7c02af353d508b08468b8d0d",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/scripts/check-sales-fulfillment.mjs",
+      "size_bytes": 12111,
+      "sha256": "9a7f23eec25e88e8cb1f17cecd211b37c6fc48a57e30b4a2816120a45e6a81f1",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/scripts/extract-finished-goods.py",
+      "size_bytes": 7793,
+      "sha256": "caee98240c5792f327dd6a4ea5beddd83fe78f574f883e80cd13a42be481ea6a",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/scripts/extract-raw-materials.py",
+      "size_bytes": 3585,
+      "sha256": "573beb7943b3cf73b699736af2e26d28d7dc3e83bf82f3b6b951ffb43acce31b",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/App.tsx",
+      "size_bytes": 5876,
+      "sha256": "1cdd750daa54dc5436f41640a05904ebd1eecebb241a908406d3d97edbbb0c25",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/components/GenerateQuotation.tsx",
+      "size_bytes": 938,
+      "sha256": "d0ce2682a7c3817363e9bc200b4ca87f8efa8837f8aaa8413a2fe85d25128366",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/components/LEDFields.tsx",
+      "size_bytes": 4187,
+      "sha256": "6290235461affbf06750f9f4406a9b052bf0d48da6da648dcb9662e4e077337f",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/components/ProductionRuns.tsx",
+      "size_bytes": 2921,
+      "sha256": "46ddc42928662ed0b215f5aaa9fbdba5f4778b87709ca84dc16d5db0978bbc63",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/components/ProductionTimeline.tsx",
+      "size_bytes": 1542,
+      "sha256": "fca1632057e6cc8cc85a8e66a36aff37fddfc87a2c4033491041a3ba65275ec8",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/components/SalesSummary.tsx",
+      "size_bytes": 1122,
+      "sha256": "f686b2e991a03049a27534bd3a902736ec18e6ce7a9f72fa8dccada7d319fbbc",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/components/StockIntelligence.tsx",
+      "size_bytes": 13028,
+      "sha256": "1ee18241f2a68a64fe681fec127a75b7737bd3d904e937a2925c3f53ae3f0155",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/components/layout/AppShell.tsx",
+      "size_bytes": 6857,
+      "sha256": "5207b8ff31dfc6a15a302834d1f4766bec057392816cef32a3679d1bc8d87879",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/components/login/BrandPanel.tsx",
+      "size_bytes": 1893,
+      "sha256": "307a546ac46b3aff7d99368fb8a8fcbd596ed1b091b21b4950d117689577a061",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/components/login/Button.tsx",
+      "size_bytes": 842,
+      "sha256": "7d43404abb15cf12121cf51509eb2fbff427bea8802f75471cd81b64a6ad1088",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/components/login/RecycleLoop.tsx",
+      "size_bytes": 972,
+      "sha256": "872dbbdfdc59a24e3ec94089018c33f80eeb837abdcbb92ab641dde0c1a1b4d6",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/components/login/TextField.tsx",
+      "size_bytes": 1361,
+      "sha256": "e22eb915158fe761435454cc44e9f3fc47add17b8fe8765b00f17966268db652",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/components/login/WovenBackground.tsx",
+      "size_bytes": 612,
+      "sha256": "c52ad65a3d1b3fb8cac391bcf98d2ea4465f362ff0522df798c7a24a47c63b34",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/components/ui/Card.tsx",
+      "size_bytes": 285,
+      "sha256": "29afd347089745154e4f26f97bc0e7d17c3b0e251f827830700bcb963e6be6c4",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/components/ui/InventoryMovementModal.tsx",
+      "size_bytes": 9559,
+      "sha256": "6cd18ce3b931d3e915f19f4e897015fb168c58fb28bcfcad1dbb5ca47bd711ba",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/components/ui/SearchSelect.tsx",
+      "size_bytes": 4493,
+      "sha256": "d9d5be7140ce159238982d6e30c48af3dfbd6aef3c4662d207acd2deb351453c",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/components/ui/StatusBadge.tsx",
+      "size_bytes": 1448,
+      "sha256": "a959a4484820d584b7f4ae580c5a03a20bafcccf875565c04817b0d99de69ced",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/context/AuthContext.tsx",
+      "size_bytes": 5131,
+      "sha256": "e10e673599a0fb5171b43a24f46697fb9c55e68b1023a34fb9f72967672d2e13",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/context/CommercialContext.tsx",
+      "size_bytes": 6374,
+      "sha256": "46c59dd5c7fe8a7a48305148cdaeeb83a1bdd9a5b58066e1d7b3b6f2566fb03b",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/context/ConsumablesContext.tsx",
+      "size_bytes": 2405,
+      "sha256": "d9a11abf3b42b24510ec0c221b9cbef8106eca4abd20f42fd8611a207f461dab",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/context/CostingContext.tsx",
+      "size_bytes": 9160,
+      "sha256": "941c51036bcfd9832e6b42783f86616d7147a2460faf555f9cc70a38e1af1fe9",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/context/InventoryContext.tsx",
+      "size_bytes": 10395,
+      "sha256": "da762d41c108b45cdf8a6b1f88aa694468ecac623927b44b82e18b9bd1737bc8",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/context/InvoicesContext.tsx",
+      "size_bytes": 1384,
+      "sha256": "d0e786b53aba4c7622f7b890bce4aff551334bac4d685b689304ed39ae07cf00",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/context/JobCardsContext.tsx",
+      "size_bytes": 21183,
+      "sha256": "7d22c97be147c070ee271739780f05d52e38398abb4f383f924f43d44dde9080",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/context/ModelsContext.tsx",
+      "size_bytes": 1868,
+      "sha256": "766cfab21e23025b71dff260a10830205ed5835a1dcb6b19c24fcf6ea4f54475",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/context/QualityContext.tsx",
+      "size_bytes": 7477,
+      "sha256": "ebde0860092bc02586204987535359294bc956bf3389c27f504fe5ca30fddcc8",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/context/QuotationsContext.tsx",
+      "size_bytes": 12263,
+      "sha256": "88f7186cb911649d0d1fe4fe369daf491a654810ddd4c36f8cb7058f10a79882",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/context/SalesOrdersContext.tsx",
+      "size_bytes": 2418,
+      "sha256": "1a85c76fc0c41181b9a8d41a1be5792e81de5453918107062cd7720745f7b6af",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/index.css",
+      "size_bytes": 2984,
+      "sha256": "8c0defc289e58b7f6115aaa34ebc8d06b217e2a2d3349165f9b0be6fa9a5dda1",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/lib/api.ts",
+      "size_bytes": 3849,
+      "sha256": "2f6dc0a22eaefdfb18091c7313a990f098960560e1ead323932a043e58776f66",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/lib/authSession.ts",
+      "size_bytes": 1389,
+      "sha256": "8c5b1d38323f77a89bbdba1961e8bc2b73ffe6a43bdbab76039b59508f3a722f",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/lib/backendProfile.ts",
+      "size_bytes": 646,
+      "sha256": "5bf0e3e5860600a16b54da473d1e09a9b633a49f3930fe7eea98edcbf668f63d",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/lib/commercialPricing.ts",
+      "size_bytes": 2528,
+      "sha256": "c47cde6ba4b79fa655d1bd1382b38a1780dc9bce66d0c1fb57ef685b373eac0b",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/lib/consumableData.ts",
+      "size_bytes": 1129,
+      "sha256": "e4d50727f1028f58702efa317b5316e0614a923e715a0681491549910a9f0d2a",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/lib/customCosting.ts",
+      "size_bytes": 14466,
+      "sha256": "96b8a9166b535784ad9b0fa083c57e64cfd177b3cb806f009921ec0678655e20",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/lib/customersApi.ts",
+      "size_bytes": 3005,
+      "sha256": "1490f954f84512db38c60be2a426641b63d280d5c85e4feb9f0a6ebedeac2932",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/lib/demoAuth.ts",
+      "size_bytes": 518,
+      "sha256": "ae1bafc0e9d8e571d4cd405bfbafb21cbf576c2a56f3a43c343648a28bd23d2a",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/lib/finishedGoodsData.ts",
+      "size_bytes": 5469,
+      "sha256": "ab7a3cd79190244c7bf49401d01c8c00671e748bdf20c2bcce64f86ddcf8ee55",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/lib/finishedGoodsReference.ts",
+      "size_bytes": 349048,
+      "sha256": "0b475fb5adb255947257c6cb503fb414b473ce3413376032ce475ba3668b4ffa",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/lib/fulfillment.ts",
+      "size_bytes": 9925,
+      "sha256": "53d867f9845ef79d88cda89f8a6332bc2c32c75f7051d0e9fb54f2a9fcc38982",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/lib/inventoryApi.ts",
+      "size_bytes": 2088,
+      "sha256": "85d1b721797f67512bed7502dfc9da9a9fc794e6057d57776ee6be4e3b905675",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/lib/inventoryOperationsApi.ts",
+      "size_bytes": 2155,
+      "sha256": "63a293910cf8942598930f9fb77112565f764f6ff016d6e48c94d39bcedf63e1",
+      "git_status": "??",
+      "tracked": false
+    },
+    {
+      "path": "frontend/src/lib/invoices.ts",
+      "size_bytes": 7057,
+      "sha256": "e744d583d01a5a31fc48707978fe06bce74ca93cc5efefbf909aaddaa87e82e4",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/lib/jobCardDemo.ts",
+      "size_bytes": 5671,
+      "sha256": "c769ce36963106cd468181ac29d174add7746cdf33a7ded4de306ff09ac0321c",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/lib/jobCards.ts",
+      "size_bytes": 22021,
+      "sha256": "2840a9e89a9c6ce61a3a9f62fbba51370d85930ff33b8ed6291c45f6eb0cbc74",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/lib/led.ts",
+      "size_bytes": 3461,
+      "sha256": "654d4c3b5b97d31b3d70c8378c66a84678cd9ccc8cb2430a217038f7ab97887b",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/lib/mockData.ts",
+      "size_bytes": 10498,
+      "sha256": "a28f69700d3891a3f2c198f2acf03a07de8f14d2cc7d8146f3f1bd910999561b",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/lib/operations.ts",
+      "size_bytes": 4151,
+      "sha256": "9e730e7a1b5c2704db3abd0bcd4f3f66756f13ded33a9f9d6ab768dbbc60b99a",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/lib/parentJobCards.ts",
+      "size_bytes": 4357,
+      "sha256": "5257ecbe1f1ebd689a57bbf0382c0d0d8f7e58f65e9a1415a3643e8d0f191a63",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/lib/productModels.ts",
+      "size_bytes": 1095,
+      "sha256": "ff5258ddc6a045ce40a3322a665e47f3a50808a98ae174edf1785a83ea5f3b78",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/lib/productionRouting.ts",
+      "size_bytes": 3582,
+      "sha256": "1026103aaa3d27267f7392bb39eba3a8a157723e62f3efc1065d4dee66f0762b",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/lib/productionRuns.ts",
+      "size_bytes": 3927,
+      "sha256": "06853da3c7cae8221a1b5ff81fa64597b5630865dc73cae60c766ca5566ae301",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/lib/quality.ts",
+      "size_bytes": 19385,
+      "sha256": "4d0510a86b07fb22a55eda20bf2c41ac69878f6e0663e681660ac1a22fb502fb",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/lib/qualityIntegration.ts",
+      "size_bytes": 5911,
+      "sha256": "862d92a6c72fe364a4fe25dd4c8618914420866b420975f8f479fe1a8823c493",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/lib/qualityReports.ts",
+      "size_bytes": 2271,
+      "sha256": "8d8ac24c85eaf161347b188f8e5dd611d6978ccc6cc7bedd775dc44e5c2c475f",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/lib/qualitySchedule.ts",
+      "size_bytes": 2284,
+      "sha256": "8e2771dcfaa81fa0346b9916363c3e03c534a015c0f97c0e5cd21624735be8db",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/lib/qualityTemplates.ts",
+      "size_bytes": 4489,
+      "sha256": "60cc9792ec2170a67daaf587cea573d40b799bdd70307636e45de1f027597df8",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/lib/quotationApi.ts",
+      "size_bytes": 3505,
+      "sha256": "f32e455cfd4bca174988904cdd448cd4bd58628e32d0bf9c17b649ae0e269719",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/lib/quotationReview.ts",
+      "size_bytes": 2462,
+      "sha256": "9250bd71e7ee5713c4873d2b1da8109b505bb5223254d13de57a70c8cb2281b7",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/lib/quotations.ts",
+      "size_bytes": 18835,
+      "sha256": "1ca5903a85cd788f9cf42c83fa0594346f9fd8486fb7a06d02e348348bcc5485",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/lib/rawMaterialData.ts",
+      "size_bytes": 2991,
+      "sha256": "c58a4e6fb87132076eaaa8a9870741ffc576451400c7209603d5e7adc0b48c8d",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/lib/rawMaterialReference.ts",
+      "size_bytes": 128303,
+      "sha256": "71726a2eeca0cf84d6530a39449582932862e1afe5849f333230c0b60f551917",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/lib/salesJob.ts",
+      "size_bytes": 3635,
+      "sha256": "c3972cbf82d15ee9292b02827be37523113c36cc16fba7abaf78883f314de88a",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/lib/salesOrders.ts",
+      "size_bytes": 5703,
+      "sha256": "beeafe1e67591b9551e2b8496e814b95e9fb47850415adfda43f95d680402e03",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/lib/stockData.ts",
+      "size_bytes": 6147,
+      "sha256": "87eb32e48b4e104236520edda60fe51f4978483512257a8c3b0f0050238900ba",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/lib/stockIntelligence.ts",
+      "size_bytes": 11225,
+      "sha256": "28eefbadb807a0e142f7ef86bd216944360ca1d6cada4a5409a8831e061ec64b",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/lib/unitsApi.ts",
+      "size_bytes": 1845,
+      "sha256": "9a01c0b510f0f5068bc8e164d23fd3b48a590f2bfa57b0496243b6d1b415dd06",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/main.tsx",
+      "size_bytes": 346,
+      "sha256": "1cd6a50ec1fc9ec0dfde265f0fb723a7ee8a9e323106e4302293c0db5e90c420",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/pages/Consumables/ConsumablesPage.tsx",
+      "size_bytes": 13594,
+      "sha256": "2cee3806f3f1aac84838f017e16566d19b3038be0c72f04dbfa8bddeb4b1b041",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/pages/Costing/CostingFields.tsx",
+      "size_bytes": 6417,
+      "sha256": "8704fa993aa669ff41844dcdecd77a9d11db5e981cf43f8be3860e17738f4e14",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/pages/Costing/CostingPage.tsx",
+      "size_bytes": 10576,
+      "sha256": "800505ad72c59c6fe5be266cfe6bedc8766dc46fc0d05d11fcbf533f10c2aeb4",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/pages/Costing/CustomCosting.tsx",
+      "size_bytes": 22485,
+      "sha256": "0c23856e499b902b608b39c9b3df4a2d71bedb30b04d9f3cd387dd7aac38ce82",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/pages/Dashboard.tsx",
+      "size_bytes": 6904,
+      "sha256": "9f9563b1a49ed8f91c669e1b215fbb6daa3b719e3411eb1890b03a6364a2e9e2",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/pages/FinanceDashboard.tsx",
+      "size_bytes": 8710,
+      "sha256": "b579abb09eb8156952a2f37644e2c523c99839c60a61f541013ad0248c45e9c7",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/pages/Inventory/InventoryFoundation.tsx",
+      "size_bytes": 10899,
+      "sha256": "c65902e6037093786a27e5fd786324e2c933b3c539a9e7daeaaec09c0910460d",
+      "git_status": " M",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/pages/Inventory/InventoryOperations.tsx",
+      "size_bytes": 12294,
+      "sha256": "b9d1e9674e8bf0df17106fd63024c722d4632752d67f6f85298a5b7d812657ad",
+      "git_status": "??",
+      "tracked": false
+    },
+    {
+      "path": "frontend/src/pages/JobCards/JobCardDetail.tsx",
+      "size_bytes": 22238,
+      "sha256": "ad8904ee831d9da31d67a1aadf26762dbd0ffa610f1bc7855717576fcf5eb149",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/pages/JobCards/JobCardForms.tsx",
+      "size_bytes": 16527,
+      "sha256": "84c986a8b2fd40b16278cd5bec3a74131b3cc66d4e1f53c77e80b2dcc2c354c4",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/pages/JobCards/JobCardList.tsx",
+      "size_bytes": 7218,
+      "sha256": "53372a5756797974f77d27a7aac03c61e86a0e57db9d5fcfaeb485efc6fda9ba",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/pages/JobCards/JobCardUI.tsx",
+      "size_bytes": 3775,
+      "sha256": "e75f14fa09a00c7482b00019fa0d2c7ed74c706d9fc9baec0f5c2251c3c1bb7f",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/pages/JobCards/JobCosting.tsx",
+      "size_bytes": 2010,
+      "sha256": "2aa5fd3e86f0a2308252d40de2bb2b792da6aa6ba977da4d51d106d2dfb530f2",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/pages/JobCards/JobRoutingEditor.tsx",
+      "size_bytes": 5487,
+      "sha256": "06f57e04bd15d4b3bb6896221adaf5d86a26d98a7b19a29849cd648b118052a1",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/pages/JobCards/RoutingFields.tsx",
+      "size_bytes": 4323,
+      "sha256": "8c0a04778de735dccb5f283b2d02057731a503191b06f2e745da3b49667be931",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/pages/Login.tsx",
+      "size_bytes": 7478,
+      "sha256": "ff5ae35689e8fbe191572a22990fcd8da3340d6e26ef219ac6a10d830cae6a27",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/pages/Masters/MasterTable.tsx",
+      "size_bytes": 7428,
+      "sha256": "0be77e817f645f25391f212308cfabb5621ba2a1b4fcf4f4dfe80e3dfc9faac0",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/pages/Masters/MastersPage.tsx",
+      "size_bytes": 6345,
+      "sha256": "5a37d3d5875dad0fcff294c190791edafb8852e2691597a596c70b792e7bd6a2",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/pages/Masters/ModelManager.tsx",
+      "size_bytes": 5966,
+      "sha256": "089fe810fd0e811dd7c246a67eda9f366f1bb3b64eeabc2e9e4b8f46c5b7caa5",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/pages/Masters/UnitsManager.tsx",
+      "size_bytes": 2694,
+      "sha256": "68c37bf9855945ee36d85fe30f4b28d154c24f767dcd5be1eb9f655051908b99",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/pages/Masters/UsersManager.tsx",
+      "size_bytes": 5093,
+      "sha256": "7bb9e07e1bc851a3cad4d9bc6fd019e99d882319a4690688dac954815b825395",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/pages/Placeholder.tsx",
+      "size_bytes": 381,
+      "sha256": "f15d6dec4298aa318c0765bf341d32fbb2d708a8b7a603dacaf21bb3cac43776",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/pages/Quality/DailySchedules.tsx",
+      "size_bytes": 3751,
+      "sha256": "7e7ad1c80312c2191a7f356a82b893ac455461c3a2bdc3ff84e65065084c1695",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/pages/Quality/InspectionDetail.tsx",
+      "size_bytes": 7838,
+      "sha256": "d8b058a3051fb0e44c5331425b41ae47824c766c597a5b97ce304dff9897e367",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/pages/Quality/InspectionForm.tsx",
+      "size_bytes": 6333,
+      "sha256": "b597ea1c19121f3932fd088c97e4aa0763705db0836e7f8da3cca2e18c7c3053",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/pages/Quality/NewInspection.tsx",
+      "size_bytes": 7136,
+      "sha256": "b97952614393f99d774e1b9174f52bda794109edf8de43069063f263f8761f1e",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/pages/Quality/QualityPage.tsx",
+      "size_bytes": 13913,
+      "sha256": "491e837f7841c1ea51378864a9051e0549ee11bab95a69f6943dc1161ef81b29",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/pages/Quality/QualityTemplates.tsx",
+      "size_bytes": 7412,
+      "sha256": "7d172060ac9d587b65c36ac0e0a165828393b5409a31151818dda1ad3331c613",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/pages/Quotations/ManagerApprovals.tsx",
+      "size_bytes": 7309,
+      "sha256": "bcd035f50535c4a0abdf667e08ad9bb211b8fac534474978ba00d8150f1d7ec6",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/pages/Quotations/QuotationDelivery.tsx",
+      "size_bytes": 7940,
+      "sha256": "dbab6346348843c31b96baedd25a094f3b4eb04503430d18788c02b68087c6a5",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/pages/Quotations/QuotationDetail.tsx",
+      "size_bytes": 11661,
+      "sha256": "1c167f3a0535f6cf3b588d9590a24092c0f7ad806852bc356e99a1a4dbd4b354",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/pages/Quotations/QuotationEditor.tsx",
+      "size_bytes": 22184,
+      "sha256": "0ca59a38e50e0a106bb401efe7a5e149a442a181852a9e441b220b4b1c861109",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/pages/Quotations/QuotationEmail.tsx",
+      "size_bytes": 2228,
+      "sha256": "86b45391a24e48b8d1d3f41e9667bcf9d047e2cad4af9393c8fd232d1066413d",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/pages/Quotations/QuotationList.tsx",
+      "size_bytes": 8466,
+      "sha256": "cbc62fb7ba24eebcecc6fe1b6b1f8fc946b3a50d33846a82f36ec1a5c60c8717",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/pages/Quotations/QuotationPrint.tsx",
+      "size_bytes": 5303,
+      "sha256": "a17f1c7ac0c37cbd7628db4c17f8100ca2f5a0304ad74e2210aab82ed7bfb43b",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/pages/Quotations/QuotationSettings.tsx",
+      "size_bytes": 7195,
+      "sha256": "a8ac9a589782ffb716bff63d7880f7bb0510e93f837a81c466701db364ff7a11",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/pages/RawMaterials/RawMaterialPage.tsx",
+      "size_bytes": 15313,
+      "sha256": "794215a51f4d8855a125f14e32396ac4fe9a40380aa852e5ec16c13648020278",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/pages/Recycling/RecyclingPage.tsx",
+      "size_bytes": 6644,
+      "sha256": "e9c2c2f9e3c1822a27eb9e6de231706a55f0faf8b6c3d55d66518ec4f4779bb5",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/pages/SalesOrders/NewSalesOrderModal.tsx",
+      "size_bytes": 18849,
+      "sha256": "57b29a38805f1696d76301bf7e7111a60ceab3c8d5c13735d174c4452efc6353",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/pages/SalesOrders/SalesInvoice.tsx",
+      "size_bytes": 6873,
+      "sha256": "a58620dde8c451d75787ee485ea47a2be8e242dda797069053d4611509cef61a",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/pages/SalesOrders/SalesOrderDetail.tsx",
+      "size_bytes": 16692,
+      "sha256": "c4dfe5dbb637e2bcec7f9ef65bd28f1a0de002815f09581755af524cc65fc3c2",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/pages/SalesOrders/SalesOrderList.tsx",
+      "size_bytes": 20477,
+      "sha256": "7a30cd7e850154d002b7ac4f8cd8dbdc87e97403e75626c23f962ceae67c02f3",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/pages/Stocks/SalesOrderDemand.tsx",
+      "size_bytes": 4234,
+      "sha256": "9c4116f4e390612d0943f41a23e60895993c2439060545efc2885f4b9831ca1e",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/pages/Stocks/stocks.tsx",
+      "size_bytes": 23198,
+      "sha256": "e22ebe3bef5bc1f5aaa44170af342ac69bbb5c6f5d3e87809a37e456112c33a6",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/pages/TrackTrace/ConnectedTrace.tsx",
+      "size_bytes": 7101,
+      "sha256": "b60e4d5ed0ca0368e89e27b05c13f8de8a4560b589b2f010b98ef081509836b3",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/pages/TrackTrace/TrackTrace.tsx",
+      "size_bytes": 4122,
+      "sha256": "6f9b0e79b1c67dd77b8c7c030b152ef06051aa4b692881fc0c84b599cd810ce1",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/types/index.ts",
+      "size_bytes": 8373,
+      "sha256": "189a857e34c787db2c1066abc09f908bee68ec36d92445c80072518d922073c2",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/src/vite-env.d.ts",
+      "size_bytes": 39,
+      "sha256": "424faf9241dd699dda995b367ed36665732da1e6ec1f33b2fd40394488ecac92",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/tailwind.config.ts",
+      "size_bytes": 546,
+      "sha256": "6564e5ad5a2b353067c72e975f4489d7d54eb5ba602d3950393a614e7d3d3eb8",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/tsconfig.json",
+      "size_bytes": 637,
+      "sha256": "064cc010e41edc10458779e9e1a6850d63eaceb07a539b35ebddf79fa4eea67b",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/vercel.json",
+      "size_bytes": 102,
+      "sha256": "14b95599e5dca449bd7efdf5cf240c91dca33418b6beb8e0f4bb0774ecf64e44",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/vite.config.ts",
+      "size_bytes": 387,
+      "sha256": "af302d31375a06aa9fe5ef2bc189eabc0335f09a7e141757ba90bbbf8c43e9dd",
+      "git_status": "  ",
+      "tracked": true
+    }
+  ],
+  "dependency_locks": [
+    {
+      "path": "backend/requirements/lock.txt",
+      "size_bytes": 302,
+      "sha256": "39ffbc0b54b77bf80f755bf23908f71d51b813acdc2882afe38066997734e531",
+      "git_status": "  ",
+      "tracked": true
+    },
+    {
+      "path": "frontend/package-lock.json",
+      "size_bytes": 121953,
+      "sha256": "ba9292e8d5f5083e6bcc0698c463014d9cc8d8cbab1c65a4fd899642f39f38cb",
+      "git_status": "  ",
+      "tracked": true
+    }
+  ],
+  "working_tree_changes": [
+    {
+      "path": "backend/apps/inventory/ledger.py",
+      "status": "??"
+    },
+    {
+      "path": "backend/apps/inventory/ledger_guard.py",
+      "status": "??"
+    },
+    {
+      "path": "backend/apps/inventory/ledger_models.py",
+      "status": "??"
+    },
+    {
+      "path": "backend/apps/inventory/migrations/0006_postingpolicy_ledgerapproval_sourceevent_and_more.py",
+      "status": "??"
+    },
+    {
+      "path": "backend/apps/inventory/migrations/0007_synthetic_ledger_guards.py",
+      "status": "??"
+    },
+    {
+      "path": "backend/apps/inventory/migrations/0008_operationrequest_operationline_operationdecision_and_more.py",
+      "status": "??"
+    },
+    {
+      "path": "backend/apps/inventory/migrations/0009_operation_guards.py",
+      "status": "??"
+    },
+    {
+      "path": "backend/apps/inventory/migrations/0010_operationrequest_cutoff_basis_physicalsourcedocument_and_more.py",
+      "status": "??"
+    },
+    {
+      "path": "backend/apps/inventory/migrations/0011_physical_source_guards.py",
+      "status": "??"
+    },
+    {
+      "path": "backend/apps/inventory/models.py",
+      "status": " M"
+    },
+    {
+      "path": "backend/apps/inventory/urls.py",
+      "status": " M"
+    },
+    {
+      "path": "backend/apps/inventory/workflow_models.py",
+      "status": "??"
+    },
+    {
+      "path": "backend/apps/inventory/workflow_views.py",
+      "status": "??"
+    },
+    {
+      "path": "backend/apps/inventory/workflows.py",
+      "status": "??"
+    },
+    {
+      "path": "backend/config/settings/base.py",
+      "status": " M"
+    },
+    {
+      "path": "backend/docs/DEVELOPMENT_STATUS.md",
+      "status": " M"
+    },
+    {
+      "path": "backend/scripts/test_isolated.py",
+      "status": " M"
+    },
+    {
+      "path": "backend/tests/test_audit_remediation.py",
+      "status": " M"
+    },
+    {
+      "path": "backend/tests/test_ledger.py",
+      "status": "??"
+    },
+    {
+      "path": "backend/tests/test_operations.py",
+      "status": "??"
+    },
+    {
+      "path": "backend/tests/test_workflow_remediation.py",
+      "status": "??"
+    },
+    {
+      "path": "docs/phase3-planning/PHASE_3B_IMPLEMENTATION_REPORT.md",
+      "status": "??"
+    },
+    {
+      "path": "docs/phase3-planning/PHASE_3C_GIT_CHECKPOINT_PLAN.md",
+      "status": "??"
+    },
+    {
+      "path": "docs/phase3-planning/PHASE_3C_IMPLEMENTATION_REPORT.md",
+      "status": "??"
+    },
+    {
+      "path": "docs/phase3-planning/PHASE_3C_REPRODUCIBILITY_MANIFEST.json",
+      "status": "??"
+    },
+    {
+      "path": "docs/phase3-planning/PHASE_3_AUDIT_TRAIL_SPECIFICATION.md",
+      "status": " M"
+    },
+    {
+      "path": "docs/phase3-planning/PHASE_3_CLIENT_DECISIONS.md",
+      "status": " M"
+    },
+    {
+      "path": "docs/phase3-planning/PHASE_3_DATABASE_DESIGN.md",
+      "status": " M"
+    },
+    {
+      "path": "docs/phase3-planning/PHASE_3_FRONTEND_INTEGRATION.md",
+      "status": " M"
+    },
+    {
+      "path": "docs/phase3-planning/PHASE_3_IMPLEMENTATION_PLAN.md",
+      "status": " M"
+    },
+    {
+      "path": "docs/phase3-planning/PHASE_3_IMPLEMENTATION_PROGRESS.md",
+      "status": " M"
+    },
+    {
+      "path": "docs/phase3-planning/PHASE_3_INVENTORY_ARCHITECTURE.md",
+      "status": " M"
+    },
+    {
+      "path": "docs/phase3-planning/PHASE_3_LEDGER_AND_STOCK_RULES.md",
+      "status": " M"
+    },
+    {
+      "path": "docs/phase3-planning/PHASE_3_READINESS_REPORT.md",
+      "status": " M"
+    },
+    {
+      "path": "docs/phase3-planning/PHASE_3_SOP_PERMISSION_MATRIX.md",
+      "status": " M"
+    },
+    {
+      "path": "docs/phase3-planning/PHASE_3_TEST_REPORT.md",
+      "status": " M"
+    },
+    {
+      "path": "frontend/docs/BACKEND_TODO.md",
+      "status": " M"
+    },
+    {
+      "path": "frontend/docs/BUSINESS_RULES.md",
+      "status": " M"
+    },
+    {
+      "path": "frontend/docs/CHANGELOG.md",
+      "status": " M"
+    },
+    {
+      "path": "frontend/docs/DATA_MODELS.md",
+      "status": " M"
+    },
+    {
+      "path": "frontend/docs/DEVELOPMENT_STATUS.md",
+      "status": " M"
+    },
+    {
+      "path": "frontend/scripts/check-inventory-api.mjs",
+      "status": " M"
+    },
+    {
+      "path": "frontend/src/lib/inventoryOperationsApi.ts",
+      "status": "??"
+    },
+    {
+      "path": "frontend/src/pages/Inventory/InventoryFoundation.tsx",
+      "status": " M"
+    },
+    {
+      "path": "frontend/src/pages/Inventory/InventoryOperations.tsx",
+      "status": "??"
+    }
+  ],
+  "untracked_files": [
+    "backend/apps/inventory/ledger.py",
+    "backend/apps/inventory/ledger_guard.py",
+    "backend/apps/inventory/ledger_models.py",
+    "backend/apps/inventory/migrations/0006_postingpolicy_ledgerapproval_sourceevent_and_more.py",
+    "backend/apps/inventory/migrations/0007_synthetic_ledger_guards.py",
+    "backend/apps/inventory/migrations/0008_operationrequest_operationline_operationdecision_and_more.py",
+    "backend/apps/inventory/migrations/0009_operation_guards.py",
+    "backend/apps/inventory/migrations/0010_operationrequest_cutoff_basis_physicalsourcedocument_and_more.py",
+    "backend/apps/inventory/migrations/0011_physical_source_guards.py",
+    "backend/apps/inventory/workflow_models.py",
+    "backend/apps/inventory/workflow_views.py",
+    "backend/apps/inventory/workflows.py",
+    "backend/tests/test_ledger.py",
+    "backend/tests/test_operations.py",
+    "backend/tests/test_workflow_remediation.py",
+    "docs/phase3-planning/PHASE_3B_IMPLEMENTATION_REPORT.md",
+    "docs/phase3-planning/PHASE_3C_GIT_CHECKPOINT_PLAN.md",
+    "docs/phase3-planning/PHASE_3C_IMPLEMENTATION_REPORT.md",
+    "docs/phase3-planning/PHASE_3C_REPRODUCIBILITY_MANIFEST.json",
+    "frontend/src/lib/inventoryOperationsApi.ts",
+    "frontend/src/pages/Inventory/InventoryOperations.tsx"
+  ],
+  "untracked_domain_files": [
+    "backend/apps/inventory/ledger.py",
+    "backend/apps/inventory/ledger_guard.py",
+    "backend/apps/inventory/ledger_models.py",
+    "backend/apps/inventory/migrations/0006_postingpolicy_ledgerapproval_sourceevent_and_more.py",
+    "backend/apps/inventory/migrations/0007_synthetic_ledger_guards.py",
+    "backend/apps/inventory/migrations/0008_operationrequest_operationline_operationdecision_and_more.py",
+    "backend/apps/inventory/migrations/0009_operation_guards.py",
+    "backend/apps/inventory/migrations/0010_operationrequest_cutoff_basis_physicalsourcedocument_and_more.py",
+    "backend/apps/inventory/migrations/0011_physical_source_guards.py",
+    "backend/apps/inventory/workflow_models.py",
+    "backend/apps/inventory/workflow_views.py",
+    "backend/apps/inventory/workflows.py",
+    "backend/tests/test_ledger.py",
+    "backend/tests/test_operations.py",
+    "backend/tests/test_workflow_remediation.py",
+    "docs/phase3-planning/PHASE_3B_IMPLEMENTATION_REPORT.md",
+    "docs/phase3-planning/PHASE_3C_GIT_CHECKPOINT_PLAN.md",
+    "docs/phase3-planning/PHASE_3C_IMPLEMENTATION_REPORT.md",
+    "docs/phase3-planning/PHASE_3C_REPRODUCIBILITY_MANIFEST.json",
+    "frontend/src/lib/inventoryOperationsApi.ts",
+    "frontend/src/pages/Inventory/InventoryOperations.tsx"
+  ],
+  "remediation_changed_files": [
+    "backend/apps/inventory/migrations/0010_operationrequest_cutoff_basis_physicalsourcedocument_and_more.py",
+    "backend/apps/inventory/migrations/0011_physical_source_guards.py",
+    "backend/apps/inventory/models.py",
+    "backend/apps/inventory/workflow_models.py",
+    "backend/apps/inventory/workflows.py",
+    "backend/docs/DEVELOPMENT_STATUS.md",
+    "backend/tests/test_operations.py",
+    "backend/tests/test_workflow_remediation.py",
+    "docs/phase3-planning/PHASE_3C_GIT_CHECKPOINT_PLAN.md",
+    "docs/phase3-planning/PHASE_3C_IMPLEMENTATION_REPORT.md",
+    "docs/phase3-planning/PHASE_3C_REPRODUCIBILITY_MANIFEST.json",
+    "frontend/docs/BUSINESS_RULES.md",
+    "frontend/docs/CHANGELOG.md",
+    "frontend/docs/DATA_MODELS.md",
+    "frontend/docs/DEVELOPMENT_STATUS.md",
+    "frontend/src/lib/inventoryOperationsApi.ts",
+    "frontend/src/pages/Inventory/InventoryOperations.tsx"
+  ],
+  "client_originals_verified": [
+    {
+      "path": "client-reference/08- September 2026  Daily Raw Material Physical stock  -.xlsx",
+      "size_bytes": 49841,
+      "sha256": "e72ea50957a3a9e3ede0c89de2f88b3ebed9dedd0a97f27a2a063e08eea207f2"
+    },
+    {
+      "path": "client-reference/09.FG Stock September .xlsx",
+      "size_bytes": 141055,
+      "sha256": "a0d0d692bcc3dbbd6f512718fe55443c7443f694aa2ef76b492e77a76d50a0c9"
+    },
+    {
+      "path": "client-reference/SOP/SOP 01_ AUTHORITY & INTERNAL CONTROLS.docx",
+      "size_bytes": 29361,
+      "sha256": "84ef856a12b3406d499237571ff56ff6a00024f5b22975576b35ac72f25c7993"
+    },
+    {
+      "path": "client-reference/SOP/SOP 02– SALES & CUSTOMER ORDER MANAGEMENT.docx",
+      "size_bytes": 24558,
+      "sha256": "78733b72fb83ba4df619aeea92cd4277b91a821e86bf81033d95a9fdc29c4257"
+    },
+    {
+      "path": "client-reference/SOP/SOP 03 – STORES & INVENTORY CONTROL.docx",
+      "size_bytes": 23522,
+      "sha256": "59e1138f8fa19c3f32e2b06f0368194789a57481d4d7b585f806e6082f5cc19c"
+    },
+    {
+      "path": "client-reference/SOP/SOP 04 – PROCUREMENT & SUPPLIER MANAGEMENT.docx",
+      "size_bytes": 24354,
+      "sha256": "48a598f4c7ee01b942810df9d438e83910d00f00916c56a71be2948540ea72a2"
+    },
+    {
+      "path": "client-reference/SOP/SOP 05- PRODUCTION PLANNING & CONTROL.docx",
+      "size_bytes": 24081,
+      "sha256": "6ad60048bf0a95fcdfc733b13796603e0cef79b4c00451e299240bda279ec8c1"
+    },
+    {
+      "path": "client-reference/SOP/SOP 06-EXTRUSION PROCESS CONTROL.docx",
+      "size_bytes": 22335,
+      "sha256": "1c9d0fd6d81806ec40baa83b8db66a12d3b78514a466d30c0ab49727322f38e8"
+    },
+    {
+      "path": "client-reference/SOP/SOP 07– PRINTING PROCESS CONTROL.docx",
+      "size_bytes": 23282,
+      "sha256": "71c53dc2ece772102320b387cd836964c7c803103a566c45a651bd5974af156c"
+    },
+    {
+      "path": "client-reference/SOP/SOP 08– SLITTING PROCESS CONTROL.docx",
+      "size_bytes": 24010,
+      "sha256": "62bf166e2a6599a702bb73b3f2603bfb8c63d23bb2f62dd07a2e644c14f4ac23"
+    },
+    {
+      "path": "client-reference/SOP/SOP 09 – GUSSETING PROCESS CONTROL.docx",
+      "size_bytes": 24080,
+      "sha256": "d0ee0102764c2f8b552581eb777df4ff90afa002a9ecc0c0bc34836d1f042f1c"
+    },
+    {
+      "path": "client-reference/SOP/SOP 10-– BAG & POUCH MAKING PROCESS CONTROL.docx",
+      "size_bytes": 22562,
+      "sha256": "8457790593bb68c1d03d1cc8bdbfa5b0fb945ab30b370684294dafe3e86d2784"
+    },
+    {
+      "path": "client-reference/SOP/SOP 11– QUALITY CONTROL.docx",
+      "size_bytes": 26662,
+      "sha256": "b6a5490e86ee29ff9bd597fa623fd65833ac76764570ba1c82f827c26702afee"
+    },
+    {
+      "path": "client-reference/SOP/SOP 12-– NONCONFORMING PRODUCT, REWORK & CAPA.docx",
+      "size_bytes": 24329,
+      "sha256": "4722701dd67682ba3bc995edf59db326a6b0a210fb29a4c139d6d8ac2a2e25e7"
+    },
+    {
+      "path": "client-reference/SOP/SOP 13– RECYCLING OPERATIONS.docx",
+      "size_bytes": 23318,
+      "sha256": "75990476cc4d1ced71c7489c6c36ae6c57fffd16d88edf39a7ec7ba264b78407"
+    },
+    {
+      "path": "client-reference/SOP/SOP 14– RECYCLING MATERIAL PROCUREMENT & RECONCILIATION.docx",
+      "size_bytes": 23024,
+      "sha256": "1aba2afbe24476965359a785da9cea74fef8c27aa0da76104a443f79cc522856"
+    },
+    {
+      "path": "client-reference/SOP/SOP 15– DISPATCH & DELIVERY MANAG.docx",
+      "size_bytes": 24024,
+      "sha256": "5a15d14f003d4da652146f8c628b6269026e7998e9a0e802e0c69ef96a6d8aed"
+    },
+    {
+      "path": "client-reference/SOP/SOP 16– INVOICING, CASH & EFRIS CONTROLS.docx",
+      "size_bytes": 25640,
+      "sha256": "27ef21951ac3486793acc25fcad4861bc473a9c28983e770fb49bfdf4719cdb2"
+    },
+    {
+      "path": "client-reference/SOP/SOP 17– FINANCE, PAYMENTS & RECONCILIATION.docx",
+      "size_bytes": 23517,
+      "sha256": "291326f713932e6ea2814d8b211ef3f6ef80c9f9a7ac90625e227e6849831447"
+    },
+    {
+      "path": "client-reference/SOP/SOP 18– EQUIPMENT MAINTENANCE & DOWNTIME CONTROL.docx",
+      "size_bytes": 24536,
+      "sha256": "6771426de8ba96856249f671300eb56a7ade61e8ed5c24f42810325370298079"
+    },
+    {
+      "path": "client-reference/WhatsApp Image 2026-10-13 at 12.46.24 PM (1).jpeg",
+      "size_bytes": 146763,
+      "sha256": "d448588d4015f1b4fa8e6565a1bb919cbea29d88b2714a09de25f7f345f68a5d"
+    },
+    {
+      "path": "client-reference/WhatsApp Image 2026-10-13 at 12.46.24 PM.jpeg",
+      "size_bytes": 150597,
+      "sha256": "badd747b286119e65d6c7eeb60ba9c8a79cf985840b77d9e6900ed8a393ed566"
+    },
+    {
+      "path": "client-reference/WhatsApp Image 2026-10-13 at 12.46.25 PM (1).jpeg",
+      "size_bytes": 143479,
+      "sha256": "1a6f5a827c453978a78e9e5e538c67f2e9345e6917c2d2d2b8bcd8fec88171e9"
+    },
+    {
+      "path": "client-reference/WhatsApp Image 2026-10-13 at 12.46.25 PM (2).jpeg",
+      "size_bytes": 139998,
+      "sha256": "58c7132a716b87a719503e6b28c8c8d73717d3dcaa4e305239bf34efac2f5ac0"
+    },
+    {
+      "path": "client-reference/WhatsApp Image 2026-10-13 at 12.46.25 PM (3).jpeg",
+      "size_bytes": 132831,
+      "sha256": "ebe3d28161d7ab09c240e5e8e931f12cd5bee90a1f3c3a07b8b6bfac71ca9224"
+    },
+    {
+      "path": "client-reference/WhatsApp Image 2026-10-13 at 12.46.25 PM.jpeg",
+      "size_bytes": 132502,
+      "sha256": "f96bdbece59d3a33cf4c1635605b05b9b84e6d953757fcd7d79b63c68d64a72d"
+    },
+    {
+      "path": "client-reference/WhatsApp Image 2026-10-13 at 12.46.26 PM (1).jpeg",
+      "size_bytes": 195859,
+      "sha256": "ce6f057b38211f20b879de67600d525453ad3fb6a51ce2748504853c1abe9a19"
+    },
+    {
+      "path": "client-reference/WhatsApp Image 2026-10-13 at 12.46.26 PM.jpeg",
+      "size_bytes": 131810,
+      "sha256": "631defee030eda83494cebc463cc55de782f26c282423c7e38908f7d07ecfcc1"
+    }
+  ]
+}

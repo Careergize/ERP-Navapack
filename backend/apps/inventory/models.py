@@ -100,3 +100,10 @@ class StockIdentity(VersionedModel):
         if self._state.adding:
             self.reference = 'STK-' + self.id.hex.upper()
         super().save(*args, **kwargs)
+
+# Additive test-only ledger domain, kept separate from registration configuration.
+from .ledger_models import (PostingPolicy, SourceEvent, LedgerApproval, LedgerTransaction,
+                            TransactionLine, LedgerEntry, BalanceProjection, OpeningCoverage)
+
+from .workflow_models import OperationRequest, OperationLine, OperationDecision  # noqa: E402,F401
+from .workflow_models import PhysicalSourceDocument, PhysicalSourceLine  # noqa: E402,F401

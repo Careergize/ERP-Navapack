@@ -34,6 +34,7 @@ DATABASES = {'default': {
     'OPTIONS': {'connect_timeout': 5, 'sslmode': os.getenv('POSTGRES_SSLMODE', 'prefer')},
 }}
 AUTH_USER_MODEL = 'accounts.User'
+SYNTHETIC_LEDGER_ENABLED = False  # Never enabled by environment variables or production settings.
 AUTHENTICATION_BACKENDS = ['apps.accounts.backends.EmailBackend']
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},

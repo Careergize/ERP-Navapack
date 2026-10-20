@@ -1,5 +1,9 @@
 # Backend Integration TODO
 
+## Phase 3C-1 integration boundary — 20 October 2026
+
+Implemented /api/v1/inventory/operations/ mode/list/detail/create/stage/history adapter and embedded workflow screen against real test-gated Django APIs. Not live posting: all data/actions disabled outside stamped disposable context. Pending real authority/scope provisioning, production deployment/migration/browser acceptance, selector/scanner UX, evidence attachment access and operational QC. No other demo adapters rewritten. [Details](../../docs/phase3-planning/PHASE_3C_IMPLEMENTATION_REPORT.md).
+
 ## Phase 3A handoff — 20 October 2026
 
 Implemented real warehouse/location/stock-identity configuration and scoped history APIs/UI plus relevant auth/UUID/pagination/version/idempotency adapters. Pending: reviewed scope request/publication/revocation workflow and approved assignments, operational identity marking, deployment migration/browser acceptance, restricted runtime-role tests, remaining master adapters and future inventory ledger/QC/opening workflows. No actual stock posting or opening correction is enabled. Do not re-enable demo routes for real sessions as a substitute for backend integration.

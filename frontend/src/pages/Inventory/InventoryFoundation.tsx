@@ -1,10 +1,12 @@
 import { FormEvent, useEffect, useState } from 'react';
 import axios from 'axios';
+import { InventoryOperations } from './InventoryOperations';
 import { useAuth } from '@/context/AuthContext';
 import { inventoryPage, inventoryHistory, saveInventory, type InventoryRecord, type InventoryPage, type InventoryAudit, type Resource } from '@/lib/inventoryApi';
 
 const labels: Record<Resource,string> = {warehouses:'Warehouse Management', locations:'Storage Location Management', identities:'Stock Identity / Lot References'};
 export function InventoryFoundation() {
+  const [operations,setOperations]=useState(false);
   const {user} = useAuth();
   const [resource,setResource] = useState<Resource>('warehouses');
   const [search,setSearch] = useState(''); const [warehouse,setWarehouse] = useState('');
@@ -54,8 +56,10 @@ export function InventoryFoundation() {
   }
   if(!user?.backendSession)return <p>Inventory configuration requires a real authenticated backend session.</p>;
   return <section className="space-y-5">
+    <nav className="flex gap-3"><button onClick={()=>setOperations(false)}>Configuration</button><button onClick={()=>setOperations(true)}>Inventory workflows / Opening Stock</button></nav>
+    {operations?<InventoryOperations/>:<>
     <h1 className="text-2xl font-semibold">Inventory foundation</h1>
-    <p>Configuration and identity references only. Stock posting, QC release and opening-stock corrections are unavailable until their ledger and independent authorization workflows are approved and implemented.</p>
+    <p>Configuration and identity references only. Workflow evidence is separate; operational stock posting and QC release remain unavailable.</p>
     <nav className="flex flex-wrap gap-3" aria-label="Inventory configuration">{(Object.keys(labels) as Resource[]).map(r=><button className="rounded border bg-white p-3" key={r} onClick={()=>{setResource(r);setPage(1);setEditing(false);setRecord(undefined);setHistoryRecord(undefined);}}>{labels[r]}</button>)}</nav>
     <h2 className="text-xl">{labels[resource]}</h2>
     {!readable?<p>You do not have the required view capability.</p>:<>
@@ -88,5 +92,6 @@ export function InventoryFoundation() {
       <p>Changes need current capabilities, warehouse scope and record version. Repeated unchanged submissions reuse the request key. A version conflict requires refreshing and reviewing the record.</p>
       <button className="rounded border p-2" disabled={saving||!writable}>{saving?'Saving…':'Save to backend'}</button><button type="button" className="ml-3 rounded border p-2" disabled={saving} onClick={()=>setEditing(false)}>Cancel</button>
     </form>}
+    </>}
   </section>;
 }

@@ -8,13 +8,13 @@ from apps.core.audit import record_event,EVIDENCE_LIMIT
 from apps.core.models import AuditEvent,AuditEvidence
 from apps.accounts.models import Role,Membership
 from apps.accounts.employee_views import AuditEventSerializer
-from tests.test_inventory import InventoryFoundationTests
+from tests import test_inventory
 
 
 class AuditRemediationTests(TransactionTestCase):
-    setUp=InventoryFoundationTests.setUp
-    post=InventoryFoundationTests.post
-    patch=InventoryFoundationTests.patch
+    setUp=test_inventory.InventoryFoundationTests.setUp
+    post=test_inventory.InventoryFoundationTests.post
+    patch=test_inventory.InventoryFoundationTests.patch
 
     def test_multirole_large_changes_preserve_full_evidence_and_scoped_history(self):
         for index in range(20):

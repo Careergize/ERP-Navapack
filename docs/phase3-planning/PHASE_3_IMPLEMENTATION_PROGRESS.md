@@ -1,5 +1,15 @@
 # Phase 3 implementation progress
 
+## Current Phase 3C-1 result — isolated workflow foundation, 20 October 2026
+
+Implemented sealed synthetic IN/OUT/opening/correction/transfer/return/count/adjustment evidence and stage actions; independent approval/selected Procurement recording; full atomic audit; three models and migrations0008/0009; scoped gated APIs and existing-session React forms/history. No live posting/request capture, real grants/data, QC release or later phase. Existing3B restrictions/ledger unchanged. Current configured database has15 pending migrations, none applied. [Exact files, tests, limits and next gates](PHASE_3C_IMPLEMENTATION_REPORT.md). Earlier3A/3B-only/no3C statements below are historical. Scope governance and operational authority remain blocked; user authorized synthetic3C-1 only.
+
+## Current Phase 3B result — synthetic engine only, 20 October 2026
+
+Audit H3A-01/H3A-02 remediated before ledger work; immutable registration versus custody contract adopted. Added eight ledger models, four additive migrations including audit evidence, internal posting/custody-history/rebuild contracts and permanent PostgreSQL regressions. No new frontend screens or posting routes. No live authority/scope/QC workflow, Admin opening correction, client quantity import or operational posting. See [Phase 3B report](PHASE_3B_IMPLEMENTATION_REPORT.md) for exact files, tests, migration status and limitations. Earlier phase statements below are retained history; this is not full Phase 3 completion.
+
+The pre-change SHA-256 manifest covered304 source/document files. HEAD advanced externally from0823b206 to82a32a1 during implementation, tracking prior3A and audit fixes; no Git staging/commit was performed by this task. Task changes are measured against the pre-change manifest rather than only current git diff. Application database migrations were not run. Final source preservation and test results are recorded in the report.
+
 ## Current resumed result — Phase 3A configuration implemented
 
 This dated section supersedes the earlier documentation-only stop retained below. The new attached user request authorizes ownership/custody separation, warehouse scope foundations and identity-only lineage, so unaffected Phase 3A work proceeded. No Phase 3B work began.

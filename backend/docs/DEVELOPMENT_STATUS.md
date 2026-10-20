@@ -1,5 +1,17 @@
 # Client originals reviewed — 20 October 2026
 
+## Phase 3C-1 remediation — 20 October 2026
+
+Strict raw string quantities, locked Stock OUT feasibility checks at verify/confirm/approve, server-current count/opening snapshots, and controlled pre-registered document/occurrence/line claims now remediate3C boundary findings. Added0010/0011 migrations; baseline15 application migrations remain unapplied plus2 new pending. No3B guard/service/base setting/runner changes or production-enabled route. Registry is fixture-only, append-only, one-use; no live source publisher. See [current report](../../docs/phase3-planning/PHASE_3C_IMPLEMENTATION_REPORT.md) and reproducibility/checkpoint documents.
+
+## Phase 3C-1 — 20 October 2026
+
+Added isolated synthetic request/count/evidence/decision workflows, controlled approvals/recording and scoped /api/v1/inventory/operations/ APIs;3B ledger/settings/guards unchanged. Three models and inventory0008/0009,15 pending application migrations; none applied. Every workflow data/action route fails closed outside stamped tests. No real permission grants, stock quantities, QC release, operational adapter or3D/3E. [Actual implementation and tests](../../docs/phase3-planning/PHASE_3C_IMPLEMENTATION_REPORT.md).
+
+## Phase 3B bounded implementation — 20 October 2026
+
+Implemented audit overflow/field-aware secret remediation, immutable full AuditEvidence and a default-disabled internal synthetic ledger. Additive core0003/0004 and inventory0006/0007 migrate only disposable tests; configured application DB has13 pending migrations. Internal post/custody-history/rebuild services, no posting API/Admin/command/job route or real data/grants. Registration provenance is immutable; custody is a separate projection of append-only entries. Runtime-role protection was tested with a temporary nonowner role in disposable PostgreSQL, not deployed credentials. See [Phase 3B report](../../docs/phase3-planning/PHASE_3B_IMPLEMENTATION_REPORT.md) for actual tests, source preservation and pending operational gates. No Phase 3C–3E started.
+
 ## Phase 3A configuration — 20 October 2026
 
 Added inventory Warehouse/StorageLocation/StockIdentity/WarehouseScope, additive migrations, protected identity/hierarchy guards, scoped APIs/history and audit integration. All quantities/posting/QC clearance absent. Existing command/RBAC/auth reused; scope publication/revocation blocked as a specific governed extension, no real grants or data seeds. Inventory events excluded from global technical-admin audit reads and available only through scoped history with both audit and entity-view capabilities. See PHASE3A_API.md and repository Phase 3 progress/test reports for exact results and operational gates. Application inventory migrations remain unapplied; test runners migrate disposable DBs only.

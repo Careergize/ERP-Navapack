@@ -1,5 +1,13 @@
 # Business Rules
 
+## Phase 3C-1 remediation rules — 20 October 2026
+
+Numeric JSON quantities are invalid; decimal strings only. Stock OUT eligibility rechecked at verification/physical confirmation/approval with controlled unavailable errors; these steps reserve/deduct nothing. Final ledger remains authoritative. Current counts/openings reject caller-selected historical cutoffs; authoritative historical reconciliation deferred. Receipts/counts/openings must claim a matching pre-registered physical source line once; different delivery/count occurrences under the same document are allowed. Live registration/alias/correction governance remains pending. Synthetic guards and independent approval unchanged.
+
+## Phase 3C-1 workflow rules — 20 October 2026
+
+Real-session inventory requests are evidence, not stock movements. Backend enforces active capabilities/scopes and independent review; selected Procurement recorder invokes synthetic-only ledger. Receipts/returns/new positive compensations held, no QC release. Explicit batch/unit; unknown openings never zero. Opening correction shows original/current/proposed/difference, immutable original; held removal approval blocked. Counts investigated before adjustment; no count reuse. Same Admin login grants no self-approval bypass. Outside isolated context show unavailable, never fake success/balance. [Actual scope](../../docs/phase3-planning/PHASE_3C_IMPLEMENTATION_REPORT.md).
+
 ## Phase 3A backend configuration boundary — 20 October 2026
 
 Warehouse count is configurable. Location hierarchy stays within warehouse and cannot cycle. Registered identity relations do not create, split, merge or release physical quantities. All stock identities are operationally unavailable. Admin status does not grant warehouse scope, configuration rights or business approval. Warehouse code uniqueness is global/case-insensitive as a technical convention, not a claim about client geography. Operational opening corrections remain planned, unavailable until immutable opening and independent workflow exist. Real sessions use only the integrated configuration pages; demo inventory totals are not live stock.

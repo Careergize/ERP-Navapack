@@ -1,5 +1,54 @@
 # Phase 3 current baseline and gate verification
 
+## Phase 3C-1 final verification — 20 October 2026
+
+Current implementation is an isolated synthetic workflow foundation, not operational posting or QC. [Complete contracts/files/limits](PHASE_3C_IMPLEMENTATION_REPORT.md). Existing historical sections below remain unchanged.
+
+From backend, .venv/Scripts/python:
+
+- Pre-implementation scripts/test_isolated.py --synthetic-ledger:170 passed in321.065s, test_phase3b_20e5aeda6a5a498799a481a46c8c2e4a, destroyed. Fresh baseline, not reused3B evidence.
+- Initial scripts/test_isolated.py --synthetic-ledger tests.test_operations:20 cases,2 failures/15 errors, caused by new workflow line-sealing trigger using xmin under nested savepoints; one-case diagnostic reproduced the same defect. Corrected using server-set top-level transaction IDs in new unapplied0008/0009 migrations. Corrected20 passed in50.626s, test_phase3b_fa74581957e843dfa921e9c7785f8891, destroyed.
+- Full scripts/test_isolated.py --synthetic-ledger:193 passed in431.844s, test_phase3b_ecdc4d4b5ba245b6b9c95152319e35ce, destroyed. Includes170 prior cases and23 workflow cases; no failures/skips. Subsequent focused runs verify final tightening, not a claim that this193 run used every later byte.
+- scripts/test_isolated.py --synthetic-ledger tests.test_operations:23 passed in71.272s, test_phase3b_f04ca1521d394f3998d2d679d9a50cb0, destroyed, verifying final XID/decision/independence boundaries at that stage.
+- Final same focused command:24 passed in75.402s, test_phase3b_e3341316307445728883c9a36e0750e8, destroyed. Includes newly added at-most-one posted adjustment per count and its permanent positive-variance reuse regression, full policy evidence, immutable original/current opening target and final schema. These runs overlap; not217 unique tests. Repository now has194 distinct test cases; a single194-case full run was not executed after final tightening.
+- Final connected manage.py check passed; manage.py makemigrations --check --dry-run passed with no drift; read-only manage.py showmigrations --plan confirmed15 pending application migrations, none applied. Initial sandboxed migration generation/drift attempts warned localhost TCP was unavailable; final connected checks supersede those environmental warnings.
+
+New coverage: receipt evidence/unit/precision/held handling; actual physical confirmation and selected recorder; known-zero/unknown opening; Admin/staff-with-explicit-capability correction initiation and no title bypass; independent approval/rejection/history and immutable original; correction after later issue; held-opening removal gate; transfer conservation/unchanged registration; original-line return bounds/hold; count variance/investigation/staleness/one-use; full audit attribution/failure rollback including nested ledger; duplicate physical requests/idempotent API retries; two connections concurrently creating duplicate evidence; two approved workflows competing to issue7 from10 with one winner; scope/permission/API filtering; late/forged decision and sealed-line/raw-write database rejection; production-disabled service/API mode. Existing full suite retains PostgreSQL restricted-role ledger protection tests; new workflow-specific deployed ACLs were not certified.
+
+Frontend: node ./node_modules/typescript/bin/tsc -b --pretty false; npm run build; all13 scripts/check-*.mjs passed. Expanded check-inventory-api.mjs verifies actual adapter URLs, filters, headers, history and error propagation, with a mocked HTTP transport. Separate Django APIClient/PostgreSQL tests exercise real APIs. An early JSX nesting error was corrected; existing large-chunk build warning persists. One overlapping standalone transport-check invocation reported WebSocket port24678 occupied but passed; serial all13 run passed. No browser-to-live-Django deployment test or interactive synthetic server harness was implemented/claimed.
+
+Preservation: task-start manifest314 files, no removed baseline files; original28 client sizes/hashes match. Phase3A/3B handover reports, ledger services/models/guards, base settings and isolated runner unchanged. Existing dirty3B work retained, HEAD82a32a1 unchanged, index empty. Exact new/modified3C paths in report; local logs/manifests/build artifacts ignored.
+
+Cleanup: verified project PostgreSQL data_directory exactly F:/WORK/Navapack-ERP/backend/.local/postgres, zero remaining test databases/temporary runtime roles/other client connections. Closed verification connection and pg_ctl fast stop succeeded exit0 (“server stopped”), restoring initial state. No operational database migration/data/grant/import or deletion.
+
+Verdict: CONDITIONAL GO for synthetic3C-1 review; NO-GO operational use/automatic3D. Unexecuted: populated upgrade, production ACLs, browser acceptance, real scope lifecycle/authority/QC/period/correction policies and later phases.
+
+## Phase 3B final verification — 20 October 2026
+
+User-authorized synthetic-only implementation; this current section supersedes older no-ledger/test limitations below only for the implemented slice. Full contracts/limitations are in [Phase 3B report](PHASE_3B_IMPLEMENTATION_REPORT.md). No application migrations or real stock/imports/grants were performed.
+
+Commands from backend using .venv/Scripts/python:
+
+- manage.py check — final connected run passed, no issues.
+- manage.py makemigrations --check --dry-run — final connected run passed, no changes detected.
+- scripts/test_isolated.py tests.test_audit_remediation tests.test_core tests.test_inventory — audit prerequisite gate:27 passed in31.677s, test_phase21_875876ff2a88484b943ad847f312c407, destroyed. Executed before ledger implementation.
+- scripts/test_isolated.py --synthetic-ledger tests.test_ledger — first ledger integration run:34 passed in82.195s, including13 imported Phase3A cases in that early runner discovery. Subsequently removed imported TestCase discovery duplication; do not add this count to the final suite.
+- scripts/test_isolated.py --synthetic-ledger —170 passed in320.005s, test_phase3b_bfd9fc4dbd03487e9742c7628e14def0, destroyed. Includes142 existing cases,5 permanent audit regressions and23 ledger/gate cases; no skips/failures.
+- scripts/test_isolated.py --synthetic-ledger tests.test_ledger tests.test_audit_remediation — final changed-boundary verification:28 passed in73.245s, test_phase3b_502c2d3006bb497e84976ab0a0160358, destroyed. Verifies final audit metadata and forces deferred constraints IMMEDIATE while SET LOCAL ROLE uses a nonowner restricted role. Overlaps the full suite; not198 distinct cases.
+- manage.py showmigrations --plan —13 pending: accounts0004/0005; core0003/0004; imports0005/0006; inventory0001–0007. Read-only; no application migrate.
+
+Actual PostgreSQL16.3, local disposable databases. Concurrency uses two independent connections/threads against the same available balance, with exactly one successful issue and no partial residue. Tests cover immutable database/ORM evidence, unique physical sources across actors, idempotency, units/scale, known-zero versus unknown openings, held/insufficient stock, ownership/custody/lineage, conserved transfers, scoped destination history, original-preserving feasible corrections, independent exact approvals, rejection/content mismatch/self-approval, reversal/return bounds, closed dates/backdating, versions, audit rollback, projection rebuild and custody deactivation protections. No real client quantities used.
+
+Restricted role probe: temporary NOLOGIN/NOSUPERUSER/NOCREATEDB/NOCREATEROLE role, explicit table grants, transactional SET LOCAL ROLE, service IN succeeds and deferred posting constraints run under that role. UPDATE/DELETE/TRUNCATE posted entries, trigger disabling, schema CREATE and audit TRUNCATE denied. All role/grant/data changes rolled back; final role list empty. This is an isolated runtime permission test, not verification of deployed credentials or a complete production privilege manifest. Owner/DBA control and operational log/archive governance remain separate gaps.
+
+Frontend (unchanged source): node ./node_modules/typescript/bin/tsc -b --pretty false, npm run build and each of13 scripts/check-*.mjs passed. Vite still reports the existing large bundle warning. These regression scripts include isolated demo workflows; their passes do not establish live backend workflows. No browser-to-live-Django acceptance or deployment executed.
+
+Preservation: all28 client source sizes/SHA-256 still match CLIENT_SOURCE_MANIFEST.json;304-file task baseline had no removed files; Phase3A handover unchanged. No stage/commit/push/deploy from this task. HEAD advanced externally to82a32a1 during development; report distinguishes task-manifest changes from current Git diff. Final index empty. Logs/manifests under backend/.local/phase3b and frontend build outputs remain ignored.
+
+Cleanup: server data_directory verified exactly F:/WORK/Navapack-ERP/backend/.local/postgres; no remaining test_phase3b/test_phase21 databases, no temporary runtime roles and zero other client connections. Closed verification connection then pg_ctl -D <verified directory> -m fast stop succeeded exit0, “server stopped”. No data directory removed or unrelated service stopped.
+
+Unexecuted/blocked: populated application upgrade, deployed restricted-role grants, browser acceptance, load/volume testing, operational scope/approval/QC/correction/backdating workflows, full audit filters/retention/export and all Phase3C–3E. Synthetic tests do not approve client policy. Verdict: CONDITIONAL GO for review of synthetic3B, NO-GO operational3C/live posting.
+
 ## Resumed Phase 3A verification — current evidence
 
 20 October 2026, Asia/Kolkata. This section supersedes the earlier documentation-only stop below. Baseline HEAD remains 0823b2065e6e01dc670c5b09f5b622bbfadf8eb2. The seven existing uncommitted planning deliverables were preserved; application files were initially clean on resume. No staging/commit/push/deployment.

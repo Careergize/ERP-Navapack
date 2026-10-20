@@ -1,5 +1,15 @@
 # Phase 3 controlled implementation and acceptance plan
 
+## Phase 3C-1 bounded implementation authorization — 20 October 2026
+
+The user's new request authorizes safe synthetic workflow development after3B, superseding the earlier blanket3C stop only for this isolated slice. Actual request/evidence/review/confirmation/recording APIs and frontend are implemented; all data/action routes/service writes require the existing verified disposable test context. Review [Phase3C report](PHASE_3C_IMPLEMENTATION_REPORT.md), test evidence and release-source preservation. Stop before3D/3E. Operational intake/posting still NO-GO pending authority/scope/QC/opening/custody/period/upgrade/browser gates; no migration deployment authorized.
+
+## Phase 3B authorized bounded result — 20 October 2026
+
+User separately authorized audit remediation, identity/custody contract and synthetic internal ledger development. The audit regression gate passed before ledger work. This slice now implements additive immutable posting evidence, scoped service contracts, test-only gates, projections/rebuild, compensation and PostgreSQL tests. See [Phase 3B implementation report](PHASE_3B_IMPLEMENTATION_REPORT.md) for exact verified results. Earlier no-3B authorization/status statements are historical.
+
+Stop after Phase 3B. No Phase 3C/3D/3E or live stock actions. Phase 3C operational work is NO-GO until governed warehouse scope lifecycle, physical/source evidence and independent authority/QC/custody/opening/period rules are approved. Further bounded synthetic development requires separate authorization. Rehearse an approved populated upgrade and establish restricted runtime credentials before any migration deployment; current application migrations have not been applied.
+
 ## Resumed technical authorization and boundary
 
 20 October 2026: the attached resume request supersedes the earlier combined 3A stop below. Implemented independently safe warehouse/location configuration, typed immutable identity/ownership/quantity-free lineage, scoped authorization enforcement, real APIs/UI and atomic audit. See progress and test reports for actual inventory and results. Scope lifecycle/publication is specifically isolated and blocked pending compatible governed proposals/revocation; no real grants. No application migrations applied.

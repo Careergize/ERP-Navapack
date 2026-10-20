@@ -1,5 +1,15 @@
 # Phase 3 readiness and verification report
 
+## Phase 3C-1 readiness — 20 October 2026
+
+**CONDITIONAL GO for review of isolated synthetic workflow foundation; NO-GO for live use or automatic Phase3D.** New user authorization allowed3C-1 request/evidence/approval foundations, not operational authority. Real APIs/UI now stage requests with atomic attributed history; all workflow data/actions are disabled outside verified disposable context. QC release, real grants/scope lifecycle/authority and production posting remain absent.15 pending application migrations, none applied. Read [actual implementation/tests/remaining decisions](PHASE_3C_IMPLEMENTATION_REPORT.md) before any next authorization. Prior phase verdicts below are historical, not current proof.
+
+## Current Phase 3B gate assessment — 20 October 2026
+
+**CONDITIONAL GO for review of the completed synthetic Phase 3B slice. NO-GO for operational Phase 3C or live stock posting.** This is not authorization to start another phase. Audit remediation passed before ledger development. Internal ledger, immutable provenance/current custody separation, default-disabled synthetic gates, atomic audit and PostgreSQL protection/concurrency tests now exist. Current exact execution evidence, remaining limitations and13 pending application migrations are in [Phase 3B report](PHASE_3B_IMPLEMENTATION_REPORT.md).
+
+No production-enabled route, real stock, named operational grants or application migration. Remaining blockers: governed scope publication/revocation; approved owner/custodian/physical identity and primary precision; opening coverage/reconciliation; event boundaries/authority/delegations; QC and separate release gates; correction/backdating/closed-period policy; SOP adoption; populated upgrade rehearsal, release source capture and deployed restricted runtime/browser verification. Technical synthetic policies close none of those decisions. Historical earlier assessments below are superseded only for the implemented bounded slice.
+
 Final verification: **142 full PostgreSQL tests passed; final 49 inventory/auth/RBAC tests passed**, with overlapping coverage. Typecheck/build/all13 frontend scripts and connected Django checks/drift passed. All inventory migrations remain unapplied to the application DB. All28 original hashes unchanged. Verified project-owned PostgreSQL cluster safely stopped after confirming no other clients. See test report for exact commands/results and intermediate failures corrected. No runtime-role/browser/deployment certification.
 
 Current scoped-history addition: `/api/v1/inventory/history/` now implements paginated configuration history with date/actor/action/entity/request/warehouse filters and safe frontend change comparisons. It requires inventory.view_inventory_audit plus entity-view capability and warehouse scope. Global Admin history excludes inventory events. The broader system-wide role/module/transaction/approval filter contract, exports and retention remain incomplete; no transaction/approval records are invented.

@@ -1,5 +1,17 @@
 # Phase 3 common audit trail specification
 
+## Phase 3C-1 workflow audit coverage — 20 October 2026
+
+Every submit/verify/investigate/confirm/approve/reject/record uses existing AuditEvent+AuditEvidence atomically with sealed request lines and attributed immutable decisions. Full safe old/new status/version/quantity/baseline/difference, original/proposed opening, requester/decision actor/selected recorder, evidence/source/original/count/final ledger references and current per-warehouse employee/role/capability/scope context retained. Policy version/digest included where configured. Record nests ledger command/audit in the same transaction; workflow audit failure rolls back ledger/projections/command results too. No successful stock event for unposted requests. Redaction/structural/byte bounds unchanged;25-line input bound, no attachment upload/download system inferred. Scoped history requires separate permission and both transfer scopes. New DB guards require current-revision/XID decisions plus attributed full audit. Global audit UI/export/retention and deployed workflow ACL verification remain pending. [Evidence](PHASE_3C_IMPLEMENTATION_REPORT.md).
+
+## Phase 3B implemented audit remediation and ledger evidence — 20 October 2026
+
+AuditEvidence now preserves sanitized full changes and SHA-256 behind each new event; summaries above4000 encoded bytes reference protected detail. Application payload bound256KiB, nesting/node limits and database representation bound512KiB replace indiscriminate content rejection. Ordinary “Authorization reviewed” is valid; credential keys/header values/JWTs/assignments are redacted. Existing scoped readers resolve full detail after event authorization. No unscoped evidence endpoint or fabricated historical diffs.
+
+Synthetic posting event includes actor/employee/roles/capability/scope snapshots per warehouse, policy UUID/version/digest, physical source identity, typed stock/location/unit/quantity lines, balances/versions, effective time, reason, independent approval identity/decision/hash and original/correction/reversal references. Posting, event, evidence and command result commit atomically. PostgreSQL deferred checks require matching event plus full evidence. Rebuild records per-key old/new projection values; oversized rebuild evidence rolls back rather than truncate (future bounded batch design required for large projections). Rejected fixture approvals cannot post; no real approval decision workflow is claimed. Failed service authorization emits safe security denial, not a successful business event.
+
+Immutable guards and restricted nonowner test-role ACL probes were executed in disposable PostgreSQL. This is not production-role certification: owner/DBA control, log retention, audit exports, global filters and old master-data full diffs remain gaps. Full [implementation evidence](PHASE_3B_IMPLEMENTATION_REPORT.md). Historical sections below describe earlier implementation stages.
+
 Current scoped-history addition: `/api/v1/inventory/history/` now implements paginated configuration history with date/actor/action/entity/request/warehouse filters and safe frontend change comparisons. It requires inventory.view_inventory_audit plus entity-view capability and warehouse scope. Global Admin history excludes inventory events. The broader system-wide role/module/transaction/approval filter contract, exports and retention remain incomplete; no transaction/approval records are invented.
 
 ## Phase 3A implementation status — resumed request

@@ -1,5 +1,13 @@
 # Phase 3 inventory architecture
 
+## Current Phase 3C-1 synthetic workflow slice — 20 October 2026
+
+OperationRequest, immutable OperationLine and OperationDecision now separate physical evidence/verification/investigation/confirmation/independent review from selected Procurement recording. Internal submit/transition services and guarded paginated APIs reuse the unchanged3B ledger/command/audit/scope boundaries. All requests/actions/reads are synthetic-only; authenticated mode is safe outside deployment. No QC acceptance/release, live authority matrix or fake upstream records. Real frontend forms/history embedded in existing Admin inventory session show unavailable state outside isolated context. See [implemented contracts and limits](PHASE_3C_IMPLEMENTATION_REPORT.md). Full operational architecture below remains proposed beyond this slice; no3D/3E.
+
+## Implemented Phase 3B boundary — 20 October 2026
+
+A synthetic-only internal ledger now exists, with immutable policy/source/approval-fixture/header/line/entry evidence, explicit opening completeness and replaceable custody projections. Registration warehouse/location remain provenance. Current custody is separate; transfer never edits identity. Existing full identity/configuration history stays registration-scoped; the internal destination reader discloses only minimal identity and destination entries. Ledger evidence is not exposed through configuration/global Admin readers. No operational routes, QC engine, upstream fake records or grants were added. See [actual implementation and limitations](PHASE_3B_IMPLEMENTATION_REPORT.md); complete domain designs below remain proposals beyond this slice.
+
 ## Current Phase 3A implementation boundary — 20 October 2026
 
 A quantity-free inventory app now supplies warehouse/location configuration, immutable typed StockIdentity ownership/source/parent references, scope enforcement and history. Ownership is separate from custody; UNRESOLVED is explicit and all identities remain operationally unavailable. No new organization model, fake source workflow, live grant or stock quantity was created. Shared master identity/command/audit/RBAC infrastructure is reused. Scope proposal/publication/revocation is an isolated pending extension; the rest of the proposed ledger/QC architecture remains future work. See PHASE_3_IMPLEMENTATION_PROGRESS.md and ../../backend/docs/PHASE3A_API.md for actual schema/API/UI rather than treating the complete design below as implemented.

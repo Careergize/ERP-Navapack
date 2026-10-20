@@ -1,5 +1,9 @@
 # Phase 3 frontend integration blueprint
 
+## Phase 3C-1 actual frontend integration — 20 October 2026
+
+Existing /admin/inventory/session now embeds InventoryOperations and a real /inventory/operations/ adapter. Stock IN/OUT, Opening/Request Correction, Transfers, Returns, Counts, Adjustments and per-request history use paginated Django APIs with idempotency/version/error handling. Server mode disables forms/data routes outside isolated test context; no fake total/local success. Capability controls complement backend employee/scope/independence checks. Same Admin login, no demo module rewrite. Manual typed UUID/reference entry is foundation UX, not scanner/production acceptance. Transport mocks test contracts only; Django APIClient/PostgreSQL tests exercise real endpoints. Browser-to-live-Django acceptance remains unexecuted; see [report](PHASE_3C_IMPLEMENTATION_REPORT.md).
+
 ## Phase 3A integrated subset — 20 October 2026
 
 `/admin/inventory` now provides real Warehouse Management, Storage Location Management, Stock Identity/Lot Reference Viewer and scoped record history. Existing login now handles /api/v1, email, UUIDs, roles[]/explicit inventory capabilities, paginated reads, Idempotency-Key, If-Match, backend errors and logout revocation. Legacy /api environment values are normalized without changing .env. Real sessions are routed exclusively to this integrated foundation; opt-in demos are retained separately. No first-role/Admin fallback authority is assigned. Scope publication and future opening corrections are visibly unavailable. Backend inventory scope/capability checks enforce access regardless of buttons. The broader stock/QC/master/business-module adapters below remain proposed; no browser-to-live-Django acceptance, operational stock posting or deployment is claimed. See progress/test reports for exact source and verification.

@@ -1,5 +1,15 @@
 # Phase 3 PostgreSQL / Django database design
 
+## Phase 3C-1 additive schema — 20 October 2026
+
+Inventory0008 creates OperationRequest (sealed versioned count/request header, original/count/final links, policy and recorder), immutable OperationLine (typed identity/unit/custody/quantity/baseline/variance/original quantity), OperationDecision (actor/status/evidence/revision). Physical source uniqueness and at-most-one posted adjustment per count prevent duplication. Inventory0009 guards synthetic context, sealed payload/line/decision XIDs, legal version/state changes and atomic attributed full audit. No3B schema/guard modified.15 application migrations pending; none applied. Clean disposable migration execution is evidence, not a populated upgrade/deployment claim. [Exact report](PHASE_3C_IMPLEMENTATION_REPORT.md).
+
+## Implemented Phase 3B additive schema — 20 October 2026
+
+Core0003/0004 add immutable AuditEvidence, full sanitized JSON, digest, one-to-one protected event and database protection. Inventory0006 adds PostingPolicy, SourceEvent, LedgerApproval (synthetic fixture evidence), LedgerTransaction, TransactionLine, LedgerEntry, BalanceProjection and OpeningCoverage. Inventory0007 adds test-environment write guards, append-only sealing, deferred posting/audit/entry/projection checks and on-hand custody activation protection. Registration schema is not rewritten. Exact fields/constraints and migration ordering are in [Phase 3B report](PHASE_3B_IMPLEMENTATION_REPORT.md).
+
+Numeric(20,6) is an implemented synthetic storage envelope, NOT client-approved rounding/precision. Policies explicitly narrow scale; incompatible units/excess scale fail before database numeric coercion. Missing opening coverage is unknown, not zero. BalanceProjection is a derivative, not an editable stock register. All13 application migrations remain unapplied as of this review. Clean creation was tested only in disposable PostgreSQL; populated-database rehearsal/deployment remain unauthorized and unverified. No data backfill or client quantities supplied.
+
 ## Implemented Phase 3A subset — 20 October 2026
 
 The resumed technical request authorizes a smaller quantity-free schema than the complete proposed domain below. Actual models are Warehouse, StorageLocation, StockIdentity and WarehouseScope; exact fields/contracts are in ../../backend/docs/PHASE3A_API.md. StockIdentity directly references exactly one existing typed master plus primary Unit, explicit typed owner/evidence or UNRESOLVED, immutable generated reference/source/parent and retirement metadata. No competing item master, quantity portion, source-document workflow or ledger is introduced. Warehouse and location are separate; optional existing Department maps Stores accountability without granting scope. Global normalized configuration codes are a documented technical convention; actual location layout remains unseeded. Scope publication/revocation and all operational authority remain blocked. Proposed ledger/quality models below are still proposals, not migrations. Only inventory0001–0005 exist for the configuration subset, applied to disposable tests only.
