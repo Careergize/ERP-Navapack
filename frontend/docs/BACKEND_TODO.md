@@ -156,3 +156,8 @@ Server must independently authorize actors, validate IDs/expected versions/reque
 ## Confirmed LED MAX / finance follow-up
 
 Enforce client-confirmed `MAX(base×0.025, eligibleKG/1000×70×savedFX)` centrally. Percentage-base definition remains pending; keep explicit versioned configuration, product scope and VAT-on-LED. Reject missing weight/conversion/FX/date; no percentage fallback. Snapshot both alternatives/selected branch/rates/FX/date/conversion/base with costing revisions and accepted quotation/order records. Preserve history; allocate original LED across partial invoices with final Decimal reconciliation and no double VAT. Authoritatively validate source versions and permissions; do not trust client snapshots or migrate old financial amounts silently. Finance demo adds no backend: provision accounts credentials/permissions and real session handling through existing authentication integration. See the canonical report for details.
+
+
+## Phase 3D synthetic QC — 20 October 2026
+
+Versioned QC evidence, guarded whole-root quality reclassification, containment and NCR/CAPA foundation now use the existing authenticated inventory APIs. Operational posting remains disabled; partial indistinguishable scopes, disposition and inherited transfer QC clearance fail closed. No demo success is treated as backend persistence. See ../../docs/phase3-planning/PHASE_3D_IMPLEMENTATION_REPORT.md for exact implementation, verification and remaining gates. No application migration or real authority grant is performed.

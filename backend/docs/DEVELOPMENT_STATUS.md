@@ -307,3 +307,8 @@ Recommended Phase 2: governed masters and import staging with approved source ID
 variant/unit reconciliation, provenance and unknown-opening preservation. Obtain missing
 controlled SOPs and references before subsequent stock, QC and operational posting.
 See DECISION_LOG.md and FRONTEND_ADAPTER.md for pending decisions and separate integration.
+
+
+## Phase 3D synthetic QC — 20 October 2026
+
+Versioned QC evidence, guarded whole-root quality reclassification, containment and NCR/CAPA foundation now use the existing authenticated inventory APIs. Operational posting remains disabled; partial indistinguishable scopes, disposition and inherited transfer QC clearance fail closed. No demo success is treated as backend persistence. See ../../docs/phase3-planning/PHASE_3D_IMPLEMENTATION_REPORT.md for exact implementation, verification and remaining gates. No application migration or real authority grant is performed.

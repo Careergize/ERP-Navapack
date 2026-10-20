@@ -109,3 +109,8 @@ All under `F:\WORK\Navapack-ERP\docs\phase3-planning\`:
 I — Original-source checks:28/28 manifest hash matches before extraction and after document generation. Workbook reads used separate formula/cached-value loads, with no save. DOCX ZIP/XML extraction and image viewing were read-only. Derived extraction files are ignored under `.local/phase3-review/`. New deliverables restricted to the eleven files above. No application source/model/migration/frontend change, database connection, stock/user/permission creation, migration generation/application, staging/commit/push/deploy or historical report rewrite performed.
 
 I — Initial work retained: staged `.gitignore`; modified `backend/docs/DECISION_LOG.md`, `DEVELOPMENT_STATUS.md`, `PHASE3_DEPENDENCIES.md`; untracked `docs/CLIENT_SOURCE_MANIFEST.json` and `CLIENT_SOURCE_REVIEW.md`. Final status additionally contains new `docs/phase3-planning/`. Git whitespace and local-link checks applied to new documents; no application tests rerun for this documentation-only task. Planned PostgreSQL tests/functional acceptance are explicitly unexecuted future work, not a pass claim.
+
+
+## Phase 3D synthetic implementation — 20 October 2026
+
+Phase3D is a bounded synthetic foundation. Recommendation and fresh test evidence: PHASE_3D_IMPLEMENTATION_REPORT.md. Conditional consideration of separately authorized synthetic Phase3E only; operational release remains NO-GO. Unapproved criteria/authorities/partial marking, disposition and inherited hold requirements fail closed. The configured database retains17 earlier pending migrations plus3 new QC migrations; none applied. Historical3A/3B/3C source tracking findings must be read against the clean initial787e328 checkpoint, not assumed current.

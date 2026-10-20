@@ -135,3 +135,8 @@ Parent Job Cards remain one per order. Multiple append-only executions aggregate
 ## Client-confirmed LED MAX — 15 October 2026
 
 LED = MAX(LED_Base × 2.5%, Eligible_KG/1,000 × USD 70 × saved USD→UGX). Higher of the Two is now the default for new applicable records. This supersedes prior statements that higher/lower selection awaits confirmation. **Percentage base remains pending clarification** and explicitly configurable; applicability and VAT-on-LED are not assumed. Both weight and FX/date are mandatory for the comparison; missing product/model KG conversion blocks finalization, never percentage-only fallback. Historical method/rate/base/FX/amount snapshots are preserved. LED is a separate commercial charge; existing base VAT basis is retained and additional VAT applies to LED only when explicitly configured. Source snapshots, not current exchange rates, flow through quotes/orders/partial invoices. See the updated sales-fulfillment report.
+
+
+## Phase 3D synthetic QC — 20 October 2026
+
+Versioned QC evidence, guarded whole-root quality reclassification, containment and NCR/CAPA foundation now use the existing authenticated inventory APIs. Operational posting remains disabled; partial indistinguishable scopes, disposition and inherited transfer QC clearance fail closed. No demo success is treated as backend persistence. See ../../docs/phase3-planning/PHASE_3D_IMPLEMENTATION_REPORT.md for exact implementation, verification and remaining gates. No application migration or real authority grant is performed.

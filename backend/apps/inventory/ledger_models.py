@@ -50,7 +50,7 @@ class LedgerApproval(ImmutableRecord):
 
 
 class LedgerTransaction(ImmutableRecord):
-    KINDS=['OPENING','IN','OUT','TRANSFER','RETURN','ADJUSTMENT','CORRECTION','REVERSAL']
+    KINDS=['OPENING','IN','OUT','TRANSFER','RETURN','ADJUSTMENT','CORRECTION','REVERSAL','QUALITY']
     source=models.OneToOneField(SourceEvent,on_delete=models.PROTECT)
     policy=models.ForeignKey(PostingPolicy,on_delete=models.PROTECT)
     actor=models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.PROTECT)
@@ -67,7 +67,7 @@ class LedgerTransaction(ImmutableRecord):
                      ('approve_synthetic_transaction','Verify synthetic approval fixtures'),
                      ('view_synthetic_custody','Read scoped synthetic custody'),
                      ('rebuild_synthetic_projection','Rebuild synthetic projection')]
-        constraints=[models.CheckConstraint(condition=models.Q(kind__in=['OPENING','IN','OUT','TRANSFER','RETURN','ADJUSTMENT','CORRECTION','REVERSAL'],version=1),name='ledger_known_posted_kind'),
+        constraints=[models.CheckConstraint(condition=models.Q(kind__in=['OPENING','IN','OUT','TRANSFER','RETURN','ADJUSTMENT','CORRECTION','REVERSAL','QUALITY'],version=1),name='ledger_known_posted_kind'),
                      models.CheckConstraint(condition=~models.Q(reverses=models.F('id')),name='ledger_not_self_reversal')]
 
 

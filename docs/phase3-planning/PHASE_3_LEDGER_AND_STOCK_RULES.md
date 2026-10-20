@@ -71,3 +71,8 @@ Maintain happened_at, recorded_at and posted_at separately. Ledger append order 
 Counts compare a frozen ledger snapshot to actual observed stock with documented movement bridges. Count never updates balance. Reconciliation explains mismatch; correct missing legitimate transaction through its own source before deciding residual adjustment. Unknown count/identity/unit produces unresolved variance, not zero. Approvals are invalidated on evidence/version/cutoff drift. Source dates and data errors are preserved with linked corrections.
 
 Projection rebuild streams all committed ledger lines into shadow generation by stock key; compare exact decimal balances, partition totals, allocation conservation and source uniqueness. Establish write exclusion or ledger watermark plus captured delta catch-up under final gate before swap. Sequence allocation order alone is not commit order; a maximum UUID/sequence without in-flight transaction exclusion is unsafe. Audit rebuild actor/watermark/generation and differences; rebuild cannot authorize missing opening stock or remove holds.
+
+
+## Phase 3D synthetic implementation — 20 October 2026
+
+QUALITY is a narrowly scoped synthetic kind, not Stock IN. Two equal opposite legs at one exact custody key pair require single-use QC authority, independent accepted inspection or explicit hold, atomic QC plus ledger audit and existing nonce/database guards. Generic QUALITY reversal is prohibited; explicit holds block source consumption and transfer. Ordinary receipts/openings stay HELD. Legacy pre-released regression fixtures require a separate explicit test-only Python override and nonce-bound database evidence; APIs, runner and environment variables do not enable it. No operational policy approval is inferred.

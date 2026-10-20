@@ -125,3 +125,8 @@ erDiagram
 ## Migration design and operational boundary
 
 A — Future additive migrations only: identities/source evidence first; transaction/projection/ledger constraints and immutable guards next; reconciliation and opening evidence next; QC templates/gates plus ledger availability integration before operational posting; query indexes after measured workloads. Dependency graph uses existing masters/accounts/specifications/core leaf migrations, not new historical edits. Require upgrade rehearsal from existing Phase 2 and Phase 2.1 states in disposable PostgreSQL, fresh install, restricted runtime-role tests and restore rehearsal. No data migration seeds roles, openings or lots. All migration names remain future proposals. No migration generated or applied in this task.
+
+
+## Phase 3D synthetic implementation — 20 October 2026
+
+Implemented inventory0012_qc_foundation,0013_qc_guards,0014_qc_action_evidence add nine protected UUID QC evidence tables, typed plan item checks, unique plan revisions/reviews/authorization-posting linkage, positive quantities and append-only synthetic/audit/conservation guards. QUALITY extends the transaction kind through a new migration; no prior applied migration is edited. No StockPortion/REJECTED ledger bucket/split engine is added. Populated upgrades and production ACL rollout remain unverified and unauthorized.

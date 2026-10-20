@@ -63,3 +63,8 @@ A — Each API declares capability and explicit object scope. Introduce governed
 A — Store maker, approver, physical receiver, recorder and verifier as distinct function evidence; equality may be permitted only for functions the SOP allows to overlap with an assigned documented compensating check. No-self-approval and mandatory independent QC cannot be switched off by a configurable boolean. Role-policy revision approval does not approve a transaction. Require explicit authority source, effective interval and digest, not free-text role-name matching.
 
 D — Management supplies final named assignments and compensating checks. Unknown approver means command unavailable, not automatic OM/Admin selection. The matrix is ready for client review but is not a permission seed or approval record.
+
+
+## Phase 3D synthetic implementation — 20 October 2026
+
+New capability definitions only: inventory.configure_qc, approve_qc_plan, inspect_qc, review_qc, release_qc, hold_qc, manage_ncr, close_ncr, view_qc, view_qc_history. No named grants/seeds. Company-wide scope is required for plan publication; custody scope for QC actions. Independent plan approval, inspection review/release and NCR effectiveness/closure are enforced without Admin bypass. This conservative synthetic contract does not establish a staffed QC Supervisor or formal management authority. D02/D09 publication/release/disposition mappings remain pending. Quality posting also requires the existing synthetic ledger capability.

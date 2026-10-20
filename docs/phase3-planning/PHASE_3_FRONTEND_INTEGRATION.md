@@ -51,3 +51,8 @@ A — Preserve token-refresh concurrency safeguards while correcting login/base 
 I — Capacitor packages/sync script present; README says no native Android project/config checked in. No Android runtime acceptance is claimed. A — Shared typed API layer for React/possible later Capacitor; responsive evidence and status views, permission-denial handling and safe interrupted-request recovery. Never permit offline automatic posting or locally satisfied QC gate. Decide offline capture, secure storage, private attachment camera/files and HTTPS/CORS separately under D15; later test actual Android lifecycle/resume/network loss when native scope is authorized.
 
 A — Verification: real isolated backend fixtures for email login/me multiple/no roles; UUID/pagination; denied Stores system posting/PM release/Master Admin bypass; PO evidence-backed receipt; network timeout retry; stale versions; missing QC; partial hold/release; unknown openings; actual saved/reloaded balances. Retain frontend typecheck/build/all check scripts when integration changes are later authorized. Existing demo tests are additional regression coverage only.
+
+
+## Phase 3D synthetic implementation — 20 October 2026
+
+QualityFoundation is linked inside existing /admin/inventory and uses qualityApi against guarded real /api/v1/inventory/quality endpoints. Outside approved test mode, QC is unavailable. Lists/details/results/held custody/review/release/NCR/history use persisted responses, retry keys, If-Match, pagination and explicit capabilities. Manual references/structured JSON remain foundation UX. Existing demo QC modules are unchanged; passing their scripts is not deployed QC integration proof.

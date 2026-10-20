@@ -63,3 +63,8 @@ All state-changing commands are authenticated, capability scoped and server attr
 Use protected private evidence storage with digest, uploader, captured date, media type and retention policy; database metadata/decisions are atomic, external blobs uploaded before references become usable. Commit notifications only after commit; no network effects within stock transactions. Publication retry requires an outbox only if external delivery becomes authorized. No external integration is assumed here.
 
 See [database design](PHASE_3_DATABASE_DESIGN.md), [QC design](PHASE_3_QC_FOUNDATION.md), [frontend blueprint](PHASE_3_FRONTEND_INTEGRATION.md) and [implementation plan](PHASE_3_IMPLEMENTATION_PLAN.md).
+
+
+## Phase 3D synthetic implementation — 20 October 2026
+
+Dedicated synthetic QUALITY transactions conserve exact identity/custody/unit/owner across paired HELD/RELEASED legs through the existing ledger service. Inspections bind one current whole-held source/version; root locks and current plan checks prevent stale/double release. Explicit root containment blocks use/transfer. Normal held transfers preserve the bucket, but destination clearance of inherited QC obligations is blocked pending lineage design. Registration identity remains immutable. See PHASE_3D_IMPLEMENTATION_REPORT.md for actual scope and deferred portion/disposition/production contracts.

@@ -9,6 +9,7 @@ from decimal import Decimal
 from django.db import connection,transaction,IntegrityError
 from django.db.models import Sum,Max
 from django.utils import timezone
+from django.conf import settings
 from rest_framework.exceptions import ValidationError,PermissionDenied
 from apps.core.commands import execute_command,payload_hash,advance_version
 from apps.core.audit import sanitize
@@ -69,7 +70,7 @@ def event_time(value):
 
 def normalize_intent(intent):
     required={'kind','policy','policy_version','source_system','source_event','effective_at','reason','lines','expected_versions'}
-    if not isinstance(intent,dict) or set(intent)-required-{'approval','reverses','related','quality_reference'} or required-set(intent):fail('Use the declared posting intent contract.')
+    if not isinstance(intent,dict) or set(intent)-required-{'approval','reverses','related','quality_reference','quality_authorization'} or required-set(intent):fail('Use the declared posting intent contract.')
     if not isinstance(intent['reason'],str) or not intent['reason'].strip() or len(intent['reason'])>1000:fail('A bounded reason is required.')
     for name,limit in [('source_system',120),('source_event',200)]:
         if not isinstance(intent[name],str) or not intent[name] or len(intent[name])>limit:fail('Source identity is required and bounded.')
@@ -132,7 +133,7 @@ def post_transaction(*,actor,intent,key,request_id):
             if kind=='REVERSAL':
                 if not intent.get('reverses'):fail('Original transaction required.')
                 original=locked[str(uuid.UUID(str(intent['reverses'])))]
-                if original.kind in ['OPENING','REVERSAL'] or LedgerTransaction.objects.filter(reverses=original).exists():fail('Opening corrections, repeated reversals and reversal of reversal require a later governed workflow.')
+                if original.kind in ['OPENING','REVERSAL','QUALITY'] or LedgerTransaction.objects.filter(reverses=original).exists():fail('Opening corrections, repeated reversals and reversal of reversal require a later governed workflow.')
                 if original.related_events.filter(kind='RETURN',reversal__isnull=True).exists():fail('Reverse dependent returns first.')
             elif intent.get('reverses'):fail('Only reversals may reference a reversal target.')
             if kind=='RETURN' and (related is None or related.kind!='OUT' or LedgerTransaction.objects.filter(reverses=related).exists()):fail('A non-reversed original OUT is required.')
@@ -149,6 +150,14 @@ def post_transaction(*,actor,intent,key,request_id):
                 if not master.is_active or not stock.unit.is_active:fail('Inactive stock item or unit.')
                 latest=LedgerEntry.objects.filter(stock=stock).aggregate(value=Max('event_at'))['value']
                 if latest and when<latest:fail('Backdated posting is unavailable; history must remain feasible.')
+            from .quality_models import QualityHold, QualityPosting
+            quality_auth=None
+            if kind=='QUALITY':
+                from .quality import validate_quality_intent
+                quality_auth=validate_quality_intent(actor,intent,lines)
+            elif intent.get('quality_authorization'):fail('Only a dedicated QC transition may use quality authority.')
+            if kind!='QUALITY' and any(row.get('from_location') for row in lines) and QualityHold.objects.filter(stock_id__in=ids).exists():
+                fail('Explicit QC containment blocks source consumption and transfer; approved disposition is pending.')
             parsed=[];accounts={};changes=defaultdict(lambda:Decimal('0'));openings={};returns=defaultdict(lambda:Decimal('0'))
             for sequence,row in enumerate(lines,1):
                 stock=stocks[row['stock']];qty=Decimal(row['quantity']);quality=row['quality']
@@ -161,9 +170,16 @@ def post_transaction(*,actor,intent,key,request_id):
                 if kind=='TRANSFER' and not (src and dst):fail('Transfer needs both endpoints.')
                 if kind in ['ADJUSTMENT','CORRECTION'] and bool(src)==bool(dst):fail('A correction is one bounded compensating direction per line.')
                 if qty==0 and kind!='OPENING':fail('Only explicit zero opening coverage can have a zero line.')
-                if src and quality!='RELEASED' and kind not in ['TRANSFER','REVERSAL']:fail('QC-held stock is unavailable for use or OUT.')
-                if dst and not src and quality=='RELEASED':
+                if src and quality!='RELEASED' and kind not in ['TRANSFER','REVERSAL','QUALITY']:fail('QC-held stock is unavailable for use or OUT.')
+                if dst and not src and quality=='RELEASED' and kind!='QUALITY':
+                    # Historical regression fixtures may establish pre-released synthetic stock.
+                    # This opt-in is never read from environment variables or enabled by the runner.
+                    if not getattr(settings,'SYNTHETIC_LEGACY_RELEASE_FIXTURES',False):
+                        fail('Receipts and opening stock must be HELD; use an independently approved QC transition.')
+                    with connection.cursor() as c:
+                        c.execute("SELECT set_config('navapack.legacy_quality_fixture',%s,true)",[require_synthetic_environment()])
                     if kind not in ['OPENING','IN'] or not policy.rules['released_receipts'] or not str(intent.get('quality_reference','')).startswith('synthetic:'):fail('New stock defaults held; explicit synthetic QC evidence required for a released test receipt.')
+                    if QualityHold.objects.filter(stock=stock).exists():fail('Explicit holds cannot be bypassed by fixture receipts.')
                 if kind=='RETURN':
                     if quality!='HELD' or not row.get('original_line'):fail('Returns need original-line identity and remain held.')
                     issue=TransactionLine.objects.get(pk=row['original_line'],transaction=related)
@@ -211,6 +227,7 @@ def post_transaction(*,actor,intent,key,request_id):
                 require_independent_actor(approval.approver,actor.pk);require_actor(approval.approver,APPROVE)
                 for _,location,_ in accounts.values():require_scope(approval.approver,location.warehouse_id)
             header=LedgerTransaction.objects.create(source=source,policy=policy,actor=actor,kind=kind,event_at=when,reason=sanitize(intent['reason']),approval=approval,reverses=original,related=related)
+            if quality_auth:QualityPosting.objects.create(authorization=quality_auth,transaction=header)
             ordinal=0
             for sequence,row,stock,src,dst,qty,quality in parsed:
                 line=TransactionLine.objects.create(transaction=header,sequence=sequence,stock=stock,unit=stock.unit,from_location=src,to_location=dst,quantity=qty,quality=quality,original_line_id=row.get('original_line'))
@@ -235,6 +252,7 @@ def post_transaction(*,actor,intent,key,request_id):
                     'actor_contexts':[authority_snapshot(actor,POST,warehouse) for warehouse in sorted({str(location.warehouse_id) for _,location,_ in accounts.values()})],
                     'approval_contexts':[authority_snapshot(approval.approver,APPROVE,warehouse) for warehouse in sorted({str(location.warehouse_id) for _,location,_ in accounts.values()})] if approval else [],
                     'approval_evidence':{'maker':str(approval.maker_id),'approver':str(approval.approver_id),'decision':approval.decision,'reference':approval.reference,'intent_hash':approval.intent_hash} if approval else None,
+                    'quality_authorization':str(quality_auth.pk) if quality_auth else None,
                     'effective_at':when.isoformat(),'kind':kind,'related':str(related.pk) if related else None,'source_identity':{'system':source.system,'event':source.event_key}}}}
             return result,201,audit
     try:

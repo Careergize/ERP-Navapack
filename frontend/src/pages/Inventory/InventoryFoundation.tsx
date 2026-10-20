@@ -1,3 +1,4 @@
+import { QualityFoundation } from './QualityFoundation';
 import { FormEvent, useEffect, useState } from 'react';
 import axios from 'axios';
 import { InventoryOperations } from './InventoryOperations';
@@ -7,6 +8,7 @@ import { inventoryPage, inventoryHistory, saveInventory, type InventoryRecord, t
 const labels: Record<Resource,string> = {warehouses:'Warehouse Management', locations:'Storage Location Management', identities:'Stock Identity / Lot References'};
 export function InventoryFoundation() {
   const [operations,setOperations]=useState(false);
+  const [quality,setQuality]=useState(false);
   const {user} = useAuth();
   const [resource,setResource] = useState<Resource>('warehouses');
   const [search,setSearch] = useState(''); const [warehouse,setWarehouse] = useState('');
@@ -56,8 +58,8 @@ export function InventoryFoundation() {
   }
   if(!user?.backendSession)return <p>Inventory configuration requires a real authenticated backend session.</p>;
   return <section className="space-y-5">
-    <nav className="flex gap-3"><button onClick={()=>setOperations(false)}>Configuration</button><button onClick={()=>setOperations(true)}>Inventory workflows / Opening Stock</button></nav>
-    {operations?<InventoryOperations/>:<>
+    <nav className="flex gap-3"><button onClick={()=>{setOperations(false);setQuality(false);}}>Configuration</button><button onClick={()=>{setOperations(true);setQuality(false);}}>Inventory workflows / Opening Stock</button><button onClick={()=>setQuality(true)}>Quality control / NCR</button></nav>
+    {quality?<QualityFoundation/>:operations?<InventoryOperations/>:<>
     <h1 className="text-2xl font-semibold">Inventory foundation</h1>
     <p>Configuration and identity references only. Workflow evidence is separate; operational stock posting and QC release remain unavailable.</p>
     <nav className="flex flex-wrap gap-3" aria-label="Inventory configuration">{(Object.keys(labels) as Resource[]).map(r=><button className="rounded border bg-white p-3" key={r} onClick={()=>{setResource(r);setPage(1);setEditing(false);setRecord(undefined);setHistoryRecord(undefined);}}>{labels[r]}</button>)}</nav>

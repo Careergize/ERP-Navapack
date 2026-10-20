@@ -10,6 +10,7 @@ try {
   const {saveTokens}=await server.ssrLoadModule('/src/lib/authSession.ts');
   const {inventoryPage,saveInventory}=await server.ssrLoadModule('/src/lib/inventoryApi.ts');
   const {operationMode,operationPage,submitOperation,operationTransition,operationHistory}=await server.ssrLoadModule('/src/lib/inventoryOperationsApi.ts');
+  const {qualityMode,qualityPage,qualityDetail,qualityCommand,qualityHistory}=await server.ssrLoadModule('/src/lib/qualityApi.ts');
   const id='dc36d419-7edf-4479-8174-8d0ce7992303';
   const profile=backendProfile({id,name:'Synthetic employee',roles:['configured-role-a','configured-role-b'],permissions:['inventory.view_warehouse']});
   assert.equal(profile.role,'authenticated');assert.equal(profile.backendSession,true);assert.equal(profile.roles.length,2);
@@ -35,9 +36,18 @@ try {
   assert.equal(requests.at(-1).url,`/inventory/operations/${id}/verify/`);
   assert.equal(requests.at(-1).headers['If-Match'],'"3"');
   await operationHistory(id,2);assert.equal(requests.at(-1).url,`/inventory/operations/${id}/history/`);
+  await qualityMode();assert.equal(requests.at(-1).url,'/inventory/quality/mode/');
+  await qualityPage('inspections',2);assert.deepEqual(requests.at(-1).params,{page:2});
+  await qualityDetail('inspections',id);assert.equal(requests.at(-1).url,`/inventory/quality/inspections/${id}/`);
+  await qualityCommand('inspections',{quantity:'70.000001'},'qc-create');
+  assert.equal(JSON.parse(requests.at(-1).data).quantity,'70.000001');assert.equal(requests.at(-1).headers['Idempotency-Key'],'qc-create');
+  await qualityCommand('inspections',{policy:id,policy_version:1},'qc-release',{id,version:1},'release');
+  assert.equal(requests.at(-1).url,`/inventory/quality/inspections/${id}/release/`);assert.equal(requests.at(-1).headers['If-Match'],'"1"');
+  await qualityHistory('inspections',id,2);assert.equal(requests.at(-1).url,`/inventory/quality/inspections/${id}/history/`);
   api.defaults.adapter=async()=>{throw new Error('synthetic denial');};
   await assert.rejects(saveInventory('warehouses',body,'denied'));
   await assert.rejects(submitOperation({kind:'IN'},'denied-workflow'));
+  await assert.rejects(qualityCommand('inspections',{},'denied-qc'));
   api.defaults.adapter=async config=>{requests.push(config);return {config,data:{},status:200,statusText:'OK',headers:{}};};
   saveTokens('access','synthetic-refresh',false);await logoutRequest();
   assert.equal(requests.at(-1).url,'/auth/logout/');assert.equal(JSON.parse(requests.at(-1).data).refresh,'synthetic-refresh');

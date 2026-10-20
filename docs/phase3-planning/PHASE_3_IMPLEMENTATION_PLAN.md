@@ -88,3 +88,8 @@ A — Master Admin governs technical role proposals with independent publication
 A — Each subphase requires reviewed schema/contract, closed relevant decision IDs, successful PostgreSQL tests, regression checks and named functional acceptance. Operational release additionally needs controlled SOP effective-date adoption, trained staffing/independent coverage, approved location/unit/lot/quality plans, opening reconciliation, migration/restore rehearsal, restricted DB rights, monitored evidence backlog and explicit deployment authorization. Green mock/backend tests alone are insufficient.
 
 D — Until P0 decisions and explicit implementation authorization arrive, only further architecture/decision validation can begin. 3A is the first implementation candidate after its gates; there is no authorized code/migration work in this task. Deployment and stock migration require their own approval after reviewable results exist.
+
+
+## Phase 3D synthetic implementation — 20 October 2026
+
+User authorized synthetic Phase3D separately. Implemented plan/review/inspection/reinspection, whole-root QC reclassification, explicit containment and NCR evidence in the existing inventory domain. Partial roots, disposition/hold removal, inherited transfer clearance and production execution stop at their policy/identity gates. Verification and next-phase prerequisites are documented in PHASE_3D_IMPLEMENTATION_REPORT.md; no automatic Phase3E continuation.

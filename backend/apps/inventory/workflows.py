@@ -126,6 +126,9 @@ def revalidate_issue(obj):
     stocks={s.pk:s for s in StockIdentity.objects.select_for_update().filter(pk__in={l.stock_id for l in lines}).order_by('pk')}
     for row in lines:
         stock=stocks[row.stock_id];master=stock.material or stock.variant or stock.consumable
+        from .quality_models import QualityHold
+        if QualityHold.objects.filter(stock=stock).exists():
+            raise IssueUnavailable('Explicit QC containment is unresolved. No stock posted or reserved.')
         if (stock.lifecycle!='REGISTERED' or row.quality!='RELEASED' or stock.parent_id or not stock.physical_reference
             or not master.is_active or not stock.unit.is_active or row.unit_id!=stock.unit_id
             or not row.location.is_active or not row.location.warehouse.is_active or row.location.warehouse.custody_department_id is None):
@@ -201,6 +204,9 @@ def submit_request(*,actor,data,key,request_id):
                 elif row.get('source_line'):invalid('Controlled physical source-line claims apply to receipts/counts/openings only.')
                 if kind in ['IN','OPENING','RETURN'] and quality!='HELD':invalid('New stock/count openings start held; QC release is separate.')
                 if kind=='OUT' and quality!='RELEASED':invalid('Held stock cannot issue.')
+                if kind in ['OUT','TRANSFER']:
+                    from .quality_models import QualityHold
+                    if QualityHold.objects.filter(stock=stock).exists():invalid('Explicit QC containment blocks issue and transfer pending approved disposition.')
                 if kind not in ['OPENING','OPENING_CORRECTION','COUNT','ADJUSTMENT'] and qty==0:invalid('Positive physical quantity required.')
                 baseline=None;difference=None;version=0;original_line=None;original_quantity=None
                 if kind in ['OUT','TRANSFER','COUNT','ADJUSTMENT']:

@@ -70,7 +70,16 @@ class SyntheticLedgerTests(TransactionTestCase):
     def intent(self,kind,lines,**extra):
         return {'kind':kind,'policy':str(self.policy.pk),'policy_version':1,'source_system':'synthetic:test','source_event':str(uuid.uuid4()),'effective_at':timezone.now().isoformat(),'reason':'Synthetic manufacturing ledger test.','lines':lines,'expected_versions':self.versions(lines),'quality_reference':'synthetic:qc-fixture',**extra}
     def submit(self,intent,actor=None,key=None):
-        return post_transaction(actor=actor or self.actor,intent=intent,key=key or str(uuid.uuid4()),request_id=uuid.uuid4())
+        # Legacy engine regression setup only. The runner/API/QC services never enable this.
+        # New receipts/openings default held; QC tests exercise actual release separately.
+        def post():
+            return post_transaction(actor=actor or self.actor,intent=intent,key=key or str(uuid.uuid4()),request_id=uuid.uuid4())
+        if intent.get('kind') in ['OPENING','IN'] and any(line.get('quality')=='RELEASED' for line in intent.get('lines',[])):
+            # Django's UserSettingsHolder sets SETTINGS_MODULE=None unless explicitly retained.
+            # Preserve the real test module; never relax the service environment check.
+            with override_settings(SYNTHETIC_LEGACY_RELEASE_FIXTURES=True,SETTINGS_MODULE=settings.SETTINGS_MODULE):
+                return post()
+        return post()
     def opening(self,qty='10',loc=None,quality='RELEASED'):
         return self.submit(self.intent('OPENING',[self.line(qty,quality,dst=loc or self.loc)]))[0]
     def balance(self,loc=None,quality='RELEASED',stock=None):

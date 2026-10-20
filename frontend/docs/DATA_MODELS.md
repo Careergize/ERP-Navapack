@@ -153,3 +153,8 @@ Canonical formulas, field semantics, ownership, role checks, server capabilities
 ## Confirmed LED / finance follow-up
 
 Optional CostingInput.led and QuotationLine.led capture applicability, provisional percentage base, eligible KG, conversion, FX/date and VAT-on-LED. CostingTotals.led, QuotationLine.ledSnapshot and SalesOrderItem.ledSnapshot retain LEDSnapshot (confirmed higher method/rates, base value/choice, KG, both comparison amounts, selected raw/rounded amount/branch, FX/date, conversion identity/version, VAT flag). CommercialTotals optionally adds led/ledTax; accepted order totals include them. Invoice retains apportioned per-line snapshots/LED total and final reconciliation. Existing historical records without LED fields retain prior behavior; no migration/backend model was added. Finance uses the existing accounts Role/User; no parallel user entity.
+
+
+## Phase 3D synthetic QC — 20 October 2026
+
+Versioned QC evidence, guarded whole-root quality reclassification, containment and NCR/CAPA foundation now use the existing authenticated inventory APIs. Operational posting remains disabled; partial indistinguishable scopes, disposition and inherited transfer QC clearance fail closed. No demo success is treated as backend persistence. See ../../docs/phase3-planning/PHASE_3D_IMPLEMENTATION_REPORT.md for exact implementation, verification and remaining gates. No application migration or real authority grant is performed.
