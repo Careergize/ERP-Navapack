@@ -11,6 +11,7 @@ try {
   const {inventoryPage,saveInventory}=await server.ssrLoadModule('/src/lib/inventoryApi.ts');
   const {operationMode,operationPage,submitOperation,operationTransition,operationHistory}=await server.ssrLoadModule('/src/lib/inventoryOperationsApi.ts');
   const {qualityMode,qualityPage,qualityDetail,qualityCommand,qualityHistory}=await server.ssrLoadModule('/src/lib/qualityApi.ts');
+  const {custodyPage,custodyScope}=await server.ssrLoadModule('/src/lib/custodyApi.ts');
   const id='dc36d419-7edf-4479-8174-8d0ce7992303';
   const profile=backendProfile({id,name:'Synthetic employee',roles:['configured-role-a','configured-role-b'],permissions:['inventory.view_warehouse']});
   assert.equal(profile.role,'authenticated');assert.equal(profile.backendSession,true);assert.equal(profile.roles.length,2);
@@ -44,6 +45,11 @@ try {
   await qualityCommand('inspections',{policy:id,policy_version:1},'qc-release',{id,version:1},'release');
   assert.equal(requests.at(-1).url,`/inventory/quality/inspections/${id}/release/`);assert.equal(requests.at(-1).headers['If-Match'],'"1"');
   await qualityHistory('inspections',id,2);assert.equal(requests.at(-1).url,`/inventory/quality/inspections/${id}/history/`);
+  await custodyPage('balances',2,{warehouse:id,item_type:'material',stock:''});
+  assert.equal(requests.at(-1).url,'/inventory/custody/balances/');assert.deepEqual(requests.at(-1).params,{page:2,warehouse:id,item_type:'material'});
+  await custodyScope(id,id);assert.equal(requests.at(-1).url,'/inventory/custody/scope/');assert.deepEqual(requests.at(-1).params,{stock:id,location:id});
+  await saveInventory('identities',{warehouse:id,unit:id,material:id,source_reference:'synthetic:registration'},'identity-registration');
+  assert.equal(requests.at(-1).url,'/inventory/identities/');assert.equal(requests.at(-1).headers['Idempotency-Key'],'identity-registration');
   api.defaults.adapter=async()=>{throw new Error('synthetic denial');};
   await assert.rejects(saveInventory('warehouses',body,'denied'));
   await assert.rejects(submitOperation({kind:'IN'},'denied-workflow'));

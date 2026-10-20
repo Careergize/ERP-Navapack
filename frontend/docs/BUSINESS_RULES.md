@@ -1,5 +1,9 @@
 # Business Rules
 
+## Phase 4A persistent commercial boundary
+
+`/commercial` supports development drafts and review only, using explicit employee capability rather than demo role names. Backend Decimal snapshots determine estimates; no authoritative VAT/LED/final amount or inferred currency/unit conversion. Only draft edits and pre-approval cancellations are available; review must return to draft first. Orders never reserve/deduct stock or execute manufacturing/dispatch. Historical revisions retain their original inputs and prices. [Contracts and pending policies](../../docs/phase4-planning/PHASE_4A_DOMAIN_CONTRACTS.md) govern this path; older demo rules below are not backend authority.
+
 ## Phase 3C-1 remediation rules — 20 October 2026
 
 Numeric JSON quantities are invalid; decimal strings only. Stock OUT eligibility rechecked at verification/physical confirmation/approval with controlled unavailable errors; these steps reserve/deduct nothing. Final ledger remains authoritative. Current counts/openings reject caller-selected historical cutoffs; authoritative historical reconciliation deferred. Receipts/counts/openings must claim a matching pre-registered physical source line once; different delivery/count occurrences under the same document are allowed. Live registration/alias/correction governance remains pending. Synthetic guards and independent approval unchanged.

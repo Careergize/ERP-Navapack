@@ -1,5 +1,9 @@
 # Development Status
 
+## Phase 4A commercial foundation — 20 October 2026
+
+Real backend sessions can open `/commercial` from the existing shell. A separate bounded editor persists costing/quotation/multi-line order drafts, edits and immutable history through JWT APIs; review/reopen/pre-approval cancellation supported. Demo pages remain separate. Explicit capability and verified disposable database required. Final payable totals, tax/levy rules, approvals, PDF/email, production and dispatch are unavailable. See [implementation and actual tests](../../docs/phase4-planning/PHASE_4A_IMPLEMENTATION_REPORT.md); API transport acceptance does not establish browser visual acceptance.
+
 ## Phase 3C-1 remediation — 20 October 2026
 
 Inventory workflow forms now require a controlled source-line reference for receipts/counts/openings, show server-current count capture instead of historical cutoff entry, and distinguish physical evidence/review from posting. API quantities remain exact strings; controlled409 errors expose stale/unavailable issues. Same session and synthetic-only mode. See [report](../../docs/phase3-planning/PHASE_3C_IMPLEMENTATION_REPORT.md); no browser/deployment acceptance or live publisher claimed.

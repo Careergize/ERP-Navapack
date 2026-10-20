@@ -1,3 +1,5 @@
+import { InventoryCustody } from './InventoryCustody';
+import { IdentityRegistration } from './IdentityRegistration';
 import { QualityFoundation } from './QualityFoundation';
 import { FormEvent, useEffect, useState } from 'react';
 import axios from 'axios';
@@ -8,6 +10,7 @@ import { inventoryPage, inventoryHistory, saveInventory, type InventoryRecord, t
 const labels: Record<Resource,string> = {warehouses:'Warehouse Management', locations:'Storage Location Management', identities:'Stock Identity / Lot References'};
 export function InventoryFoundation() {
   const [operations,setOperations]=useState(false);
+  const [custody,setCustody]=useState(false);const [registering,setRegistering]=useState(false);
   const [quality,setQuality]=useState(false);
   const {user} = useAuth();
   const [resource,setResource] = useState<Resource>('warehouses');
@@ -58,12 +61,14 @@ export function InventoryFoundation() {
   }
   if(!user?.backendSession)return <p>Inventory configuration requires a real authenticated backend session.</p>;
   return <section className="space-y-5">
-    <nav className="flex gap-3"><button onClick={()=>{setOperations(false);setQuality(false);}}>Configuration</button><button onClick={()=>{setOperations(true);setQuality(false);}}>Inventory workflows / Opening Stock</button><button onClick={()=>setQuality(true)}>Quality control / NCR</button></nav>
-    {quality?<QualityFoundation/>:operations?<InventoryOperations/>:<>
+    <nav className="flex gap-3"><button onClick={()=>{setOperations(false);setQuality(false);setCustody(false);}}>Configuration</button><button onClick={()=>{setOperations(true);setQuality(false);setCustody(false);}}>Inventory workflows / Opening Stock</button><button onClick={()=>{setQuality(true);setCustody(false);}}>Quality control / NCR</button><button onClick={()=>setCustody(true)}>Balances / movement history</button></nav>
+    {custody?<InventoryCustody/>:quality?<QualityFoundation/>:operations?<InventoryOperations/>:<>
     <h1 className="text-2xl font-semibold">Inventory foundation</h1>
     <p>Configuration and identity references only. Workflow evidence is separate; operational stock posting and QC release remain unavailable.</p>
-    <nav className="flex flex-wrap gap-3" aria-label="Inventory configuration">{(Object.keys(labels) as Resource[]).map(r=><button className="rounded border bg-white p-3" key={r} onClick={()=>{setResource(r);setPage(1);setEditing(false);setRecord(undefined);setHistoryRecord(undefined);}}>{labels[r]}</button>)}</nav>
+    <nav className="flex flex-wrap gap-3" aria-label="Inventory configuration">{(Object.keys(labels) as Resource[]).map(r=><button className="rounded border bg-white p-3" key={r} onClick={()=>{setResource(r);setPage(1);setEditing(false);setRecord(undefined);setHistoryRecord(undefined);setRegistering(false);}}>{labels[r]}</button>)}</nav>
     <h2 className="text-xl">{labels[resource]}</h2>
+    {resource==='identities'&&permissions.includes('inventory.add_stockidentity')&&<button onClick={()=>setRegistering(v=>!v)}>Register stock identity</button>}
+    {resource==='identities'&&registering&&<IdentityRegistration onSaved={saved=>{setRegistering(false);setRecord(saved);setRevision(v=>v+1);}}/>}
     {!readable?<p>You do not have the required view capability.</p>:<>
       <div className="flex flex-wrap gap-3"><input aria-label="Search records" className="rounded border p-2" value={search} placeholder="Search" onChange={e=>{setSearch(e.target.value);setPage(1);}}/>
       {resource!=='warehouses'&&<input aria-label="Filter warehouse UUID" className="rounded border p-2" value={warehouse} placeholder="Warehouse UUID filter" onChange={e=>{setWarehouse(e.target.value);setPage(1);}}/>}

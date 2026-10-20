@@ -1,5 +1,9 @@
 # Backend Integration TODO
 
+## Phase 4A update
+
+Separate `/commercial/documents/` APIs now support synthetic costing/quotation/order draft persistence, revisions, review/reopen/cancellation, JWT, idempotency and version checks. `/commercial` consumes these APIs; legacy quotation endpoints remain incompatible and are not advertised as implemented. Next: resolve [Phase 4 policy decisions](../../docs/phase4-planning/PHASE_4_CLIENT_DECISIONS.md), accept browser behavior, design governed approvals/confirmed amendments and separately authorize later integrations. Do not enable email/PDF, production, dispatch, fiscal totals or live posting by adapting the demo role/template defaults.
+
 ## Phase 3C-1 integration boundary — 20 October 2026
 
 Implemented /api/v1/inventory/operations/ mode/list/detail/create/stage/history adapter and embedded workflow screen against real test-gated Django APIs. Not live posting: all data/actions disabled outside stamped disposable context. Pending real authority/scope provisioning, production deployment/migration/browser acceptance, selector/scanner UX, evidence attachment access and operational QC. No other demo adapters rewritten. [Details](../../docs/phase3-planning/PHASE_3C_IMPLEMENTATION_REPORT.md).

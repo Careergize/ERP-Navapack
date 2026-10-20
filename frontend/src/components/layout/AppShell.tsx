@@ -55,7 +55,7 @@ const FINANCE_NAV_ITEMS: NavItem[] = [
 
 export function AppShell() {
   const { user, logout } = useAuth();
-  const items: NavItem[] = user?.backendSession ? [{to: "/admin/inventory", label: "Inventory configuration", icon: Settings, roles: []}] : isQCRole(user?.role) ? [{ to: "/qc", label: "QC Dashboard", icon: LayoutDashboard, roles: QC_VIEW_ROLES }, ...QC_SECTIONS.map(([key, label]) => ({ to: `/qc/${key}`, label, icon: ClipboardList, roles: QC_VIEW_ROLES }))] : user?.role === "accounts" ? FINANCE_NAV_ITEMS : NAV_ITEMS.filter((item) => !user || item.roles.includes(user.role));
+  const items: NavItem[] = user?.backendSession ? [{to: "/admin/inventory", label: "Inventory configuration", icon: Settings, roles: []}, {to: "/commercial", label: "Commercial foundation", icon: ClipboardList, roles: []}] : isQCRole(user?.role) ? [{ to: "/qc", label: "QC Dashboard", icon: LayoutDashboard, roles: QC_VIEW_ROLES }, ...QC_SECTIONS.map(([key, label]) => ({ to: `/qc/${key}`, label, icon: ClipboardList, roles: QC_VIEW_ROLES }))] : user?.role === "accounts" ? FINANCE_NAV_ITEMS : NAV_ITEMS.filter((item) => !user || item.roles.includes(user.role));
 
   return (
     <div className="min-h-screen bg-[radial-gradient(circle_at_72%_0%,#2dbb4c_0%,#16803d_42%,#0b3c2a_100%)] p-3 sm:p-5">

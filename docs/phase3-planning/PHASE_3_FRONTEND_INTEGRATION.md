@@ -56,3 +56,8 @@ A — Verification: real isolated backend fixtures for email login/me multiple/n
 ## Phase 3D synthetic implementation — 20 October 2026
 
 QualityFoundation is linked inside existing /admin/inventory and uses qualityApi against guarded real /api/v1/inventory/quality endpoints. Outside approved test mode, QC is unavailable. Lists/details/results/held custody/review/release/NCR/history use persisted responses, retry keys, If-Match, pagination and explicit capabilities. Manual references/structured JSON remain foundation UX. Existing demo QC modules are unchanged; passing their scripts is not deployed QC integration proof.
+
+
+## Phase 3E verified handover — 20 October 2026
+
+Phase 3E adds actual API-backed identity registration and synthetic-only exact custody/balance/local movement observations under the existing JWT session. Registration creates no quantity. Reader uses existing scopes and explicit capability; no origin documents. TypeScript/build/13 scripts pass. Full browser acceptance remains open; see PHASE_3E_ACCEPTANCE_MATRIX.md.

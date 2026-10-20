@@ -1,5 +1,9 @@
 # Frontend Data Models
 
+## Phase 4A persistent commercial contract
+
+`CommercialRecord` in `src/lib/commercialApi.ts` uses backend UUID/version/state/revision/hash and immutable input/estimate snapshots. Monetary values remain decimal strings; VAT/LED/payable total are unavailable. Backend CommercialDocument/CommercialRevision are owner-scoped synthetic aggregates, independent of existing demo stores. See [complete nested schema and reference rules](../../docs/phase4-planning/PHASE_4A_DOMAIN_CONTRACTS.md). No demo-state migration or production allocation model is implied.
+
 ## Phase 3C-1 source/cutoff remediation — 20 October 2026
 
 OperationLine transport adds source_line UUID; backend snapshot retains immutable canonical namespace/document/occurrence/line identity. COUNT/OPENING omit caller cutoff; backend records CURRENT_LOCKED cutoff under stock-root locks. Other workflow timestamps remain EVIDENCE_ONLY. Legacy values are LEGACY_UNVERIFIED and are not silently upgraded. Source registration models are fixture-only and have no frontend publisher; UUID request correlation cannot mint physical identities.

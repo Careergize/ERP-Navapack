@@ -1,5 +1,9 @@
 # Client originals reviewed — 20 October 2026
 
+## Phase 4A commercial foundation — 20 October 2026
+
+Additive commercial document/revision app and two forward migrations; costing, quotations and multi-line sales orders in stamped disposable databases only. Existing JWT/Employee/explicit capabilities, transactional command/audit, idempotency and optimistic concurrency reused. No business grants or application migrations. Tax/levy/final totals, approvals/customer-facing transitions, production and dispatch remain blocked. See [contracts](../../docs/phase4-planning/PHASE_4A_DOMAIN_CONTRACTS.md), [decisions](../../docs/phase4-planning/PHASE_4_CLIENT_DECISIONS.md) and [executed verification](../../docs/phase4-planning/PHASE_4A_IMPLEMENTATION_REPORT.md).
+
 ## Phase 3C-1 remediation — 20 October 2026
 
 Strict raw string quantities, locked Stock OUT feasibility checks at verify/confirm/approve, server-current count/opening snapshots, and controlled pre-registered document/occurrence/line claims now remediate3C boundary findings. Added0010/0011 migrations; baseline15 application migrations remain unapplied plus2 new pending. No3B guard/service/base setting/runner changes or production-enabled route. Registry is fixture-only, append-only, one-use; no live source publisher. See [current report](../../docs/phase3-planning/PHASE_3C_IMPLEMENTATION_REPORT.md) and reproducibility/checkpoint documents.

@@ -1,5 +1,9 @@
 # Changelog
 
+## 20 October 2026 — Phase 4A commercial foundation
+
+Added a separate backend-session Commercial Foundation page for persistent costing, quotation and multi-product order drafts, revisions and review history in disposable development environments. Preserved existing demos. Explicit unavailable states cover unapproved tax/levy totals, commercial approvals, PDF/email, production and dispatch. No stock reservation or deduction.
+
 ## 20 October 2026 — Phase 3C-1 boundary remediation
 
 Added controlled physical-source line input and current-count guidance; removed unsupported custom count cutoff entry. Clarified unposted physical-confirmation/review status and surfaced backend feasibility errors. No production posting/QC release or new login.

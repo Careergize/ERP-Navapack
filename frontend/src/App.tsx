@@ -1,4 +1,5 @@
 import { CommercialProvider } from '@/context/CommercialContext';
+import { CommercialFoundation } from '@/pages/Commercial/CommercialFoundation';
 import { InventoryFoundation } from '@/pages/Inventory/InventoryFoundation';
 import { QuotationsProvider } from '@/context/QuotationsContext';
 import { QuotationList, QuotationsGuard } from '@/pages/Quotations/QuotationList';
@@ -41,7 +42,7 @@ function RequireAuth({ children }: { children: JSX.Element }) {
   if (loading) return <p role="status" className="p-8">Restoring your session…</p>;
   if (sessionError) return <div className="space-y-3 p-8"><p role="alert">{sessionError}</p><button className="rounded border px-4 py-2" onClick={retrySession}>Retry</button></div>;
   if (!user) return <Navigate to="/login" replace />;
-  if (user.backendSession && location.pathname !== '/admin/inventory') return <Navigate to="/admin/inventory" replace />;
+  if (user.backendSession && !['/admin/inventory', '/commercial'].includes(location.pathname)) return <Navigate to="/admin/inventory" replace />;
   if (isQCRole(user.role) && location.pathname !== "/" && !location.pathname.startsWith("/qc") && !location.pathname.startsWith("/job-cards")) return <Navigate to="/qc" replace />;
   return children;
 }
@@ -76,6 +77,7 @@ function AppRoutes() {
         <Route path="/job-cards/:id" element={<JobCardDetail />} />
         <Route path="/stock" element={<StockPage />} />
         <Route path="/admin/inventory" element={<InventoryFoundation />} />
+        <Route path="/commercial" element={<CommercialFoundation />} />
         <Route path="/raw-materials" element={<RawMaterialPage />} />
         <Route path="/consumables" element={<ConsumablesPage />} />
         <Route path="/recycling" element={<RecyclingPage />} />
