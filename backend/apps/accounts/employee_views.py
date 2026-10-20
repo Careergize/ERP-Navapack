@@ -200,13 +200,21 @@ class EmployeeViewSet(AdminReadViewSet):
 
 
 class AuditEventSerializer(serializers.ModelSerializer):
+    summary=serializers.SerializerMethodField()
+    def get_summary(self,obj):
+        # The view must scope the event first; no unscoped evidence endpoint exists.
+        outcome=obj.summary.get('outcome')
+        if isinstance(outcome,dict) and outcome.get('detail_stored'):
+            return obj.evidence.payload['summary']
+        return obj.summary
     class Meta:
         model=AuditEvent
         fields=['id','actor','action','entity_type','entity_id','timestamp','request_id','summary','reason','source_version']
 
 
 class AdminAuditViewSet(AdminReadViewSet):
-    queryset=AuditEvent.objects.all()
+    # Inventory evidence has its own warehouse scope and dedicated history API.
+    queryset=AuditEvent.objects.exclude(entity_type__startswith='inventory.')
     serializer_class=AuditEventSerializer
     action_capabilities={'list':'view_admin_audit','retrieve':'view_admin_audit'}
     filterset_fields=['actor','action','entity_type','entity_id','request_id']

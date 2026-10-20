@@ -1,5 +1,9 @@
 # Changelog
 
+## 20 October 2026 — Phase 3A foundation
+
+Added real warehouse/location management, stock-identity reference viewer and scope-aware configuration history under existing login. Corrected backend email/multi-role/UUID/session contracts and request/version headers. Real sessions are limited to integrated configuration pages; demos remain separate. Opening corrections and all quantity operations remain unavailable. No real scope grants, migrations to the application DB or deployment were performed.
+
 ## Persistent quotation drafts — 16 October 2026
 
 Connected quotation Save Draft, edit and list reload to Django database storage. Added QuotationDraft model/admin/API, source-preserving editor serialization, optimistic edit checks, submitted-draft freeze and server decision restoration. Replaced session-only save success wording for real users with confirmed database-save messages.

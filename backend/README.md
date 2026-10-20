@@ -1,4 +1,9 @@
-# Navapack backend — Phases 1 and 2
+# Navapack backend — Phases 1, 2 and inventory configuration foundation
+
+Phase 3A adds quantity-free warehouse/location/stock-identity APIs and scoped audit
+history. No operational inventory posting is enabled and no real scopes are granted.
+See [Phase 3A contracts and rollout gates](docs/PHASE3A_API.md). Inventory migrations
+remain unapplied to the application database pending separate authorization.
 
 Django/DRF foundation with PostgreSQL, email identity, JWT, server-managed capabilities,
 append-only audit, transactional commands, master APIs, immutable specifications and

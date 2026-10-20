@@ -1,5 +1,9 @@
 # Backend Integration TODO
 
+## Phase 3A handoff — 20 October 2026
+
+Implemented real warehouse/location/stock-identity configuration and scoped history APIs/UI plus relevant auth/UUID/pagination/version/idempotency adapters. Pending: reviewed scope request/publication/revocation workflow and approved assignments, operational identity marking, deployment migration/browser acceptance, restricted runtime-role tests, remaining master adapters and future inventory ledger/QC/opening workflows. No actual stock posting or opening correction is enabled. Do not re-enable demo routes for real sessions as a substitute for backend integration.
+
 ## Persistent quotation drafts — 16 October 2026
 
 Implemented durable editable draft storage and read/save endpoints using quotation view/add permissions and owner scoping. Optimistic versions plus row locking prevent stale overwrite; exact save replay is idempotent. Submitted snapshot IDs cannot be edited. Manager approval/delivery still uses immutable Quotation snapshots. Existing historical PDF snapshots without editor metadata are not automatically reconstructed as editable drafts. Full family numbering/lifecycle/conversion services remain pending.

@@ -1,5 +1,9 @@
 # Frontend Data Models
 
+## Phase 3A persisted configuration DTOs — 20 October 2026
+
+InventoryRecord uses opaque UUID id, numeric optimistic version, warehouse/location UUIDs, metadata/activity or generated immutable stock reference/typed item/unit/owner/parent references. Quantity fields are absent; operational_status is unavailable. Lists use count/next/previous/results; writes use stable Idempotency-Key and quoted If-Match plus reason. Real User profiles retain roles[]/permissions[] and backendSession; legacy Role `authenticated` is a neutral presentation marker, never an authority or selected business role. Inventory history exposes only server-authorized safe comparisons with actor/request context. See backend/docs/PHASE3A_API.md.
+
 ## Persistent quotation drafts — 16 October 2026
 
 QuotationDraft stores client UUID primary key, created_by, validated editor_data JSON, positive version and timestamps. Draft schemas preserve editable public fields and source identity metadata, exclude caller-supplied approval/status/audits, support blank customer/zero lines, and validate entered line units/quantities/prices. Saved editor decimals are strings and restored to numeric frontend fields. Frontend Quotation adds optional draftVersion. Snapshot review status remains derived from backend Quotation decisions.

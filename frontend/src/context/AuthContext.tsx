@@ -1,7 +1,8 @@
 import { createContext, useContext, useEffect, useRef, useState, ReactNode } from "react";
-import { currentUserRequest, loginRequest, type LoginResponse } from "@/lib/api";
+import { currentUserRequest, loginRequest, logoutRequest, type LoginResponse } from "@/lib/api";
 import { AUTH_CLEARED_EVENT, MOCK_LOGIN_ENABLED, clearSession, readToken, saveTokens } from '@/lib/authSession';
 import { demoRole } from '@/lib/demoAuth';
+import { backendProfile } from '@/lib/backendProfile';
 import type { Role, User } from "@/types";
 
 interface AuthContextValue {
@@ -15,6 +16,7 @@ interface AuthContextValue {
 }
 
 const DEMO_NAMES: Record<Role, string> = {
+  authenticated: "Authenticated employee",
   qc_inspector: "QC Inspector",
   qc_supervisor: "QC Supervisor",
   receptionist: "Amara (Receptionist)",
@@ -30,8 +32,7 @@ const DEMO_NAMES: Record<Role, string> = {
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 function toUser(data: NonNullable<LoginResponse['user']>): User {
-  if (!data.id || !data.role || !Object.prototype.hasOwnProperty.call(DEMO_NAMES, data.role)) throw new Error('Invalid account profile.');
-  return { id: String(data.id), name: data.name ?? data.username ?? '', role: data.role as Role, department: data.department };
+  return backendProfile(data);
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -81,11 +82,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         loginAsDemo(demoRole(email, password, 'admin', finance));
         return;
       }
-      const data = await loginRequest({ username: email, password });
+      const data = await loginRequest({ email, password });
+      saveTokens(data.access, data.refresh, remember);
       const profile = data.user ?? await currentUserRequest();
       const nextUser = toUser(profile);
-      if (finance && nextUser.role !== 'accounts') throw new Error('credentials');
-      saveTokens(data.access, data.refresh, remember);
+      if (finance) { clearSession(); throw new Error('Finance backend integration is unavailable. Use the existing operations login.'); }
       generation.current++;
       setSessionError(''); setUser(nextUser);
     } finally {
@@ -94,7 +95,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   function loginAsDemo(role: Role) {
-    if (!MOCK_LOGIN_ENABLED) throw new Error('Demo login is disabled.');
+    if (!MOCK_LOGIN_ENABLED || role === 'authenticated') throw new Error('Demo login is disabled for this identity.');
     clearSession();
     const demo = { id: `demo-${role}`, name: DEMO_NAMES[role], role, department: 'Extrusion' };
     sessionStorage.setItem('navapack_demo_user', JSON.stringify(demo));
@@ -102,7 +103,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   function logout() {
-    clearSession();
+    if (user?.backendSession) {
+      void logoutRequest().then(() => clearSession()).catch(() => setSessionError('Logout could not revoke the session. Check the connection and retry sign out.'));
+    } else clearSession();
   }
 
   return (

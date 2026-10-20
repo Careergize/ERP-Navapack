@@ -52,6 +52,24 @@ class AuditEvent(models.Model):
         raise ValueError('Audit events are append-only.')
 
 
+class AuditEvidence(models.Model):
+    """Bounded sanitized change payload; access only through its scoped event."""
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    event = models.OneToOneField(AuditEvent, on_delete=models.PROTECT, related_name='evidence')
+    payload = models.JSONField()
+    sha256 = models.CharField(max_length=64)
+    created_at = models.DateTimeField(auto_now_add=True)
+    objects = AppendOnlyQuerySet.as_manager()
+
+    def save(self, *args, **kwargs):
+        if not self._state.adding:
+            raise ValueError('Audit evidence is append-only.')
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        raise ValueError('Audit evidence is append-only.')
+
+
 class IdempotencyRecord(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)

@@ -1,6 +1,76 @@
 # Phase 3 client decision register
 
-Classification: **D — Pending client decision** throughout. No approval evidenced in supplied originals/repository for the choices below as of 20 October 2026. SOP requirements already explicit are retained as constraints, not re-asked. Approval must identify decision/version/scope/owner/date, supporting evidence and effective date; silence is not approval.
+## Resume authorization — technical directions recorded 20 October 2026
+
+Source/decision maker: user's attached “RESUME PHASE 3A AFTER DECISION-GATE STOP” request. Status **U confirmed technical directions**, not management authority, physical inventory approval or delegated real-user grants. Supersedes the prior combined-schema stop for the independently safe configuration slice; operational D01–D15 approvals remain open as narrowed earlier.
+
+- T3A-01 (D03 ownership/custody): separate typed ownership from warehouse custody. COMPANY/CUSTOMER/SUPPLIER/OTHER require explicit evidence; customer/supplier use protected existing master UUIDs. OTHER uses a controlled external owner/evidence reference, with no new tenancy/organization model. UNRESOLVED permits identity registration only. All identities remain unavailable, regardless of ownership, until later posting gates exist. No owners seeded.
+- T3A-02 (D03 hierarchy): separate Warehouse → StorageLocation → optional child; arbitrary warehouse count; UUIDs, global case-insensitive codes as a reversible technical catalog convention, not a physical layout claim. Parent must stay in the same warehouse; warehouse membership cannot be changed. Configurable classification text is descriptive only. Optional existing Department mapping identifies proposed Stores accountability; blank remains unresolved. Procurement recording and independent QC remain separate future authorities.
+- T3A-03 (D02/D03 access): explicit inventory capabilities AND unexpired warehouse or separately approved company-wide scope, active User with Employee profile. Admin/Master Admin/superuser status grants neither. WarehouseScope is an immutable, independently evidenced **schema/enforcement foundation only**. No provisioning, approval, rejection or revocation API is enabled, and no real scopes were granted. Existing role publication governs capabilities but does not bind warehouse scope snapshots: a separate minimal governed scope proposal/review/revocation extension is required before live use. Synthetic tests alone create scope rows. Do not provision live scopes with raw SQL as a workaround.
+- T3A-04 (D05/D09 identity): generated UUID and STK- plus full UUID hex reference; immutable item/unit/warehouse/location/ownership/source/parent/physical marking; lifecycle may retire only. Typed Material/ProductVariant/Consumable and frozen existing unit; supplier batch deliberately nonunique. Parent relations preserve matching item/unit/ownership/warehouse without any quantities or inventory effect. Physical marking is recorded evidence, not proof of approved segregation or usable stock. Logical creation never splits inventory. Future location changes are custody events, not metadata edits.
+- T3A-05 (U-C/H boundaries): real management pages and identity viewer reuse the existing login; opening-correction/backdated/posting forms remain unavailable. Real sessions use email, UUIDs, roles[]/capabilities and backend logout, and are isolated from unintegrated demo routes. This deliberately limits real-session navigation until each other backend module is integrated; demo mode is retained separately.
+
+Implementation status and limits are in the progress report. Named owners/sites, scope publishers/reviewers, physical marking/portion procedures, actual opening/unit precision, authority matrix and operational SOP cutover remain pending. No technical direction is recorded as final operational approval.
+
+Classification: the original D01–D15 questions below remain historical pending decisions except where narrowed by the 20 October implementation request recorded next. **U means user-directed product requirement**, S means SOP requirement, A means proposed technical design, and D means pending client/management approval. A U requirement does not establish delegated business authority. Approval must identify decision/version/scope/owner/date, supporting evidence and effective date; silence is not approval.
+
+## Implementation-request decision history — 20 October 2026
+
+Source/decision maker for U entries: the user's “PHASE 3 IMPLEMENTATION” request in this chat. Recorded 20 October 2026, Asia/Kolkata. Scope: requirements and conditional foundation implementation authorization, with an explicit documentation-only stop if Phase 3A ownership/location/identity gates remain unresolved. These entries supersede the earlier statement that implementation has never been requested; they do not close unspecified business-policy gates.
+
+### U-A — Dynamic warehouses (narrows D03)
+
+Original question: how many warehouses and which custody locations are tracked?
+Decision supplied: arbitrary configurable warehouse count, authorized metadata editing, activation/deactivation and location hierarchy, with audit for every change. Historical references prevent location deletion. Status: **U confirmed** for functionality; **D03 OPEN** for warehouse ownership, off-site custody, physical locations and location access scope. SOP 03 §5 establishes designated identifiable custody; it does not approve a global shared warehouse catalog. Impact: no fixed-count seed or Area-to-warehouse conversion. A separate warehouse entity versus a typed hierarchy and global versus site-scoped code uniqueness remain A choices for reviewed schema after scope confirmation.
+
+### U-B — Stock identity (narrows D05)
+
+Original question: internal stock and supplier identifiers, portion lineage?
+Decision supplied: backend-generated immutable UUID and unique readable stock reference, with supplier lot and original document references separate; preserve future roll/container/portion and approved split/merge identity. Status: **U confirmed** for identifiers; **D05 OPEN** for physical marking, legacy unknowns and split/merge operating rules. SOPs 03 §5, 08 §10, 12 §6.2 require traceability. Impact: reject caller-supplied identifiers, protect identity at DB level; UUID-derived readable reference with a unique constraint is an A option, not an approved numbering convention. No merge operation enabled.
+
+### U-C — Opening corrections after posting (narrows D06/D07)
+
+Original question: how may an approved opening be corrected?
+Decision supplied: existing Admin login may initiate corrections after approval/posting; original entry remains immutable. Separate request captures original/proposed quantity, computed delta, reason, evidence and history; validate subsequent history; independent applicable approval precedes compensating ledger posting. Status: **U confirmed**; **D02/D06/D07 OPEN** for named authority, dates, quantities, reconciliation and period policy. SOPs 01 §§3,8 and 03 §9 constrain evidence and independence; this specific ERP workflow is U/A, not claimed verbatim SOP. Impact: proposed Admin → Inventory → Opening Stock → Request Correction; no separate account, no implicit self-approval or permission grant. Before any original opening exists, show unavailable state rather than fabricate one.
+
+### U-D — Primary units (narrows D04)
+
+Original question: must every stock item have conversions?
+Decision supplied: one primary inventory unit per item; conversions only when needed by a real transaction and only item-specific, approved and versioned; exact decimals, incompatible quantities rejected. Status: **U confirmed**; **D04 OPEN** for actual item-unit mappings, supported scale/magnitude and required factors. SOP 03 §§4.1–4.2/14 §6 require actual measurement. Impact: no mandatory conversion setup, universal factors or inferred KG/piece/roll/bag/carton conversion. Existing NUMERIC(20,6) specification fields do not approve inventory precision.
+
+### U-E — Availability and physical OUT (narrows D07/D11/D14)
+
+Original question: availability, negative stock, allocation and deduction timing?
+Decision supplied: backend checks exact item/location/lot, usable quantity, QC, holds, authorized quantity and ownership/custody; insufficient stock blocks; no silent negative stock; traceable eligible suggestions without assumed allocation order. Requests/SO/Job Cards do not deduct; authorized physical issue/dispatch does. Status: **U confirmed**; **D11 OPEN** for reception versus external OUT event and **D03** ownership restrictions. SOPs 03 §6, 15–16 distinguish actual issue and dispatch. Impact: negative prevention is no longer merely a recommendation. No FIFO/FEFO, reservation or automatic issue rule approved. Existing demo behavior is not backend enforcement.
+
+### U-F — Adjustments (reinforces D02/D12)
+
+Original question: who evidences, approves and records adjustments?
+Decision supplied: Stores physical evidence, discrepancy investigation, independent authorized approver and Procurement system recording. Status: **U confirmed + S**, SOPs 01 §§3–5 and 03 §§3,9; **D02 OPEN** for exact matrix/delegation ceilings. Impact: no self-approval and no Admin posting bypass; adjustment execution remains disabled.
+
+### U-G — Conservative QC applicability (narrows D09)
+
+Original question: initial QC applicability?
+Decision supplied: all new stock initially held and unavailable until applicable QC clearance and additional required authorization; allow future approved item-specific configuration. Status: **U confirmed**; **D09 OPEN** for specifications, marking/partial scope, staffing and approved exceptions. SOP 11 supplies independent scoped clearance; blanket initial hold is user-directed conservative behavior, not an invented SOP acceptance criterion. Impact: no initial auto-release or invented sampling/tolerances. PM cannot independently clear required QC.
+
+### U-H — Backdating (narrows D07)
+
+Original question: who initiates late/historical changes and under what policy?
+Decision supplied: authorized Admin initiation through existing interface with actor, reason, proposed effective date, actual server submission time, evidence, decision and affected history/balances. Status: **U confirmed** for initiation design; **D07 OPEN** for policy/closed periods, therefore operational posting remains disabled. SOP 01 independence still applies. Impact: independent authority and historical feasibility checks are mandatory; Admin status is insufficient. Closed-period override is not authorized.
+
+### U-I — SOP cutover (narrows D01)
+
+Original question: operational adoption before/on the stated effective date?
+Decision supplied: user intends SOP workflows operational at ERP go-live. Original SOPs retain **1 November 2026** effective dates. Status: **U confirmed** intent, **S confirmed** original date, **D01 OPEN** for explicit documented management adoption/cutover, effective policy and interim rules, including SOP 04 release evidence. Impact: go-live intent is not a controlled release record; do not rewrite originals or enforce an assumed early date.
+
+### U-J — Common complete audit contract (extends D15)
+
+Original question: audit coverage and evidence requirements?
+Decision supplied: every material transition/admin decision must preserve attributable actor, employee, effective authority, safe old/new values, reason, versions, correlation/source/transaction/approval/policy/outcome and correction links where applicable; atomic business success and separately attributable security failures; protected searchable access. Status: **U confirmed** requirement; **A** implementation in [audit specification](PHASE_3_AUDIT_TRAIL_SPECIFICATION.md); **D15/D03 OPEN** for retention/privacy/evidence access and scope. Impact: reuse core commands/audit, but current changed-field summaries alone do not meet this contract. Future workflows remain deferred.
+
+### Gate reconciliation
+
+No original D decision is wholly closed by U-A–U-J. D03 still affects ownership keys, hierarchy boundaries, uniqueness and query authorization; D05 identifier generation is resolved but physical traceability is not. D04 conversion necessity is resolved but actual units/precision are not. D07 negative prevention is resolved but backdating/period rules are not. D09 blanket initial hold is resolved but partial physical segregation and quality plans are not. Phase 3A is stopped under request §11, Step 6: no speculative custody schema or grants. See the exact closure questions in the progress report. Do not re-ask the already confirmed product requirements.
 
 ## P0 — Before schema or posting logic freeze
 

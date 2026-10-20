@@ -1,5 +1,9 @@
 # Business Rules
 
+## Phase 3A backend configuration boundary — 20 October 2026
+
+Warehouse count is configurable. Location hierarchy stays within warehouse and cannot cycle. Registered identity relations do not create, split, merge or release physical quantities. All stock identities are operationally unavailable. Admin status does not grant warehouse scope, configuration rights or business approval. Warehouse code uniqueness is global/case-insensitive as a technical convention, not a claim about client geography. Operational opening corrections remain planned, unavailable until immutable opening and independent workflow exist. Real sessions use only the integrated configuration pages; demo inventory totals are not live stock.
+
 ## Persistent quotation drafts — 16 October 2026
 
 Save Draft succeeds only after durable backend confirmation for real users. Saved drafts reload across page refresh and later sign-in under their owner. Same UUID edits update one row; conflicting versions fail with 409 instead of silently overwriting. Once a snapshot for that draft ID is submitted, changed content requires a new revision/UUID. Draft content cannot assert manager approval or authorize sending. Demo saves are explicitly labeled as session-only.

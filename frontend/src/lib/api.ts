@@ -3,14 +3,16 @@ import { clearSession, readToken, replaceTokens } from './authSession';
 
 // Point this at your DRF backend. Injected via .env as VITE_API_BASE_URL
 // so the same build can target dev/staging/prod without a code change.
-const apiBaseUrl = import.meta.env.VITE_API_BASE_URL ?? (import.meta.env.DEV ? "http://localhost:8000/api" : "/api");
+const configuredBaseUrl = (import.meta.env.VITE_API_BASE_URL ?? (import.meta.env.DEV ? "http://localhost:8000/api/v1" : "/api/v1")).replace(/\/+$/, '');
+// Preserve existing environment files while upgrading the legacy Django prefix.
+const apiBaseUrl = configuredBaseUrl.endsWith('/api') ? `${configuredBaseUrl}/v1` : configuredBaseUrl;
 
 export const api = axios.create({
   baseURL: apiBaseUrl,
 });
 
 export interface LoginRequest {
-  username: string;
+  email: string;
   password: string;
 }
 
@@ -23,8 +25,16 @@ export interface LoginResponse {
     username?: string;
     email?: string;
     role?: string;
+    roles?: string[];
+    permissions?: string[];
+    is_master_admin?: boolean;
     department?: string;
   };
+}
+
+export async function logoutRequest() {
+  const refresh = readToken('navapack_refresh');
+  if (refresh) await api.post('/auth/logout/', { refresh }, { timeout: 15000 });
 }
 
 export async function loginRequest(credentials: LoginRequest): Promise<LoginResponse> {

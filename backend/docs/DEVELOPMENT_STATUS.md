@@ -1,5 +1,9 @@
 # Client originals reviewed — 20 October 2026
 
+## Phase 3A configuration — 20 October 2026
+
+Added inventory Warehouse/StorageLocation/StockIdentity/WarehouseScope, additive migrations, protected identity/hierarchy guards, scoped APIs/history and audit integration. All quantities/posting/QC clearance absent. Existing command/RBAC/auth reused; scope publication/revocation blocked as a specific governed extension, no real grants or data seeds. Inventory events excluded from global technical-admin audit reads and available only through scoped history with both audit and entity-view capabilities. See PHASE3A_API.md and repository Phase 3 progress/test reports for exact results and operational gates. Application inventory migrations remain unapplied; test runners migrate disposable DBs only.
+
 All 18 SOP DOCX documents, both original client stock workbooks and eight JPEG
 references under client-reference/ have now been reviewed. Treat these originals as
 authoritative client source material; older source-unavailability notes below and in

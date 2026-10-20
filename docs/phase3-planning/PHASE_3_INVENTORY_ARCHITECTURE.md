@@ -1,5 +1,9 @@
 # Phase 3 inventory architecture
 
+## Current Phase 3A implementation boundary — 20 October 2026
+
+A quantity-free inventory app now supplies warehouse/location configuration, immutable typed StockIdentity ownership/source/parent references, scope enforcement and history. Ownership is separate from custody; UNRESOLVED is explicit and all identities remain operationally unavailable. No new organization model, fake source workflow, live grant or stock quantity was created. Shared master identity/command/audit/RBAC infrastructure is reused. Scope proposal/publication/revocation is an isolated pending extension; the rest of the proposed ledger/QC architecture remains future work. See PHASE_3_IMPLEMENTATION_PROGRESS.md and ../../backend/docs/PHASE3A_API.md for actual schema/API/UI rather than treating the complete design below as implemented.
+
 Classification key: [S/W/I/A/D](PHASE_3_REQUIREMENTS_TRACEABILITY.md#evidence-convention-and-document-ownership). Date: 20 October 2026. All design below is **A — Proposed architecture** unless stated otherwise.
 
 ## Boundaries and reuse

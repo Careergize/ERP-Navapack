@@ -36,7 +36,7 @@ Vite uses port 5173. Real Django login is the default; set
 are shown on the login screen only when demo mode is enabled. Demo identities remain
 local to the browser and never authenticate backend requests.
 
-`VITE_API_BASE_URL` configures Axios. Defaults: http://localhost:8000/api in development, /api in production. These are client expectations, not evidence of a deployed backend. Do not put secrets in VITE variables.
+`VITE_API_BASE_URL` configures Axios. Defaults: http://localhost:8000/api/v1 in development, /api/v1 in production. Legacy values ending in /api are upgraded to /api/v1. These are client expectations, not evidence of a deployed backend. Do not put secrets in VITE variables.
 
 ```powershell
 npm run build

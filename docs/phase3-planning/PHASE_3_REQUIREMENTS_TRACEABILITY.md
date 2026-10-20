@@ -1,5 +1,9 @@
 # Phase 3 requirements traceability
 
+## Implementation delta — resumed Phase 3A request, 20 October 2026
+
+Inventory configuration/identity/scope enforcement and scoped change history now exist, superseding earlier no-inventory-backend observations only for this quantity-free subset. Operational R01–R35 controls are not thereby complete. User technical directions T3A-01–05 in the decision register resolve safe ownership/custody/schema directions without creating real grants, opening approval or physical marking policy. Existing SOP effective dates and all unresolved management authorities remain intact. Actual feature/test evidence is in the implementation progress/test reports; the tables below retain source requirements and proposed future scope.
+
 Review date: 20 October 2026, Asia/Kolkata. Planning only; no operational approval.
 
 ## Evidence convention and document ownership

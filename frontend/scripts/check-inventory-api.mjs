@@ -1,0 +1,35 @@
+import assert from 'node:assert/strict';
+import { createServer } from 'vite';
+import { fileURLToPath } from 'node:url';
+class MemoryStorage { values=new Map(); getItem(k){return this.values.get(k)??null;} setItem(k,v){this.values.set(k,String(v));} removeItem(k){this.values.delete(k);} }
+globalThis.localStorage=new MemoryStorage();globalThis.sessionStorage=new MemoryStorage();globalThis.window=new EventTarget();
+const server=await createServer({configFile:false,resolve:{alias:{'@':fileURLToPath(new URL('../src',import.meta.url))}},optimizeDeps:{noDiscovery:true},server:{middlewareMode:true,hmr:false},appType:'custom'});
+try {
+  const {api,loginRequest,logoutRequest}=await server.ssrLoadModule('/src/lib/api.ts');
+  const {backendProfile}=await server.ssrLoadModule('/src/lib/backendProfile.ts');
+  const {saveTokens}=await server.ssrLoadModule('/src/lib/authSession.ts');
+  const {inventoryPage,saveInventory}=await server.ssrLoadModule('/src/lib/inventoryApi.ts');
+  const id='dc36d419-7edf-4479-8174-8d0ce7992303';
+  const profile=backendProfile({id,name:'Synthetic employee',roles:['configured-role-a','configured-role-b'],permissions:['inventory.view_warehouse']});
+  assert.equal(profile.role,'authenticated');assert.equal(profile.backendSession,true);assert.equal(profile.roles.length,2);
+  assert.equal(backendProfile({id,roles:[],permissions:[]}).permissions.length,0);
+  assert.throws(()=>backendProfile({id:1,role:'admin'}));
+  assert.throws(()=>backendProfile({id,roles:['admin'],permissions:[12]}));
+  const requests=[];
+  api.defaults.adapter=async config=>{requests.push(config);return {config,data:config.method==='get'?{count:1,next:null,previous:null,results:[{id,version:2}]}:{id,version:2},status:200,statusText:'OK',headers:{}};};
+  assert.ok(api.defaults.baseURL.endsWith('/api/v1'));
+  await loginRequest({email:'synthetic@example.test',password:'synthetic-only'});
+  assert.deepEqual(JSON.parse(requests.at(-1).data),{email:'synthetic@example.test',password:'synthetic-only'});
+  const page=await inventoryPage('locations','label',id,2);
+  assert.equal(page.results[0].id,id);assert.deepEqual(requests.at(-1).params,{search:'label',page:2,warehouse:id});
+  const body={name:'Synthetic metadata',reason:'Synthetic test'};
+  await saveInventory('warehouses',body,'same-intent',{id,version:1});
+  await saveInventory('warehouses',body,'same-intent',{id,version:1});
+  for(const r of requests.slice(-2)){assert.equal(r.headers['If-Match'],'"1"');assert.equal(r.headers['Idempotency-Key'],'same-intent');assert.equal(r.url,`/inventory/warehouses/${id}/`);}
+  api.defaults.adapter=async()=>{throw new Error('synthetic denial');};
+  await assert.rejects(saveInventory('warehouses',body,'denied'));
+  api.defaults.adapter=async config=>{requests.push(config);return {config,data:{},status:200,statusText:'OK',headers:{}};};
+  saveTokens('access','synthetic-refresh',false);await logoutRequest();
+  assert.equal(requests.at(-1).url,'/auth/logout/');assert.equal(JSON.parse(requests.at(-1).data).refresh,'synthetic-refresh');
+  console.log('Passed: backend UUID/multi-role/no-role profile, email login, /api/v1, inventory pagination/filter, idempotency/version headers, denied-save propagation and backend logout.');
+} finally {await server.close();}

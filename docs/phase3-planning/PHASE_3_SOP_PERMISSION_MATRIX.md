@@ -1,6 +1,22 @@
 # Phase 3 SOP permission matrix
 
+## Phase 3A implemented capability boundary
+
+20 October 2026: authenticated active User with an Employee profile, explicit capability and unexpired scope are required together. No title/superuser shortcut. `inventory.configure_warehouses` controls warehouse POST/PATCH; creation also requires separate company-wide scope. `inventory.view_warehouse`, `view_storagelocation`, `view_stockidentity` control scoped reads. `add_storagelocation`/`change_storagelocation`, `add_stockidentity`/`change_stockidentity` control writes; identity change supports retirement only. Standard model permission definitions are created, **no memberships or grants**.
+
+WarehouseScope is immutable independent evidence with expiry; public request/approval/rejection/revocation and real provisioning remain unavailable. Existing governed role capability publication is reused but is not sufficient to govern scopes. No technical Admin default scope, no scope-from-department inference. Optional Department mapping denotes proposed Stores accountability and grants no permissions. Inventory mutations carry before/after and effective action/role/scope evidence in the existing audit; approval fields apply only where actual approval exists. SOP Stores custody, Procurement recording and independent QC are preserved as later operational boundaries.
+
 Classification key: [S/W/I/A/D](PHASE_3_REQUIREMENTS_TRACEABILITY.md). **S** — Organizational responsibility below derives from cited SOP. **A** — Capability names and workflow enforcement are proposals. **D** — Named staffing, delegation ceilings and final role grants remain D02; this document creates none.
+
+## 20 October implementation-request reconciliation
+
+U — [U-A–U-J](PHASE_3_CLIENT_DECISIONS.md) now establish configurable warehouses, immutable generated stock identity, conservative QC hold for all new stock, blocked insufficient stock, primary units with optional approved conversions, Admin correction/backdating initiation and the common complete audit requirement. These are product requirements, not named operational grants. No permissions or memberships were seeded.
+
+U/S — Stores supplies physical evidence; discrepancies require investigation; an independent delegated approver authorizes adjustments; Procurement records the authorized system change (SOPs 01/03). Technical Admin, inventory configuration, custody, recording, QC, business approval and commercial approval remain separate authorities. D02 still blocks the final role mapping/ceilings.
+
+U/A — Opening correction initiation through the existing Admin session needs an explicitly governed initiation capability and approved object scope. Propose separate `inventory.request_opening_correction`, `inventory.approve_opening_correction` and `inventory.record_opening_correction` capabilities; names are proposals only. Initiator cannot approve, including when holding multiple roles or superuser status. Requesting correction after posting is required, but requires an actual original opening and validated historical effects before compensation. Backdated request initiation likewise needs a separate scoped capability; no posting until D07 closes. No automatic grant to all Admin accounts is implied.
+
+U/A — Configuration and audit viewing need distinct scoped capabilities. Inventory transaction visibility does not grant unrestricted employee, role, commercial or attachment history. Warehouse access scope and evidence access remain D03/D15; the existing shared master scope must not silently become stock scope. [Audit specification](PHASE_3_AUDIT_TRAIL_SPECIFICATION.md) defines required historical authority and safe diffs; it is not yet implemented.
 
 ## Positions versus configured roles
 

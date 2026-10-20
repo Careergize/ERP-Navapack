@@ -1,5 +1,27 @@
 from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Permission
+from django.db.models import Q
+
+
+def explicit_role_permissions(user_obj):
+    from .employee_services import permission_codes, permission_digest
+    from .models import RoleAssignmentPolicy
+    codes=set()
+    for role in user_obj.roles.select_related('approved_revision'):
+        policy=RoleAssignmentPolicy.objects.filter(role=role).first()
+        if not role.governed and policy and policy.permission_digest != permission_digest(role):
+            continue
+        codes.update(permission_codes(role))
+    return codes
+
+
+def explicit_permission_codes(user_obj):
+    """Actual direct/group/governed grants, excluding Django's superuser override."""
+    if not user_obj.is_active or user_obj.is_anonymous:
+        return set()
+    permissions=Permission.objects.filter(Q(user=user_obj) | Q(group__user=user_obj)).distinct()
+    return {f'{a}.{c}' for a,c in permissions.values_list('content_type__app_label','codename')} | explicit_role_permissions(user_obj)
 
 
 class EmailBackend(ModelBackend):
@@ -21,13 +43,4 @@ class EmailBackend(ModelBackend):
         base = super().get_group_permissions(user_obj, obj)
         if not user_obj.is_active or user_obj.is_anonymous or obj is not None:
             return base
-        from .employee_services import permission_codes, permission_digest
-        from .models import RoleAssignmentPolicy
-        codes = set()
-        for role in user_obj.roles.select_related('approved_revision'):
-            policy = RoleAssignmentPolicy.objects.filter(role=role).first()
-            # Fail closed on unreviewed edits to previously configured legacy roles.
-            if not role.governed and policy and policy.permission_digest != permission_digest(role):
-                continue
-            codes.update(permission_codes(role))
-        return base | codes
+        return base | explicit_role_permissions(user_obj)

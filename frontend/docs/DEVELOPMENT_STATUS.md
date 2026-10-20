@@ -1,5 +1,9 @@
 # Development Status
 
+## Phase 3A inventory configuration — 20 October 2026
+
+Real backend sessions now use /api/v1, email, opaque UUIDs, roles[]/permissions[] and backend logout. Legacy /api environment values normalize to /api/v1; .env is unchanged. `/admin/inventory` adds persisted warehouse/location management and scoped stock-identity reference/history viewing. Capabilities control actions; backend requires independent warehouse scope too. Real sessions are isolated from unintegrated demo routes, while opt-in demos remain intact. No live stock quantities, opening correction, issue/receipt, split/merge or QC release is enabled. Scope grant publication remains blocked pending governance. See repository Phase 3 progress/test reports for acceptance evidence and deployment limitations.
+
 ## Persistent quotation drafts — 16 October 2026
 
 Save Draft now writes owner-scoped QuotationDraft records through /api/quotation-drafts/ and awaits a confirmed database response before reporting success. Real sessions load all saved drafts after login/refresh; edit/detail routes wait for loading. Editor metadata retains product/model/costing references, unit identity, prices, contacts and terms. Server snapshot review state reconstructs pending/approved/rejected/sent status. Repeated edits use row versions, conflicts return 409, and submitted snapshot IDs are frozen. Demo drafts remain session-only. Full costing/model/master persistence and commercial customer-response/order-conversion lifecycle remain separate.

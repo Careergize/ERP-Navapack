@@ -1,4 +1,5 @@
 export type Role =
+  | "authenticated"
   | "qc_inspector"
   | "qc_supervisor"
   | "receptionist"
@@ -29,6 +30,9 @@ export interface User {
   name: string;
   role: Role;
   department?: string;
+  permissions?: string[];
+  roles?: string[];
+  backendSession?: boolean;
 }
 
 export type CustomerType = "B2B" | "B2C";

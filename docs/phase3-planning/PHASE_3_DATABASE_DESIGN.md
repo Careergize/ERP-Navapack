@@ -1,5 +1,9 @@
 # Phase 3 PostgreSQL / Django database design
 
+## Implemented Phase 3A subset — 20 October 2026
+
+The resumed technical request authorizes a smaller quantity-free schema than the complete proposed domain below. Actual models are Warehouse, StorageLocation, StockIdentity and WarehouseScope; exact fields/contracts are in ../../backend/docs/PHASE3A_API.md. StockIdentity directly references exactly one existing typed master plus primary Unit, explicit typed owner/evidence or UNRESOLVED, immutable generated reference/source/parent and retirement metadata. No competing item master, quantity portion, source-document workflow or ledger is introduced. Warehouse and location are separate; optional existing Department maps Stores accountability without granting scope. Global normalized configuration codes are a documented technical convention; actual location layout remains unseeded. Scope publication/revocation and all operational authority remain blocked. Proposed ledger/quality models below are still proposals, not migrations. Only inventory0001–0005 exist for the configuration subset, applied to disposable tests only.
+
 Classification: **A — Proposed architecture** throughout except explicit I/D/S labels. [Classification convention](PHASE_3_REQUIREMENTS_TRACEABILITY.md). This is a design specification, not migrations or implementation authorization.
 
 ## Common model contract

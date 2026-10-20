@@ -24,4 +24,6 @@ class UserSerializer(serializers.ModelSerializer):
         return list(user.roles.order_by('code').values_list('code', flat=True))
 
     def get_permissions(self, user):
-        return sorted(user.get_all_permissions())
+        from .backends import explicit_permission_codes
+        permissions={code for code in user.get_all_permissions() if not code.startswith('inventory.')}
+        return sorted(permissions | {code for code in explicit_permission_codes(user) if code.startswith('inventory.')})

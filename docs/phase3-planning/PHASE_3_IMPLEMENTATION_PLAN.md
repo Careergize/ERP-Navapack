@@ -1,6 +1,24 @@
 # Phase 3 controlled implementation and acceptance plan
 
+## Resumed technical authorization and boundary
+
+20 October 2026: the attached resume request supersedes the earlier combined 3A stop below. Implemented independently safe warehouse/location configuration, typed immutable identity/ownership/quantity-free lineage, scoped authorization enforcement, real APIs/UI and atomic audit. See progress and test reports for actual inventory and results. Scope lifecycle/publication is specifically isolated and blocked pending compatible governed proposals/revocation; no real grants. No application migrations applied.
+
+Next work is review/acceptance and the minimal scope-governance extension with approved authority, then separately authorized migration deployment/browser acceptance. Phase 3B does not start automatically. Existing posting/QC/opening/period/authority gates still apply; synthetic 3A tests do not close them. Keep future opening correction and all quantity operations unavailable.
+
 Classification: **A — Proposed architecture** throughout except explicit I/S/D labels. [Convention](PHASE_3_REQUIREMENTS_TRACEABILITY.md). This plan does not authorize implementation; obtain explicit user approval after relevant client decisions.
+
+## Current authorization and stop — 20 October 2026
+
+U — The implementation request now conditionally authorizes foundation work and verification, superseding earlier statements here that no implementation was requested. Its §11 explicitly requires stopping after documentation if Phase 3A ownership/location/identity decisions block schema. That stop applies: D03 remains unresolved for ownership/custody keys, hierarchy boundaries and access scope. No Phase 3 application code, migrations, grants or frontend commands are added. Product requirements U-A–U-J are recorded separately from management approvals.
+
+A — First close D03 with documented scope, then review whether an independently deployable configuration-only slice can exclude custody classifications and quantities without presenting an operational stock system. Arbitrary configurable count needs no actual warehouse seed, but scope/uniqueness and authorized management access must be explicit. Reuse Material (the actual raw-material class), Consumable, ProductVariant and Unit; do not introduce competing masters. Confirm physical traceability/legacy portion scope under D05/D09 before lot schema freeze. Numeric precision and real mapping decisions gate quantity models, not warehouse count.
+
+A — After closure: additive identity/location schema and immutable generated UUID/reference; locked hierarchy, protected historical refs and activation rules; scoped authenticated paginated/searchable APIs with strict input, idempotency and versions; atomic safe old/new audit and policy snapshots; meaningful disposable PostgreSQL tests; then real capability-driven configuration UI with auth/UUID/pagination/error/header contract fixes. Existing Admin login is reused. Review code and exact test evidence before requesting Phase 3B approval.
+
+A — Opening corrections require separate immutable request/decision/compensation history even after original posting. Validate all later running balances, coverage, holds, source allocations and closed periods; original unchanged. All new stock starts held. Eligible suggestions must disclose exact traceable scope without FIFO/FEFO assumptions. These requirements modify future 3B–3E acceptance, not enable them now.
+
+D — Phase 3B remains NO-GO pending 3A, D02 authority, D03 custody, D04 quantity rules, D05 physical identity, D06 openings, D07 periods/backdating, D08 WIP boundaries, D09 quality scope, D10 receipt and D11 dispatch timing. Even a synthetic-only disabled engine requires next-subphase authorization. SOP adoption D01, reconciliation/mapping D12/D13 and evidence policy D15 gate operational rollout. No existing database migration, opening import, deployment, staging or commit is authorized by this plan.
 
 ## Dependency order and rollout gates
 

@@ -1,10 +1,42 @@
 # Phase 3 readiness and verification report
 
+Final verification: **142 full PostgreSQL tests passed; final 49 inventory/auth/RBAC tests passed**, with overlapping coverage. Typecheck/build/all13 frontend scripts and connected Django checks/drift passed. All inventory migrations remain unapplied to the application DB. All28 original hashes unchanged. Verified project-owned PostgreSQL cluster safely stopped after confirming no other clients. See test report for exact commands/results and intermediate failures corrected. No runtime-role/browser/deployment certification.
+
+Current scoped-history addition: `/api/v1/inventory/history/` now implements paginated configuration history with date/actor/action/entity/request/warehouse filters and safe frontend change comparisons. It requires inventory.view_inventory_audit plus entity-view capability and warehouse scope. Global Admin history excludes inventory events. The broader system-wide role/module/transaction/approval filter contract, exports and retention remain incomplete; no transaction/approval records are invented.
+
+## Resumed Phase 3A assessment — 20 October 2026
+
+**CONDITIONAL GO for review of the implemented non-operational Phase 3A foundation; NO-GO for live configuration rollout or Phase 3B.** The new attached resume request supersedes the prior ownership/location schema stop for safe technical models and quantity-free identity lineage. Earlier planning/stop assessments below are historical, not the present implementation inventory.
+
+Implemented warehouses/locations, immutable typed stock identity/owner/provenance/parent relationships, scoped capabilities, real management APIs and `/admin/inventory` frontend, with atomic per-change audit. All identities unavailable; no posting/opening/correction/quantity split/QC release endpoints. No stock counts or client quantity imports. Additive migrations remain unapplied to the application DB; disposable PostgreSQL verification is recorded in the test report.
+
+Scope enforcement is implemented, but publication/rejection/revocation is an isolated blocked feature. Existing role-capability governance does not govern warehouse scopes. No real-user scopes/grants/oversight were provisioned and no Admin bypass exists. Live access requires the minimal reviewed scope-request/independent-publication/revocation extension first. Scope evidence rows used by tests are not a provisionable production workaround.
+
+Remaining policy: actual owner/site/custodian assignments, physical marking/partial segregation, business approval/delegation, item precision, opening cutoff/reconciliation, historical period/backdating policy, receiving/dispatch boundaries, quality plans and SOP adoption (original effective date remains 1 November 2026). Existing Admin opening correction requirement is planned, unavailable until original immutable opening and independent correction workflow exist.
+
+Common audit expansion remains partial: Phase 3A captures safe before/after/authority evidence; earlier master audits still lack full diffs. Scoped configuration history is implemented; the full common audit filter set, retention/export policy and restricted runtime-role proof remain pending. Real login/session contracts are corrected for Phase 3A; other backend module adapters remain separate integration work. Real-session demo routes are deliberately unavailable. No browser-to-live-Django acceptance or production deployment is claimed.
+
 Review date: 20 October 2026, Asia/Kolkata. Scope: original-source reconciliation, architecture and implementation planning only. [Evidence classifications](PHASE_3_REQUIREMENTS_TRACEABILITY.md).
 
 ## Verdict
 
-**D/A — NO-GO for Phase 3 implementation now.** The user has not approved implementation, and P0 inventory identity/unit/custody/authority/opening/quality/posting decisions remain unresolved. Architecture and client decision validation may continue. Phase3A identities/locations is the first future implementation candidate after its gates close; transaction-engine or live-stock implementation must not start merely because this document set exists.
+**Current verdict — NO-GO for Phase 3A schema/API enablement and Phase 3B–3E; GO for decision reconciliation and review.** The new user implementation request authorizes safe foundation work subject to explicit gates. It does not approve the remaining ownership/location scope, physical traceability or business authority. Under request §11, stop after documentation where these block Phase 3A. This supersedes the earlier absence-of-authorization rationale; unresolved policy remains the reason for stopping.
+
+## Current implementation-request assessment — 20 October 2026
+
+I — Initial working tree clean; actual HEAD `0823b2065e6e01dc670c5b09f5b622bbfadf8eb2` includes Phase 2.1 commit `e1a4906`. Historical findings below describe the earlier planning review and must not be read as current Git/test state. Origin identity remains unchanged. No staging, commit, push or deployment occurred.
+
+U/S/D — U-A–U-J in the decision register distinguish supplied product requirements, original SOP obligations and still-open management approvals. Confirmed: arbitrary warehouses, generated immutable stock identity, primary units/optional approved conversions, compensating opening corrections through existing Admin login, no self-approval, insufficient-stock blocking, default QC holds and controlled backdating initiation. SOP dates remain 1 November 2026; user go-live intent still needs explicit adoption/cutover documentation.
+
+D — The current database design explicitly leaves ownership out of the proposed stock key pending D03. Global shared catalog access cannot be presumed suitable for warehouses, customer-owned goods or external custody. Physical site/entity boundaries affect hierarchy/uniqueness and visibility. Therefore the combined identity/location/lot migration is not independently valid yet. This does not mean a fixed warehouse count or real location seed is needed: those are explicitly unnecessary. A configuration-only slice could be reviewed once access/hierarchy scope is supplied, excluding later stock operations.
+
+I — No Phase 3 models, migrations, endpoints, grants or frontend actions were added. Existing stock/QC demos were preserved; they are not integrated inventory services. No opening import or operational stock posting was enabled. Existing Admin correction UI is still unimplemented, pending a real opening/correction backend and applicable approval policy; it is recorded as a required future deliverable, not a successful feature.
+
+I/A — Core atomic audit/idempotency/versions and immutable evidence/RBAC infrastructure are reusable. Complete safe old/new values, historical effective authority snapshots, attributable denial logging, broader scoped audit search and runtime-role verification remain gaps. [Audit specification](PHASE_3_AUDIT_TRAIL_SPECIFICATION.md) records the proposed common contract without claiming installation.
+
+I — Current commands, results, migration-state limitations and source checks are recorded in [test report](PHASE_3_TEST_REPORT.md); exact changes and closure questions are in [progress](PHASE_3_IMPLEMENTATION_PROGRESS.md). Historical test counts below are preserved and superseded only by explicitly recorded current results.
+
+A/D — Next gate: approve documented D03 site/custody/access boundaries and configuration scope; clarify D05/D09 physical identity/partial segregation; approve actual quantity units/precision before quantity schema. Then authorize/resume the reviewed Phase 3A slice and run its PostgreSQL and real frontend acceptance. Phase 3B requires completed 3A, posting/authority/opening/quality/period rules and explicit next-subphase approval. Deployment remains separately authorized.
 
 ## Existing foundation and remediation
 
