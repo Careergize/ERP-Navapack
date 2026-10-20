@@ -144,3 +144,15 @@ LED = MAX(LED_Base × 2.5%, Eligible_KG/1,000 × USD 70 × saved USD→UGX). Hig
 ## Phase 3D synthetic QC — 20 October 2026
 
 Versioned QC evidence, guarded whole-root quality reclassification, containment and NCR/CAPA foundation now use the existing authenticated inventory APIs. Operational posting remains disabled; partial indistinguishable scopes, disposition and inherited transfer QC clearance fail closed. No demo success is treated as backend persistence. See ../../docs/phase3-planning/PHASE_3D_IMPLEMENTATION_REPORT.md for exact implementation, verification and remaining gates. No application migration or real authority grant is performed.
+## Synthetic development journey — 21 October 2026
+
+Commercial draft derivation is unapproved immutable lineage, not acceptance.
+Synthetic Job Cards cover all source lines and choose applicable manufacturing
+stages. Each stage waits for its predecessors; output + waste + rejection equals
+input in the same exact source unit. Failed QC blocks completion; reinspection
+retains failure evidence. Production-for-stock uses costing without a customer
+order and ends at synthetic finished goods. Only order-origin simulations can
+simulate dispatch and expose a marked invoice example. Nothing posts operational
+stock, QC authority, financial records or customer communications. VAT/LED/final
+payable remain unavailable. Existing legacy-demo rules below do not authorize these
+backend actions.

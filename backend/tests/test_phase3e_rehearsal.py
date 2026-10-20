@@ -33,11 +33,16 @@ class Phase3ERehearsalTests(TransactionTestCase):
         plan=executor.migration_plan(executor.loader.graph.leaf_nodes())
         # Retain the exact Phase 3 twenty-migration assertion while accounting
         # explicitly for the additive commercial guard's core dependency.
-        self.assertEqual(len([p for p, _ in plan if p.app_label != 'commercial']),20)
+        self.assertEqual(len([p for p, _ in plan if p.app_label not in {'commercial', 'rehearsal'}]),20)
         self.assertEqual([(p.app_label, p.name) for p, _ in plan if p.app_label == 'commercial'],
                          [('commercial', '0002_evidence_guards'),
                           ('commercial', '0003_governancerecord_governancerevision_and_more'),
                           ('commercial', '0004_proposal_and_revision_guards')])
+        # New simulation schema is additive; keep the original Phase 3 count exact.
+        self.assertEqual([(p.app_label, p.name) for p, _ in plan if p.app_label == 'rehearsal'],
+                         [('rehearsal', '0001_initial'), ('rehearsal', '0002_evidence_guards'),
+                          ('rehearsal', '0003_rehearsaljob_costing_revision_and_more'),
+                          ('rehearsal', '0004_stock_source_guard')])
         self.assertTrue(all(not backwards for _,backwards in plan))
         historical=executor.loader.project_state([p for p in checkpoint if p[1] is not None]+[
             ('masters','0002_alter_area_name_alter_consumable_category_and_more'),('specifications','0005_alter_productmodel_name')]).apps

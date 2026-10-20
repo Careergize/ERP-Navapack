@@ -55,12 +55,16 @@ const FINANCE_NAV_ITEMS: NavItem[] = [
 
 export function AppShell() {
   const { user, logout } = useAuth();
-  const items: NavItem[] = user?.backendSession ? [{to: "/admin/inventory", label: "Inventory configuration", icon: Settings, roles: []}, {to: "/commercial", label: "Commercial foundation", icon: ClipboardList, roles: []}] : isQCRole(user?.role) ? [{ to: "/qc", label: "QC Dashboard", icon: LayoutDashboard, roles: QC_VIEW_ROLES }, ...QC_SECTIONS.map(([key, label]) => ({ to: `/qc/${key}`, label, icon: ClipboardList, roles: QC_VIEW_ROLES }))] : user?.role === "accounts" ? FINANCE_NAV_ITEMS : NAV_ITEMS.filter((item) => !user || item.roles.includes(user.role));
+  const items: NavItem[] = user?.backendSession ? [
+    ...(user.permissions?.includes('rehearsal.use_simulation') ? [{to: "/rehearsal", label: "Development journey", icon: LayoutDashboard, roles: []}] : []),
+    {to: "/admin/inventory", label: "Inventory configuration", icon: Settings, roles: []},
+    ...(user.permissions?.includes('commercial.use_foundation') ? [{to: "/commercial", label: "Commercial drafts", icon: ClipboardList, roles: []}] : []),
+  ] : isQCRole(user?.role) ? [{ to: "/qc", label: "QC Dashboard", icon: LayoutDashboard, roles: QC_VIEW_ROLES }, ...QC_SECTIONS.map(([key, label]) => ({ to: `/qc/${key}`, label, icon: ClipboardList, roles: QC_VIEW_ROLES }))] : user?.role === "accounts" ? FINANCE_NAV_ITEMS : NAV_ITEMS.filter((item) => !user || item.roles.includes(user.role));
 
   return (
     <div className="min-h-screen bg-[radial-gradient(circle_at_72%_0%,#2dbb4c_0%,#16803d_42%,#0b3c2a_100%)] p-3 sm:p-5">
-      <div className={`flex min-h-[calc(100vh-2rem)] overflow-hidden rounded-[24px] bg-[#f5f8f5] shadow-2xl shadow-emerald-950/25 ${isQCRole(user?.role) ? "flex-col sm:flex-row" : ""}`}>
-      <aside className={`flex shrink-0 flex-col bg-[#102d24] text-white ${isQCRole(user?.role) ? "w-full sm:w-[230px]" : "w-[230px]"}`}>
+      <div className="flex flex-col sm:flex-row min-h-[calc(100vh-2rem)] overflow-hidden rounded-[24px] bg-[#f5f8f5] shadow-2xl shadow-emerald-950/25">
+      <aside className="flex shrink-0 flex-col bg-[#102d24] text-white w-full sm:w-[230px]">
         <div className="flex items-center gap-2 px-5 py-6">
           <img src="/assets/Nava-logo.png" alt="NavaPack" className="h-8 w-auto max-w-[155px] object-contain" />
         </div>
@@ -108,7 +112,7 @@ export function AppShell() {
 
       <main className="min-w-0 flex-1 overflow-y-auto bg-[#f5f8f5]">
         <div className="flex items-center justify-end gap-4 border-b border-[#e6eee8] px-5 py-4 sm:px-8">
-          <button className="relative rounded-full p-2 text-[#668075] hover:bg-white" aria-label="Notifications"><Bell size={17} /><span className="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-[#40bd5b]" /></button>
+          <span className="rounded-full p-2 text-[#668075]" title="Notifications are not connected"><Bell size={17} /></span>
           <div className="h-7 w-px bg-[#dce8df]" />
           <span className="text-xs text-[#668075]">Operations overview</span>
         </div>

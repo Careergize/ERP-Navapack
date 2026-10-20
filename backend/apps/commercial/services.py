@@ -161,6 +161,10 @@ def command(*, actor, key, request_id, kind=None, data=None, pk=None, version=No
                     if doc.status != 'DRAFT':
                         raise CommandConflict('Only drafts may be edited; reopen review first.')
                     snap = snapshot(actor, doc.kind, data)
+                    # Retain immutable draft lineage through all later edits.
+                    previous = doc.revisions.get(number=doc.version).snapshot
+                    if 'synthetic_source' in previous:
+                        snap['synthetic_source'] = previous['synthetic_source']
                 advance_version(doc, update_fields=['status'])
             else:
                 if kind not in ('COSTING', 'QUOTATION', 'SALES_ORDER'):

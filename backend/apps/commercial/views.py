@@ -2,6 +2,7 @@ from rest_framework import viewsets, serializers
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.generics import get_object_or_404
 from apps.core.commands import expected_version
 from apps.core.models import AuditEvent
 from .contracts import Strict
@@ -21,6 +22,11 @@ class EditInput(Strict):
 
 class TransitionInput(Strict):
     transition = serializers.CharField(max_length=30)
+    reason = serializers.CharField(max_length=500)
+
+
+class DeriveInput(Strict):
+    source_revision = serializers.UUIDField()
     reason = serializers.CharField(max_length=500)
 
 
@@ -49,6 +55,19 @@ class CommercialViewSet(viewsets.GenericViewSet):
 
     def create(self, request):
         return self.run(CreateInput(data=request.data))
+
+    @action(detail=True, methods=['post'])
+    def derive(self, request, pk=None):
+        from .handoffs import derive
+        doc = self.get_object()
+        serializer = DeriveInput(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        # Pin the exact selected revision. Later source edits cannot rebind retries.
+        source = get_object_or_404(doc.revisions, pk=serializer.validated_data['source_revision'])
+        result, status, _ = derive(actor=request.user, source_id=source.pk,
+            key=request.headers.get('Idempotency-Key'), request_id=request.request_id,
+            reason=serializer.validated_data['reason'])
+        return Response(result, status=status, headers={'ETag': f'"{result["version"]}"'})
 
     def partial_update(self, request, pk=None):
         self.get_object()

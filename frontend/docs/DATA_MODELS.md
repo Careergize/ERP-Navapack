@@ -162,3 +162,13 @@ Optional CostingInput.led and QuotationLine.led capture applicability, provision
 ## Phase 3D synthetic QC — 20 October 2026
 
 Versioned QC evidence, guarded whole-root quality reclassification, containment and NCR/CAPA foundation now use the existing authenticated inventory APIs. Operational posting remains disabled; partial indistinguishable scopes, disposition and inherited transfer QC clearance fail closed. No demo success is treated as backend persistence. See ../../docs/phase3-planning/PHASE_3D_IMPLEMENTATION_REPORT.md for exact implementation, verification and remaining gates. No application migration or real authority grant is performed.
+## Persisted synthetic development contracts — 21 October 2026
+
+`RehearsalJob` retains exactly one protected immutable commercial revision:
+Sales Order demand or production-for-stock costing, plus owner, scoped warehouse,
+version/status and simulation snapshot. Per-line routes retain stages, timing,
+synthetic machine/operator and exact decimal input/output/waste/rejection.
+`RehearsalRevision` is append-only evidence with actor, reason, SHA256 and atomic
+audit. These records have no ledger, QC release or financial posting authority.
+Draft commercial derivations retain source document/revision/hash as unapproved
+lineage; they never establish quotation acceptance or order confirmation.

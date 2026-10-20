@@ -165,3 +165,12 @@ Enforce client-confirmed `MAX(base×0.025, eligibleKG/1000×70×savedFX)` centra
 ## Phase 3D synthetic QC — 20 October 2026
 
 Versioned QC evidence, guarded whole-root quality reclassification, containment and NCR/CAPA foundation now use the existing authenticated inventory APIs. Operational posting remains disabled; partial indistinguishable scopes, disposition and inherited transfer QC clearance fail closed. No demo success is treated as backend persistence. See ../../docs/phase3-planning/PHASE_3D_IMPLEMENTATION_REPORT.md for exact implementation, verification and remaining gates. No application migration or real authority grant is performed.
+## Development integration update — 21 October 2026
+
+Implemented guarded disposable PostgreSQL commercial derivation and persisted
+rehearsal APIs with connected `/commercial` and `/rehearsal` screens. Customer-order
+and production-for-stock simulation reuse commercial revision identities and audit.
+Remaining: browser control acceptance, physical-source/authority decisions and
+separately authorized persistent development/production provisioning. No simulation
+may be promoted into operational stock, QC, dispatch or invoices by removing guards.
+See repository `docs/ONE_DAY_ERP_COMPLETION_REPORT.md` for actual test results.

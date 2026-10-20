@@ -131,3 +131,10 @@ Added shared revisioned custom models, per-line USD/UGX costing and markup compa
 ## Phase 3D synthetic QC — 20 October 2026
 
 Versioned QC evidence, guarded whole-root quality reclassification, containment and NCR/CAPA foundation now use the existing authenticated inventory APIs. Operational posting remains disabled; partial indistinguishable scopes, disposition and inherited transfer QC clearance fail closed. No demo success is treated as backend persistence. See ../../docs/phase3-planning/PHASE_3D_IMPLEMENTATION_REPORT.md for exact implementation, verification and remaining gates. No application migration or real authority grant is performed.
+# 21 October 2026 — Persisted development ERP journey
+
+Connected commercial draft derivation, customer creation and marked print previews;
+added scoped persisted synthetic order/stock production, stage tracking, QC failure
+and reinspection, finish/dispatch and invoice example, dashboard and immutable history.
+Preserved legacy demos and operational gates. Full details and verification are in
+the repository's `docs/ONE_DAY_ERP_COMPLETION_REPORT.md`.

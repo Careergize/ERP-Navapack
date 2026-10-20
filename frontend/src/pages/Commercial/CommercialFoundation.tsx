@@ -5,6 +5,10 @@ import { commercialPage, commercialHistory, saveCommercial, transitionCommercial
 import { newCommercialInput, newLine, newMaterial, newProcess, editableCommercialInput, compareCommercial, type CommercialInput, type CommercialLine, type CostingInput } from '@/lib/commercialEditor';
 import { CommercialSnapshot } from './CommercialSnapshot';
 import { CommercialPolicyRegistry } from './CommercialPolicyRegistry';
+import { DraftPreview } from './DraftPreview';
+import { QuickCustomer } from './QuickCustomer';
+import { deriveCommercial } from '@/lib/commercialApi';
+import { Link } from 'react-router-dom';
 const css = 'rounded border p-2 w-full';
 const message = (e: unknown) => axios.isAxiosError(e) ? `${e.response?.status === 412 ? 'Stale version: reload the record; entered draft retained.' : e.response?.status === 403 ? 'Permission or disposable environment unavailable.' : 'Request failed.'} ${JSON.stringify(e.response?.data?.error ?? 'Connection failed. Retry unchanged intent safely.')}` : e instanceof Error ? e.message : 'Request failed.';
 export function CommercialFoundation() {
@@ -16,7 +20,16 @@ export function CommercialFoundation() {
   const [selected, setSelected] = useState<CommercialRecord>(), [editing, setEditing] = useState<CommercialRecord>();
   const [history, setHistory] = useState<Page<CommercialHistory>>(), [historyPage, setHistoryPage] = useState(1), [compare, setCompare] = useState<CommercialHistory>();
   const [reason, setReason] = useState(''), [error, setError] = useState(''), [refError, setRefError] = useState(''), [busy, setBusy] = useState(false);
+  const [preview, setPreview] = useState<CommercialRecord>();
+  const [dirty, setDirty] = useState(false);
+  const commandLock = useRef(false);
   const intent = useRef<{ value: string; key: string }>();
+  useEffect(() => {
+    if (!dirty) return;
+    const protect = (e: BeforeUnloadEvent) => { e.preventDefault(); e.returnValue = ''; };
+    window.addEventListener('beforeunload', protect);
+    return () => window.removeEventListener('beforeunload', protect);
+  }, [dirty]);
   useEffect(() => { if (!allowed) return; let live = true;
     commercialPage(page).then(d => { if (live) setRecords(d); }).catch(e => { if (live) setError(message(e)); }); return () => { live = false; };
   }, [allowed, page, refresh]);
@@ -35,24 +48,31 @@ export function CommercialFoundation() {
   function key(value: unknown) { const text = JSON.stringify(value); if (intent.current?.value !== text) intent.current = { value: text, key: crypto.randomUUID() }; return intent.current.key; }
   const line = (i: number, value: CommercialLine) => setDraft(d => ({ ...d, lines: d.lines.map((l, j) => i === j ? value : l) }));
   const cost = (i: number, value: CostingInput) => setDraft(d => ({ ...d, lines: d.lines.map((l, j) => i === j ? { ...l, costing: value } : l) }));
-  function reset(type = kind) { setKind(type); setEditing(undefined); setDraft(newCommercialInput(type === 'COSTING')); setParty(type === 'COSTING' ? 'none' : 'customer'); setReason(''); intent.current = undefined; }
-  async function save(e: FormEvent) { e.preventDefault(); setBusy(true); setError(''); try {
+  function reset(type = kind) { if (dirty && !window.confirm('Discard unsaved draft fields?')) return; setDirty(false); setKind(type); setEditing(undefined); setDraft(newCommercialInput(type === 'COSTING')); setParty(type === 'COSTING' ? 'none' : 'customer'); setReason(''); intent.current = undefined; }
+  async function save(e: FormEvent) { e.preventDefault(); if (commandLock.current) return; commandLock.current = true; setBusy(true); setError(''); try {
     const r = await saveCommercial(kind, draft, reason, key({ kind, draft, reason, id: editing?.id, version: editing?.version }), editing);
-    setSelected(r); setHistoryPage(1); if (editing) setEditing(r); setRefresh(n => n + 1);
-  } catch (e) { setError(message(e)); } finally { setBusy(false); } }
+    setDirty(false); setSelected(r); setHistoryPage(1); if (editing) setEditing(r); setRefresh(n => n + 1);
+  } catch (e) { setError(message(e)); } finally { commandLock.current = false; setBusy(false); } }
   function edit() { if (!selected || selected.status !== 'DRAFT') return; try {
-    const d = editableCommercialInput(selected.snapshot.input); setDraft(d); setKind(selected.kind); setParty(d.customer ? 'customer' : d.prospect ? 'prospect' : 'none'); setEditing(selected); setError('');
+    if (dirty && !window.confirm('Replace unsaved fields with this saved revision?')) return;
+    const d = editableCommercialInput(selected.snapshot.input); setDraft(d); setDirty(false); setKind(selected.kind); setParty(d.customer ? 'customer' : d.prospect ? 'prospect' : 'none'); setEditing(selected); setError('');
   } catch (e) { setError(message(e)); } }
-  async function transition(action: 'submit'|'reopen'|'cancel') { if (!selected) return; setBusy(true); setError(''); try {
+  async function transition(action: 'submit'|'reopen'|'cancel') { if (!selected || commandLock.current) return; commandLock.current = true; setBusy(true); setError(''); try {
     const r = await transitionCommercial(selected, action, reason, key({ id: selected.id, version: selected.version, action, reason })); setSelected(r); if (editing?.id === r.id) setEditing(undefined); setRefresh(n => n + 1);
-  } catch (e) { setError(message(e)); } finally { setBusy(false); } }
+  } catch (e) { setError(message(e)); } finally { commandLock.current = false; setBusy(false); } }
+  async function derive() { if (!selected || commandLock.current) return; commandLock.current = true; setBusy(true); setError(''); try {
+    const r = await deriveCommercial(selected, reason, key({ source: selected.revision, reason, action: 'derive' }));
+    setSelected(r); setHistoryPage(1); setRefresh(n => n + 1);
+  } catch (e) { setError(message(e)); } finally { commandLock.current = false; setBusy(false); } }
   const options = (resource: string, value?: string, filter?: (m: CommercialReference) => boolean) => <><option value="">Unspecified / select…</option>{value && !masters[resource]?.some(m => m.id === value) && <option value={value}>Retained selection (not in current directory)</option>}{masters[resource]?.filter(filter ?? (() => true)).map(m => <option key={m.id} value={m.id}>{m.name}{m.number ? ` · revision ${m.number}` : ''}{m.code ? ` (${m.code})` : ''}</option>)}</>;
   const unit = (id: string) => { const u = masters.units?.find(u => u.id === id); return u ? `${u.name} (${u.code || 'no code'})` : 'Retained unit / unavailable in directory'; };
   const text = (label: string, value: string, change: (v: string) => void, required = false, type = 'text') => <label>{label}<input className={css} type={type} required={required} value={value} onChange={e => change(e.target.value)}/></label>;
   if (!allowed) return <main className="p-6"><h1>Commercial foundation</h1><p>Unavailable: a backend employee session and explicit commercial capability are required.</p></main>;
   const diffs = selected && compare ? compareCommercial(compare.snapshot, selected.snapshot) : [];
   return <main className="max-w-6xl p-6 space-y-6"><h1 className="text-2xl font-semibold">Commercial foundation</h1>
-    <p>Disposable development only. VAT, LED, final payable, approval, quotation issue/acceptance, PDF/email, order confirmation, production and dispatch are unavailable. Orders never reserve or deduct stock.</p>
+    <p>Disposable development only. Save costing → derive draft quotation → derive draft Sales Order demand → <Link className="underline" to="/rehearsal">synthetic production rehearsal</Link>. Draft derivation never approves a quote or confirms an order. VAT, LED, final payable and customer issue/email remain unavailable. Orders never reserve or deduct stock.</p>
+    {preview && <DraftPreview record={preview} close={() => setPreview(undefined)}/>}
+    {records && user?.permissions?.includes('masters.add_customer') && <QuickCustomer saved={id => { setDraft(d => ({ ...d, customer: id })); setParty('customer'); setRefresh(n => n + 1); }}/ >}
     {error && <p role="alert" className="text-red-700">{error}</p>}{refError && <p role="alert">{refError}</p>}
     <button className={css} disabled={busy} onClick={() => { setError(''); setRefresh(n => n + 1); }}>Reload records and permitted references</button>
     {!records ? <p role="status">{error ? 'Commercial persistence unavailable; forms blocked.' : 'Checking commercial persistence…'}</p> : <>
@@ -60,6 +80,9 @@ export function CommercialFoundation() {
       {records.results.map(r => <button className={css} key={r.id} onClick={() => { setSelected(r); setHistoryPage(1); }}>{r.kind} · {r.status} · revision {r.version} · {r.snapshot.estimate.net_estimate} {String(r.snapshot.input.currency)}</button>)}
       <button disabled={page === 1} onClick={() => setPage(n => n - 1)}>Previous</button> · <button disabled={!records.next} onClick={() => setPage(n => n + 1)}>Next</button></section>
     {selected && <section className="border rounded p-4 space-y-3"><h2>{selected.kind} · {selected.status} · revision {selected.version}</h2><CommercialSnapshot snapshot={selected.snapshot}/>
+      <p className="break-all">Document: {selected.id} · immutable revision: {selected.revision}</p>
+      <button disabled={busy} onClick={() => setPreview(selected)}>Draft PDF preview</button>
+      {selected.kind !== 'SALES_ORDER' && selected.status !== 'CANCELLED' && <button className="ml-4" disabled={busy || !reason.trim()} onClick={derive}>Derive unapproved {selected.kind === 'COSTING' ? 'quotation' : 'Sales Order demand'} draft</button>}
       {text('Change reason', reason, setReason)}
       {selected.status === 'DRAFT' && <><button disabled={busy} onClick={edit}>Edit draft below</button> · <button disabled={busy || !reason.trim()} onClick={() => transition('submit')}>Submit for review</button> · <button disabled={busy || !reason.trim()} onClick={() => transition('cancel')}>Cancel draft</button></>}
       {selected.status === 'REVIEW' && <button disabled={busy || !reason.trim()} onClick={() => transition('reopen')}>Return to draft</button>}
@@ -67,7 +90,7 @@ export function CommercialFoundation() {
       <button disabled={historyPage === 1} onClick={() => setHistoryPage(n => n - 1)}>Previous history</button> · <button disabled={!history?.next} onClick={() => setHistoryPage(n => n + 1)}>Next history</button>
       {compare && <div><h3>Revision {compare.number} → {selected.version}: {diffs.length} changed values</h3>{!diffs.length && <p>No snapshot differences; status/reason history may differ.</p>}<ul>{diffs.slice(0, 200).map((d, i) => <li key={i} className="break-words">{d.field}: {d.before} → {d.after}</li>)}</ul>{diffs.length > 200 && <p>First 200 changes shown; full snapshots remain available above.</p>}</div>}
     </section>}
-    <form onSubmit={save} className="border rounded p-4 space-y-4"><h2 className="text-xl font-semibold">{editing ? `Edit revision ${editing.version}` : 'New draft'}</h2><button type="button" onClick={() => reset()}>Start a new draft</button>
+    <form onSubmit={save} onChangeCapture={() => setDirty(true)} className="border rounded p-4 space-y-4"><h2 className="text-xl font-semibold">{editing ? `Edit revision ${editing.version}` : 'New draft'}</h2>{dirty && <p role="status">Unsaved draft fields. Save before leaving this workspace.</p>}<button type="button" disabled={busy} onClick={() => reset()}>Start a new draft</button>
       <div className="grid md:grid-cols-3 gap-3"><label>Document<select className={css} disabled={!!editing} value={kind} onChange={e => { if (draft.lines.some(l => l.variant || l.quantity)) { setError('Start a new draft before changing type. Entered data is retained.'); return; } reset(e.target.value as CommercialKind); }}><option value="COSTING">Costing</option><option value="QUOTATION">Quotation</option><option value="SALES_ORDER">Sales order</option></select></label>
       <label>Party type<select className={css} value={party} onChange={e => { setParty(e.target.value as typeof party); setDraft(d => { const n = { ...d }; delete n.customer; delete n.prospect; return n; }); }}><option value="customer">Existing customer</option>{kind !== 'SALES_ORDER' && <option value="prospect">Prospect</option>}{kind === 'COSTING' && <option value="none">No customer (product costing)</option>}</select></label>
       {party !== 'none' && <label>Customer / prospect<select className={css} required value={draft[party] ?? ''} onChange={e => setDraft(d => ({ ...d, [party]: e.target.value }))}>{options(party === 'customer' ? 'customers' : 'prospects', draft[party])}</select></label>}

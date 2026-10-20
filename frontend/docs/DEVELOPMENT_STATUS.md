@@ -165,3 +165,13 @@ Implemented and connected frontend custom lines, versioned models, recipe/proces
 ## Phase 3D synthetic QC — 20 October 2026
 
 Versioned QC evidence, guarded whole-root quality reclassification, containment and NCR/CAPA foundation now use the existing authenticated inventory APIs. Operational posting remains disabled; partial indistinguishable scopes, disposition and inherited transfer QC clearance fail closed. No demo success is treated as backend persistence. See ../../docs/phase3-planning/PHASE_3D_IMPLEMENTATION_REPORT.md for exact implementation, verification and remaining gates. No application migration or real authority grant is performed.
+# Persisted synthetic ERP journey — 21 October 2026
+
+Real backend sessions can use `/commercial` for exact draft costing → quotation →
+Sales Order derivation and `/rehearsal` for persisted multi-line customer-order or
+production-for-stock jobs, configured stages, synthetic QC/reinspection, completion
+and order-only simulated dispatch/invoice previews. All execution requires the
+existing stamped disposable PostgreSQL harness and explicit capabilities/scopes.
+Legacy demos remain separate. No operational stock, financial or QC authority is
+enabled. See `../../docs/ONE_DAY_ERP_COMPLETION_REPORT.md` for executed verification,
+browser acceptance gap and remaining boundaries.
