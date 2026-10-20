@@ -4,6 +4,7 @@ import json
 import os
 import re
 import subprocess
+import shutil
 import uuid
 from pathlib import Path
 import psycopg
@@ -33,7 +34,9 @@ class Phase3ERehearsalTests(TransactionTestCase):
         plan=executor.migration_plan(executor.loader.graph.leaf_nodes())
         # Retain the exact Phase 3 twenty-migration assertion while accounting
         # explicitly for the additive commercial guard's core dependency.
-        self.assertEqual(len([p for p, _ in plan if p.app_label not in {'commercial', 'rehearsal'}]),20)
+        self.assertEqual(len([p for p, _ in plan if p.app_label not in {'commercial', 'rehearsal'}
+                              and (p.app_label, p.name) != ('core', '0005_persistent_demo_boundary')]),20)
+        self.assertIn(('core', '0005_persistent_demo_boundary'), [(p.app_label, p.name) for p, _ in plan])
         self.assertEqual([(p.app_label, p.name) for p, _ in plan if p.app_label == 'commercial'],
                          [('commercial', '0002_evidence_guards'),
                           ('commercial', '0003_governancerecord_governancerevision_and_more'),
@@ -66,8 +69,9 @@ class Phase3ERehearsalTests(TransactionTestCase):
         inspection=fixture.accepted();fixture.release(inspection)
         folder=Path('.local/phase3e/recovery').resolve();folder.mkdir(parents=True,exist_ok=True)
         token=uuid.uuid4().hex;dump=folder/(token+'.dump')
-        binary=Path('C:/Program Files/PostgreSQL/16/bin')
-        self.assertTrue((binary/'pg_dump.exe').is_file(),'PostgreSQL16 client tools required for rehearsal.')
+        dump_binary=shutil.which('pg_dump') or 'C:/Program Files/PostgreSQL/16/bin/pg_dump.exe'
+        restore_binary=shutil.which('pg_restore') or 'C:/Program Files/PostgreSQL/16/bin/pg_restore.exe'
+        self.assertTrue(Path(dump_binary).is_file(),'Matching/newer PostgreSQL client tools required for rehearsal.')
         config=connection.settings_dict
         env={**os.environ,'PGHOST':config['HOST'],'PGPORT':str(config['PORT']),'PGUSER':config['USER'],
              'PGPASSWORD':config['PASSWORD'],'PGSSLMODE':config.get('OPTIONS',{}).get('sslmode','prefer')}
@@ -84,7 +88,7 @@ class Phase3ERehearsalTests(TransactionTestCase):
                 result[table]={'rows':len(rows),'sha256':hashlib.sha256('\n'.join(rows).encode()).hexdigest()}
             return result
         with connection.cursor() as cursor:expected=fingerprints(cursor)
-        subprocess.run([str(binary/'pg_dump.exe'),'--format=custom','--no-owner','--no-privileges','--file',str(dump),'--dbname',original],env=env,check=True,capture_output=True)
+        subprocess.run([dump_binary,'--format=custom','--no-owner','--no-privileges','--file',str(dump),'--dbname',original],env=env,check=True,capture_output=True)
         restored='test_phase3b_'+uuid.uuid4().hex;created=False
         params={'host':config['HOST'],'port':config['PORT'],'user':config['USER'],'password':config['PASSWORD'],
                 'sslmode':config.get('OPTIONS',{}).get('sslmode','prefer')}
@@ -94,7 +98,7 @@ class Phase3ERehearsalTests(TransactionTestCase):
                     cursor.execute('SELECT 1 FROM pg_database WHERE datname=%s',[restored])
                     self.assertIsNone(cursor.fetchone(),'Refusing to reuse a recovery database.')
                     cursor.execute(sql.SQL('CREATE DATABASE {}').format(sql.Identifier(restored)));created=True
-            subprocess.run([str(binary/'pg_restore.exe'),'--exit-on-error','--no-owner','--no-privileges','--dbname',restored,str(dump)],env=env,check=True,capture_output=True)
+            subprocess.run([restore_binary,'--exit-on-error','--no-owner','--no-privileges','--dbname',restored,str(dump)],env=env,check=True,capture_output=True)
             with psycopg.connect(dbname=restored,autocommit=True,**params) as recovered:
                 with recovered.cursor() as cursor:
                     self.assertEqual(fingerprints(cursor),expected)

@@ -6,7 +6,7 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.renderers import JSONRenderer
 from apps.core.commands import execute_command, lock_versioned, advance_version, payload_hash
 from apps.inventory.authorization import require_actor
-from apps.inventory.ledger_guard import synthetic_write
+from apps.core.demo import development_write as synthetic_write
 from .contracts import Strict, clean_reason
 from .services import authorize as authorize_commercial
 from .models import GovernanceRecord, GovernanceRevision

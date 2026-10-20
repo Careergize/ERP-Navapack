@@ -1,8 +1,9 @@
 from django.urls import path, include
 from apps.accounts.views import LoginView, RefreshView, MeView, LogoutView
-from apps.core.views import HealthView, ReadinessView
+from apps.core.views import HealthView, ReadinessView, DemoStatusView
 
 urlpatterns = [
+    path('api/v1/demo/status/', DemoStatusView.as_view(), name='demo-status'),
     path('api/v1/rehearsal/', include('apps.rehearsal.urls')),
     path('api/v1/commercial/', include('apps.commercial.urls')),
     path('api/v1/inventory/', include('apps.inventory.urls')),

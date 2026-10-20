@@ -9,7 +9,8 @@ from apps.core.api import CommandConflict
 from apps.commercial.models import CommercialRevision
 from apps.commercial.contracts import clean_reason, ExactDecimal
 from apps.inventory.authorization import require_actor, require_scope
-from apps.inventory.ledger_guard import require_synthetic_environment, synthetic_write, posting_locks
+from apps.inventory.ledger_guard import posting_locks
+from apps.core.demo import require_development_environment as require_synthetic_environment, development_write as synthetic_write
 from apps.inventory.models import Warehouse
 from .models import RehearsalJob, RehearsalRevision
 

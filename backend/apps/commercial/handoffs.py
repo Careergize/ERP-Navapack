@@ -6,7 +6,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.generics import get_object_or_404
 from apps.core.commands import execute_command, payload_hash
 from apps.core.api import CommandConflict
-from apps.inventory.ledger_guard import synthetic_write
+from apps.core.demo import development_write as synthetic_write
 from .contracts import DocumentInput, clean_reason
 from .models import CommercialDocument, CommercialRevision
 from . import services

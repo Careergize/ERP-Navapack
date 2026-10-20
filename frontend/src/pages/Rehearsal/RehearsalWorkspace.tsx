@@ -7,7 +7,7 @@ import { inventoryPage, type InventoryRecord } from '@/lib/inventoryApi';
 import { commandRehearsal, createRehearsal, productionStages, rehearsalDashboard, rehearsalHistory, rehearsalJob, rehearsalJobs, type RehearsalAction, type RehearsalJob, type RehearsalRevision } from '@/lib/rehearsalApi';
 import { RehearsalInvoicePreview } from './RehearsalInvoicePreview';
 const field = 'w-full rounded border p-2';
-const showError = (e: unknown) => axios.isAxiosError(e) ? `${e.response?.status === 412 ? 'Version conflict. Reload the selected job before retrying; entered values are retained.' : e.response?.status === 403 ? 'Explicit permission, warehouse scope or stamped disposable database is unavailable.' : 'Request failed.'} ${JSON.stringify(e.response?.data ?? 'Check the backend connection.')}` : e instanceof Error ? e.message : 'Request failed.';
+const showError = (e: unknown) => axios.isAxiosError(e) ? `${e.response?.status === 412 ? 'Version conflict. Reload the selected job before retrying; entered values are retained.' : e.response?.status === 403 ? 'Explicit permission, warehouse scope or approved DEMO/test database is unavailable.' : 'Request failed.'} ${JSON.stringify(e.response?.data ?? 'Check the backend connection.')}` : e instanceof Error ? e.message : 'Request failed.';
 export function RehearsalWorkspace() {
   const { user } = useAuth();
   const [preview, setPreview] = useState(false), [dirty, setDirty] = useState(false);
@@ -61,7 +61,7 @@ export function RehearsalWorkspace() {
   return <main className="p-4 md:p-6 space-y-5 max-w-6xl mx-auto">
     <h1 className="text-2xl font-semibold">Persisted development ERP journey</h1>
     {!permitted && <p role="alert" className="rounded border border-amber-500 p-3">Your profile does not expose rehearsal.use_simulation. An explicit capability and warehouse scope are required; the backend enforces both.</p>}
-    <div className="rounded border border-amber-400 bg-amber-50 p-4"><strong>SYNTHETIC SIMULATION — NO OPERATIONAL AUTHORITY</strong><p>Draft commercial demand links to immutable production rehearsal records in a guarded disposable database. Review, material issue, QC, finished goods and dispatch here are synthetic events. No stock, operational QC release, financial posting or customer communication occurs.</p><p><Link className="underline" to="/commercial">Create customer-linked costings, quotations and multi-product sales order drafts in Commercial</Link>.</p></div>
+    <div className="rounded border border-amber-400 bg-amber-50 p-4"><strong>SYNTHETIC SIMULATION — NO OPERATIONAL AUTHORITY</strong><p>Draft commercial demand links to immutable production rehearsal records in a guarded DEMO/test database. Review, material issue, QC, finished goods and dispatch here are synthetic events. No stock, operational QC release, financial posting or customer communication occurs.</p><p><Link className="underline" to="/commercial">Create customer-linked costings, quotations and multi-product sales order drafts in Commercial</Link>.</p></div>
     {error && <div role="alert" className="border border-red-500 rounded p-3 break-words">{error}</div>}
     {dashboard && <section className="border rounded p-4 space-y-2"><h2 className="text-lg font-semibold">Persisted commercial and production reports</h2>
       <div className="grid sm:grid-cols-3 gap-3">{Object.entries((dashboard.parties ?? {}) as Record<string, number | null>).map(([label, count]) => <p key={label}>{label}: {count ?? 'Read permission unavailable'}</p>)}

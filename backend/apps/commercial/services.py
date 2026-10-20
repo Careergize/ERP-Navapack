@@ -9,7 +9,7 @@ from apps.accounts.backends import explicit_permission_codes
 from apps.core.commands import execute_command, lock_versioned, advance_version, payload_hash
 from apps.core.api import CommandConflict
 from apps.inventory.authorization import require_actor, require_scope
-from apps.inventory.ledger_guard import require_synthetic_environment, synthetic_write
+from apps.core.demo import require_development_environment as require_synthetic_environment, development_write as synthetic_write
 from apps.inventory.models import StockIdentity
 from apps.masters.models import Customer, Prospect, ProductVariant, Material, Unit
 from apps.specifications.models import ProductModelRevision

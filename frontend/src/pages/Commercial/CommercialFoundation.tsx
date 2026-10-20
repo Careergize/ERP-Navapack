@@ -10,7 +10,7 @@ import { QuickCustomer } from './QuickCustomer';
 import { deriveCommercial } from '@/lib/commercialApi';
 import { Link } from 'react-router-dom';
 const css = 'rounded border p-2 w-full';
-const message = (e: unknown) => axios.isAxiosError(e) ? `${e.response?.status === 412 ? 'Stale version: reload the record; entered draft retained.' : e.response?.status === 403 ? 'Permission or disposable environment unavailable.' : 'Request failed.'} ${JSON.stringify(e.response?.data?.error ?? 'Connection failed. Retry unchanged intent safely.')}` : e instanceof Error ? e.message : 'Request failed.';
+const message = (e: unknown) => axios.isAxiosError(e) ? `${e.response?.status === 412 ? 'Stale version: reload the record; entered draft retained.' : e.response?.status === 403 ? 'Permission or approved DEMO/test environment unavailable.' : 'Request failed.'} ${JSON.stringify(e.response?.data?.error ?? 'Connection failed. Retry unchanged intent safely.')}` : e instanceof Error ? e.message : 'Request failed.';
 export function CommercialFoundation() {
   const { user } = useAuth(); const allowed = !!user?.backendSession && !!user.permissions?.includes('commercial.use_foundation');
   const [kind, setKind] = useState<CommercialKind>('QUOTATION'), [draft, setDraft] = useState<CommercialInput>(newCommercialInput());
@@ -70,7 +70,7 @@ export function CommercialFoundation() {
   if (!allowed) return <main className="p-6"><h1>Commercial foundation</h1><p>Unavailable: a backend employee session and explicit commercial capability are required.</p></main>;
   const diffs = selected && compare ? compareCommercial(compare.snapshot, selected.snapshot) : [];
   return <main className="max-w-6xl p-6 space-y-6"><h1 className="text-2xl font-semibold">Commercial foundation</h1>
-    <p>Disposable development only. Save costing → derive draft quotation → derive draft Sales Order demand → <Link className="underline" to="/rehearsal">synthetic production rehearsal</Link>. Draft derivation never approves a quote or confirms an order. VAT, LED, final payable and customer issue/email remain unavailable. Orders never reserve or deduct stock.</p>
+    <p>Isolated DEMO/test environment only. Save costing → derive draft quotation → derive draft Sales Order demand → <Link className="underline" to="/rehearsal">synthetic production rehearsal</Link>. Draft derivation never approves a quote or confirms an order. VAT, LED, final payable and customer issue/email remain unavailable. Orders never reserve or deduct stock.</p>
     {preview && <DraftPreview record={preview} close={() => setPreview(undefined)}/>}
     {records && user?.permissions?.includes('masters.add_customer') && <QuickCustomer saved={id => { setDraft(d => ({ ...d, customer: id })); setParty('customer'); setRefresh(n => n + 1); }}/ >}
     {error && <p role="alert" className="text-red-700">{error}</p>}{refError && <p role="alert">{refError}</p>}
