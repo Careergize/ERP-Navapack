@@ -35,6 +35,7 @@ postgres-data/
 # Local history backup and unused pre-monorepo root npm lockfile.
 /.migration-backup/
 /package-lock.json
+/client-reference/
 
 # OS metadata.
 .DS_Store

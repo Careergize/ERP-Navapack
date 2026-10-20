@@ -1,0 +1,263 @@
+{
+  "review_date": "2026-10-20",
+  "source_root": "client-reference/",
+  "authority": "Client-designated authoritative source material; stock quantities remain unapproved observations.",
+  "originals_changed": false,
+  "counts": {
+    "sop_docx": 18,
+    "stock_xlsx": 2,
+    "reference_jpeg": 8
+  },
+  "files": [
+    {
+      "path": "client-reference/08- September 2026  Daily Raw Material Physical stock  -.xlsx",
+      "size_bytes": 49841,
+      "sha256": "e72ea50957a3a9e3ede0c89de2f88b3ebed9dedd0a97f27a2a063e08eea207f2",
+      "reviewed": true,
+      "type": "xlsx"
+    },
+    {
+      "path": "client-reference/09.FG Stock September .xlsx",
+      "size_bytes": 141055,
+      "sha256": "a0d0d692bcc3dbbd6f512718fe55443c7443f694aa2ef76b492e77a76d50a0c9",
+      "reviewed": true,
+      "type": "xlsx"
+    },
+    {
+      "path": "client-reference/SOP/SOP 01_ AUTHORITY & INTERNAL CONTROLS.docx",
+      "size_bytes": 29361,
+      "sha256": "84ef856a12b3406d499237571ff56ff6a00024f5b22975576b35ac72f25c7993",
+      "reviewed": true,
+      "type": "docx",
+      "sop_number": 1,
+      "version": "1.0",
+      "stated_effective_date": "2026-11-01"
+    },
+    {
+      "path": "client-reference/SOP/SOP 02– SALES & CUSTOMER ORDER MANAGEMENT.docx",
+      "size_bytes": 24558,
+      "sha256": "78733b72fb83ba4df619aeea92cd4277b91a821e86bf81033d95a9fdc29c4257",
+      "reviewed": true,
+      "type": "docx",
+      "sop_number": 2,
+      "version": "1.0",
+      "stated_effective_date": "2026-11-01"
+    },
+    {
+      "path": "client-reference/SOP/SOP 03 – STORES & INVENTORY CONTROL.docx",
+      "size_bytes": 23522,
+      "sha256": "59e1138f8fa19c3f32e2b06f0368194789a57481d4d7b585f806e6082f5cc19c",
+      "reviewed": true,
+      "type": "docx",
+      "sop_number": 3,
+      "version": "1.0",
+      "stated_effective_date": "2026-11-01"
+    },
+    {
+      "path": "client-reference/SOP/SOP 04 – PROCUREMENT & SUPPLIER MANAGEMENT.docx",
+      "size_bytes": 24354,
+      "sha256": "48a598f4c7ee01b942810df9d438e83910d00f00916c56a71be2948540ea72a2",
+      "reviewed": true,
+      "type": "docx",
+      "sop_number": 4,
+      "version": "1.0",
+      "stated_effective_date": "2026-11-01"
+    },
+    {
+      "path": "client-reference/SOP/SOP 05- PRODUCTION PLANNING & CONTROL.docx",
+      "size_bytes": 24081,
+      "sha256": "6ad60048bf0a95fcdfc733b13796603e0cef79b4c00451e299240bda279ec8c1",
+      "reviewed": true,
+      "type": "docx",
+      "sop_number": 5,
+      "version": "1.0",
+      "stated_effective_date": "2026-11-01"
+    },
+    {
+      "path": "client-reference/SOP/SOP 06-EXTRUSION PROCESS CONTROL.docx",
+      "size_bytes": 22335,
+      "sha256": "1c9d0fd6d81806ec40baa83b8db66a12d3b78514a466d30c0ab49727322f38e8",
+      "reviewed": true,
+      "type": "docx",
+      "sop_number": 6,
+      "version": "1.0",
+      "stated_effective_date": "2026-11-01"
+    },
+    {
+      "path": "client-reference/SOP/SOP 07– PRINTING PROCESS CONTROL.docx",
+      "size_bytes": 23282,
+      "sha256": "71c53dc2ece772102320b387cd836964c7c803103a566c45a651bd5974af156c",
+      "reviewed": true,
+      "type": "docx",
+      "sop_number": 7,
+      "version": "1.0",
+      "stated_effective_date": "2026-11-01"
+    },
+    {
+      "path": "client-reference/SOP/SOP 08– SLITTING PROCESS CONTROL.docx",
+      "size_bytes": 24010,
+      "sha256": "62bf166e2a6599a702bb73b3f2603bfb8c63d23bb2f62dd07a2e644c14f4ac23",
+      "reviewed": true,
+      "type": "docx",
+      "sop_number": 8,
+      "version": "1.0",
+      "stated_effective_date": "2026-11-01"
+    },
+    {
+      "path": "client-reference/SOP/SOP 09 – GUSSETING PROCESS CONTROL.docx",
+      "size_bytes": 24080,
+      "sha256": "d0ee0102764c2f8b552581eb777df4ff90afa002a9ecc0c0bc34836d1f042f1c",
+      "reviewed": true,
+      "type": "docx",
+      "sop_number": 9,
+      "version": "1.0",
+      "stated_effective_date": "2026-11-01"
+    },
+    {
+      "path": "client-reference/SOP/SOP 10-– BAG & POUCH MAKING PROCESS CONTROL.docx",
+      "size_bytes": 22562,
+      "sha256": "8457790593bb68c1d03d1cc8bdbfa5b0fb945ab30b370684294dafe3e86d2784",
+      "reviewed": true,
+      "type": "docx",
+      "sop_number": 10,
+      "version": "1.0",
+      "stated_effective_date": "2026-11-01"
+    },
+    {
+      "path": "client-reference/SOP/SOP 11– QUALITY CONTROL.docx",
+      "size_bytes": 26662,
+      "sha256": "b6a5490e86ee29ff9bd597fa623fd65833ac76764570ba1c82f827c26702afee",
+      "reviewed": true,
+      "type": "docx",
+      "sop_number": 11,
+      "version": "1.0",
+      "stated_effective_date": "2026-11-01"
+    },
+    {
+      "path": "client-reference/SOP/SOP 12-– NONCONFORMING PRODUCT, REWORK & CAPA.docx",
+      "size_bytes": 24329,
+      "sha256": "4722701dd67682ba3bc995edf59db326a6b0a210fb29a4c139d6d8ac2a2e25e7",
+      "reviewed": true,
+      "type": "docx",
+      "sop_number": 12,
+      "version": "1.0",
+      "stated_effective_date": "2026-11-01"
+    },
+    {
+      "path": "client-reference/SOP/SOP 13– RECYCLING OPERATIONS.docx",
+      "size_bytes": 23318,
+      "sha256": "75990476cc4d1ced71c7489c6c36ae6c57fffd16d88edf39a7ec7ba264b78407",
+      "reviewed": true,
+      "type": "docx",
+      "sop_number": 13,
+      "version": "1.0",
+      "stated_effective_date": "2026-11-01"
+    },
+    {
+      "path": "client-reference/SOP/SOP 14– RECYCLING MATERIAL PROCUREMENT & RECONCILIATION.docx",
+      "size_bytes": 23024,
+      "sha256": "1aba2afbe24476965359a785da9cea74fef8c27aa0da76104a443f79cc522856",
+      "reviewed": true,
+      "type": "docx",
+      "sop_number": 14,
+      "version": "1.0",
+      "stated_effective_date": "2026-11-01"
+    },
+    {
+      "path": "client-reference/SOP/SOP 15– DISPATCH & DELIVERY MANAG.docx",
+      "size_bytes": 24024,
+      "sha256": "5a15d14f003d4da652146f8c628b6269026e7998e9a0e802e0c69ef96a6d8aed",
+      "reviewed": true,
+      "type": "docx",
+      "sop_number": 15,
+      "version": "1.0",
+      "stated_effective_date": "2026-11-01"
+    },
+    {
+      "path": "client-reference/SOP/SOP 16– INVOICING, CASH & EFRIS CONTROLS.docx",
+      "size_bytes": 25640,
+      "sha256": "27ef21951ac3486793acc25fcad4861bc473a9c28983e770fb49bfdf4719cdb2",
+      "reviewed": true,
+      "type": "docx",
+      "sop_number": 16,
+      "version": "1.0",
+      "stated_effective_date": "2026-11-01"
+    },
+    {
+      "path": "client-reference/SOP/SOP 17– FINANCE, PAYMENTS & RECONCILIATION.docx",
+      "size_bytes": 23517,
+      "sha256": "291326f713932e6ea2814d8b211ef3f6ef80c9f9a7ac90625e227e6849831447",
+      "reviewed": true,
+      "type": "docx",
+      "sop_number": 17,
+      "version": "1.0",
+      "stated_effective_date": "2026-11-01"
+    },
+    {
+      "path": "client-reference/SOP/SOP 18– EQUIPMENT MAINTENANCE & DOWNTIME CONTROL.docx",
+      "size_bytes": 24536,
+      "sha256": "6771426de8ba96856249f671300eb56a7ade61e8ed5c24f42810325370298079",
+      "reviewed": true,
+      "type": "docx",
+      "sop_number": 18,
+      "version": "1.1",
+      "stated_effective_date": "2026-11-01"
+    },
+    {
+      "path": "client-reference/WhatsApp Image 2026-10-13 at 12.46.24 PM (1).jpeg",
+      "size_bytes": 146763,
+      "sha256": "d448588d4015f1b4fa8e6565a1bb919cbea29d88b2714a09de25f7f345f68a5d",
+      "reviewed": true,
+      "type": "jpeg"
+    },
+    {
+      "path": "client-reference/WhatsApp Image 2026-10-13 at 12.46.24 PM.jpeg",
+      "size_bytes": 150597,
+      "sha256": "badd747b286119e65d6c7eeb60ba9c8a79cf985840b77d9e6900ed8a393ed566",
+      "reviewed": true,
+      "type": "jpeg"
+    },
+    {
+      "path": "client-reference/WhatsApp Image 2026-10-13 at 12.46.25 PM (1).jpeg",
+      "size_bytes": 143479,
+      "sha256": "1a6f5a827c453978a78e9e5e538c67f2e9345e6917c2d2d2b8bcd8fec88171e9",
+      "reviewed": true,
+      "type": "jpeg"
+    },
+    {
+      "path": "client-reference/WhatsApp Image 2026-10-13 at 12.46.25 PM (2).jpeg",
+      "size_bytes": 139998,
+      "sha256": "58c7132a716b87a719503e6b28c8c8d73717d3dcaa4e305239bf34efac2f5ac0",
+      "reviewed": true,
+      "type": "jpeg"
+    },
+    {
+      "path": "client-reference/WhatsApp Image 2026-10-13 at 12.46.25 PM (3).jpeg",
+      "size_bytes": 132831,
+      "sha256": "ebe3d28161d7ab09c240e5e8e931f12cd5bee90a1f3c3a07b8b6bfac71ca9224",
+      "reviewed": true,
+      "type": "jpeg"
+    },
+    {
+      "path": "client-reference/WhatsApp Image 2026-10-13 at 12.46.25 PM.jpeg",
+      "size_bytes": 132502,
+      "sha256": "f96bdbece59d3a33cf4c1635605b05b9b84e6d953757fcd7d79b63c68d64a72d",
+      "reviewed": true,
+      "type": "jpeg"
+    },
+    {
+      "path": "client-reference/WhatsApp Image 2026-10-13 at 12.46.26 PM (1).jpeg",
+      "size_bytes": 195859,
+      "sha256": "ce6f057b38211f20b879de67600d525453ad3fb6a51ce2748504853c1abe9a19",
+      "reviewed": true,
+      "type": "jpeg"
+    },
+    {
+      "path": "client-reference/WhatsApp Image 2026-10-13 at 12.46.26 PM.jpeg",
+      "size_bytes": 131810,
+      "sha256": "631defee030eda83494cebc463cc55de782f26c282423c7e38908f7d07ecfcc1",
+      "reviewed": true,
+      "type": "jpeg"
+    }
+  ]
+}

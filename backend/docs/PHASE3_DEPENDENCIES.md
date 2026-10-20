@@ -1,3 +1,18 @@
+# Client originals reviewed — 20 October 2026
+
+All 18 SOP DOCX documents, both original client stock workbooks and eight JPEG
+references under client-reference/ have now been reviewed. Treat these originals as
+authoritative client source material; older source-unavailability notes below and in
+historical audits describe an earlier review. See
+[verified requirements and remaining decisions](../../docs/CLIENT_SOURCE_REVIEW.md)
+and [source hash manifest](../../docs/CLIENT_SOURCE_MANIFEST.json).
+
+SOPs 01–17 state v1.0 and SOP 18 v1.1, all effective 1 November 2026. Confirm cutover,
+actual delegated authority/memberships and dispatch-point independence. Original
+workbooks still need unit, period, formula, identity and physical reconciliation;
+unknowns remain unknown and no opening quantity is approved by their availability.
+No Phase 3 implementation or automatic permission/stock import was performed.
+
 # Phase 3 dependencies and client decisions
 
 20 October 2026. Phase 2 supplies master identities, immutable specifications and source

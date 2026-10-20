@@ -121,3 +121,17 @@ See EMPLOYEE_ADMIN.md for required frontend screens and remaining operational de
   lookups. Keep strict DTOs, exact units, opaque UUIDs and optimistic write preconditions.
 - D031 Prepare frontend corrections and an approved reproducible release separately.
   No frontend edits, commits, pushes, deployment or Phase 3 posting authorized here.
+
+
+## D032 — Original client source review (20 October 2026)
+
+All 18 original SOPs and both client stock workbooks are now available in
+client-reference/ and have been reviewed, together with eight reference JPEGs.
+They supersede conflicting demo/planning assumptions as the client-designated
+requirements source. Preserve prior audit evidence as historical; current source
+availability is resolved. Record source hashes and exact SOP sections/workbook cells
+in ../../docs/CLIENT_SOURCE_REVIEW.md and CLIENT_SOURCE_MANIFEST.json.
+Source authority does not approve workbook balances, infer missing conversions,
+create named business assignments or replace independent approvals. Confirm the
+SOPs' 1 November effective-date cutover and the remaining decision register before
+Phase 3 approval. No implementation, postings or original-file edits accompany review.
