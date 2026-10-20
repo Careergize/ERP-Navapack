@@ -10,7 +10,7 @@ instructions only. All original identity, approval, backup and privilege gates a
 - Runtime: Python (native; Docker is optional and not used by this template).
 - Root Directory: `backend`.
 - Python: `PYTHON_VERSION=3.12.12`.
-- Build: `pip install -r requirements/production.txt` (includes Waitress).
+- Build: `pip install -r requirements/production.txt && python scripts/check_render_demo.py` (includes Waitress and offline artifact validation).
 - Start: `waitress-serve --listen=0.0.0.0:$PORT --url-scheme=https config.wsgi:application`.
 - Settings: `DJANGO_SETTINGS_MODULE=config.settings.render_demo`.
 - Health check: `/api/v1/ready/` (503 until migration and demo stamp are ready).
@@ -98,3 +98,48 @@ The first settings test was affected by the local .env and failed safely on its
 SSL mode; the rerun disables dotenv for configuration-default assertions. The
 local .env was not edited. Final log: backend/.local/render-demo-tests.log (ignored).
 No hosted migrations/deployments or commits were performed.
+
+## Missing render_demo module diagnosis
+
+Repository inspection found the module already tracked in main commit
+`849a0242f7f9cc406818d48162130e93ac68eb2d`. A live read of GitHub branch refs
+confirmed main at that commit and codex/monorepo at
+`34ecef126e16762b3c91dbf7bdf790e011046938`. The latter tree lacks the module.
+Render's active branch/deployed SHA could not be inspected from this workspace;
+compare them in the service dashboard before attributing the failure to a branch.
+
+The template now explicitly selects main. Updating this local YAML does not
+change an existing manually configured Render service. Set its repository to
+`https://github.com/Careergize/ERP-Navapack-frontend`, branch main, Root Directory
+backend, and the commands above. Check for custom PYTHONPATH or other config
+packages shadowing this backend if the same error persists at the correct SHA.
+
+`python scripts/check_render_demo.py` passed using the installed dependencies
+satisfying requirements/production.txt. It creates fresh child-only dummy secrets,
+disables dotenv, runs manage.py check --deploy --fail-level WARNING, and exercises
+Waitress's actual CLI import resolver for both command variants with the server
+callback intercepted. Database connections are forbidden during WSGI import.
+No network listener starts. pip check and offline pip requirements resolution
+passed. The settings-security test passed (1 test, 25.487 seconds). This verification
+used local Python 3.11; it does not certify Render Python 3.12 runtime or deployment.
+Production, workflows, permissions and database schema were unchanged.
+
+The existing settings module needs no new commit or push: it is already on remote
+main. After separately authorized service configuration, manually deploy that SHA
+(or the reviewed latest main commit); clear build cache if necessary. Git alone
+does not trigger deployment because auto-deploy is disabled.
+
+To publish only the new preflight/template/documentation changes after review:
+
+```powershell
+Set-Location F:\WORK\Navapack-ERP
+git status --short
+git diff --check
+git add -- backend/scripts/check_render_demo.py render.demo.yaml docs/RENDER_DEMO_SETUP.md
+git commit -m "fix(render): verify demo settings artifact before startup"
+git push origin main
+git rev-parse HEAD
+```
+
+These commands are instructions only; no staging, commit, push or Render
+deployment was performed. Confirm the Render deployment uses the resulting SHA.

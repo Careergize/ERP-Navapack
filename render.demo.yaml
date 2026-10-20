@@ -4,8 +4,9 @@ services:
   - type: web
     name: navapack-demo-api
     runtime: python
+    branch: main
     rootDir: backend
-    buildCommand: pip install -r requirements/production.txt
+    buildCommand: pip install -r requirements/production.txt && python scripts/check_render_demo.py
     startCommand: waitress-serve --listen=0.0.0.0:$PORT --url-scheme=https config.wsgi:application
     healthCheckPath: /api/v1/ready/
     autoDeployTrigger: 'off'
