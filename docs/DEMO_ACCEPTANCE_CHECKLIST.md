@@ -125,3 +125,8 @@ No configured/hosted application database was migrated or granted permissions.
 **Preparation: complete for review. Local automated validation: PASS. Hosted demo
 release: pending identity/cost/backup/migration approval, Linux image/runtime validation,
 real Render/Vercel TLS/role setup and hosted/browser smoke acceptance. Production: NO-GO.**
+
+
+Temporary Render native Python deployment: see [Render demo setup](RENDER_DEMO_SETUP.md).
+Its explicit render_demo profile uses required TLS without a custom CA; the strict
+demo/production and recovery profiles retain their original TLS policies.

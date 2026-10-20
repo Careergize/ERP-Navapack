@@ -121,3 +121,8 @@ Official references: [Render Django](https://render.com/docs/deploy-django),
 [Docker](https://render.com/docs/docker),
 [PostgreSQL connections](https://render.com/docs/postgresql-creating-connecting),
 [Vercel Vite](https://vercel.com/docs/frameworks/frontend/vite).
+
+
+Temporary Render native Python deployment: see [Render demo setup](RENDER_DEMO_SETUP.md).
+Its explicit render_demo profile uses required TLS without a custom CA; the strict
+demo/production and recovery profiles retain their original TLS policies.

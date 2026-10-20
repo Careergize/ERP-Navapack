@@ -1,3 +1,4 @@
+from apps.core.demo import DEMO_SETTINGS_MODULES
 from django.core.management.base import BaseCommand, CommandError
 from django.conf import settings
 from django.db import connection
@@ -10,7 +11,7 @@ class Command(BaseCommand):
     def handle(self, **options):
         if MigrationExecutor(connection).migration_plan(MigrationExecutor(connection).loader.graph.leaf_nodes()):
             raise CommandError('Pending migrations; apply only through the separately approved migration procedure.')
-        if settings.SETTINGS_MODULE == 'config.settings.demo':
+        if settings.SETTINGS_MODULE in DEMO_SETTINGS_MODULES:
             from apps.core.demo import require_demo_environment
             try:
                 require_demo_environment()

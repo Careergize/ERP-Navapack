@@ -25,6 +25,7 @@ from psycopg import sql
 
 
 class PersistentDemoTests(TransactionTestCase):
+    demo_settings_module = "config.settings.demo"
     def test_persistent_clone_full_seed_relogin_gate_isolation_backup_and_restore(self):
         from apps.inventory.ledger_guard import require_synthetic_environment
         require_synthetic_environment()
@@ -46,7 +47,7 @@ class PersistentDemoTests(TransactionTestCase):
                 admin.execute(sql.SQL('CREATE ROLE {} LOGIN PASSWORD {} NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT NOBYPASSRLS').format(sql.Identifier(role), sql.Literal(password)))
             connection.settings_dict.update(NAME=name)
             connection.close()
-            with override_settings(SETTINGS_MODULE='config.settings.demo', APP_ENV='DEMO', DEMO_DATABASE_NAME=name,
+            with override_settings(SETTINGS_MODULE=self.demo_settings_module, APP_ENV='DEMO', DEMO_DATABASE_NAME=name,
                                    DEMO_INSTANCE_ID=instance, DEMO_EXECUTION_SECRET=secret):
                 with self.assertRaises(PermissionDenied):
                     require_synthetic_environment()
@@ -84,9 +85,9 @@ class PersistentDemoTests(TransactionTestCase):
                     connection.settings_dict.update(USER=role, PASSWORD=password)
                     from apps.core.demo import require_demo_environment, development_write
                     self.assertEqual(require_demo_environment(), secret)
-                    with override_settings(SETTINGS_MODULE='config.settings.demo', DEMO_EXECUTION_SECRET='x'*64), self.assertRaises(PermissionDenied):
+                    with override_settings(SETTINGS_MODULE=self.demo_settings_module, DEMO_EXECUTION_SECRET='x'*64), self.assertRaises(PermissionDenied):
                         require_demo_environment()
-                    with override_settings(SETTINGS_MODULE='config.settings.demo', DEMO_DATABASE_NAME='navapack_demo_wrongtarget'), self.assertRaises(PermissionDenied):
+                    with override_settings(SETTINGS_MODULE=self.demo_settings_module, DEMO_DATABASE_NAME='navapack_demo_wrongtarget'), self.assertRaises(PermissionDenied):
                         require_demo_environment()
                     client = APIClient()
                     login = client.post('/api/v1/auth/login/', {'email':'demo-maker+acceptance@example.invalid', 'password':maker_password}, format='json')
@@ -126,8 +127,8 @@ class PersistentDemoTests(TransactionTestCase):
                     with ThreadPoolExecutor(max_workers=2) as pool:
                         outcomes = list(pool.map(lambda _: review(), range(2)))
                     self.assertEqual(sorted(outcomes), [200,412])
-                    with override_settings(SETTINGS_MODULE='config.settings.demo', DEMO_EXECUTION_SECRET='x'*64):
-                        self.assertEqual(settings.SETTINGS_MODULE, 'config.settings.demo')
+                    with override_settings(SETTINGS_MODULE=self.demo_settings_module, DEMO_EXECUTION_SECRET='x'*64):
+                        self.assertEqual(settings.SETTINGS_MODULE, self.demo_settings_module)
                         with self.assertRaises(PermissionDenied): require_demo_environment()
                         self.assertEqual(client.get('/api/v1/ready/').status_code, 503)
                     with self.assertRaises(PermissionDenied): require_synthetic_environment()

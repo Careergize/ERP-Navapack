@@ -3,14 +3,15 @@
 services:
   - type: web
     name: navapack-demo-api
-    runtime: docker
-    dockerfilePath: ./backend/Dockerfile
-    dockerContext: ./backend
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements/production.txt
+    startCommand: waitress-serve --listen=0.0.0.0:$PORT --url-scheme=https config.wsgi:application
     healthCheckPath: /api/v1/ready/
     autoDeployTrigger: 'off'
     envVars:
       - key: DJANGO_SETTINGS_MODULE
-        value: config.settings.demo
+        value: config.settings.render_demo
       - key: APP_ENV
         value: DEMO
       - key: DJANGO_DEBUG
@@ -18,9 +19,9 @@ services:
       - key: TRUST_PROXY_HTTPS
         value: "true"
       - key: POSTGRES_SSLMODE
-        value: verify-full
-      - key: PGSSLROOTCERT
-        value: /etc/ssl/certs/ca-certificates.crt
+        value: require
+      - key: PYTHON_VERSION
+        value: 3.12.12
       - key: DJANGO_SECRET_KEY
         sync: false
       - key: JWT_SIGNING_KEY
@@ -48,4 +49,4 @@ services:
       - key: POSTGRES_PORT
         value: "5432"
 # Database provisioning is intentionally manual: approve region, tier, name,
-# migration-owner/runtime roles, backup plan and certificate-verified endpoint.
+# migration-owner/runtime roles, backup plan and reviewed internal TLS endpoint.

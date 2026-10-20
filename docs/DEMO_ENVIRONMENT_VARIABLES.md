@@ -60,3 +60,8 @@ through the operator's approved secret-handling procedure after use.
 These are public build-time variables. No Django secret, DB credential or execution
 nonce belongs in any VITE variable. Scope only to the demo project's approved
 environments; preserve existing production/preview domains and settings.
+
+
+Temporary Render native Python deployment: see [Render demo setup](RENDER_DEMO_SETUP.md).
+Its explicit render_demo profile uses required TLS without a custom CA; the strict
+demo/production and recovery profiles retain their original TLS policies.

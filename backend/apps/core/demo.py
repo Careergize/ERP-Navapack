@@ -7,9 +7,11 @@ from django.db import connection, transaction
 from rest_framework.exceptions import PermissionDenied
 from apps.inventory.ledger_guard import require_synthetic_environment, synthetic_write
 
+DEMO_SETTINGS_MODULES = ('config.settings.demo', 'config.settings.render_demo')
+
 
 def require_demo_environment():
-    if (settings.SETTINGS_MODULE != 'config.settings.demo'
+    if (settings.SETTINGS_MODULE not in DEMO_SETTINGS_MODULES
             or getattr(settings, 'APP_ENV', None) != 'DEMO'
             or connection.vendor != 'postgresql'):
         raise PermissionDenied('An explicitly approved DEMO environment is required.')
@@ -36,14 +38,14 @@ def require_demo_environment():
 
 
 def require_development_environment():
-    if settings.SETTINGS_MODULE == 'config.settings.demo':
+    if settings.SETTINGS_MODULE in DEMO_SETTINGS_MODULES:
         return require_demo_environment()
     return require_synthetic_environment()
 
 
 @contextmanager
 def development_write():
-    if settings.SETTINGS_MODULE != 'config.settings.demo':
+    if settings.SETTINGS_MODULE not in DEMO_SETTINGS_MODULES:
         with synthetic_write():
             yield
         return

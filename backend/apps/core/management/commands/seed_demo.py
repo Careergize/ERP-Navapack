@@ -1,3 +1,4 @@
+from apps.core.demo import DEMO_SETTINGS_MODULES
 """Append a synthetic dataset; logical reset preserves all existing audit/history."""
 import hashlib
 import re
@@ -35,7 +36,7 @@ class Command(BaseCommand):
         parser.add_argument('--retire-previous-generations', action='store_true')
 
     def handle(self, **o):
-        if (settings.SETTINGS_MODULE != 'config.settings.demo' or settings.APP_ENV != 'DEMO'
+        if (settings.SETTINGS_MODULE not in DEMO_SETTINGS_MODULES or settings.APP_ENV != 'DEMO'
                 or o['database'] != settings.DEMO_DATABASE_NAME or not re.fullmatch(r'[a-z0-9]{1,16}', o['generation'])):
             raise CommandError('Explicit DEMO target and generation required.')
         passwords = [Path(o[k]).read_text().strip() for k in ('maker_password_file', 'reviewer_password_file')]

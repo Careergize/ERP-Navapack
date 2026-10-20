@@ -1,3 +1,4 @@
+from apps.core.demo import DEMO_SETTINGS_MODULES
 """Two-step reviewed migration entrypoint; no automatic use at server startup."""
 import hashlib
 import json
@@ -16,7 +17,7 @@ class Command(BaseCommand):
         parser.add_argument('--approval-reference')
 
     def handle(self, **o):
-        if settings.SETTINGS_MODULE != 'config.settings.demo' or settings.APP_ENV != 'DEMO' or o['database'] != settings.DEMO_DATABASE_NAME:
+        if settings.SETTINGS_MODULE not in DEMO_SETTINGS_MODULES or settings.APP_ENV != 'DEMO' or o['database'] != settings.DEMO_DATABASE_NAME:
             raise CommandError('Only an explicitly matched DEMO database is supported.')
         with connection.cursor() as cursor:
             cursor.execute('SELECT current_database()')

@@ -127,3 +127,8 @@ Stop traffic on failure, preserve failed clone/logs and approved backup. Never r
 blind reverse migration on the hosted DB. Restore only under an approved isolated
 recovery plan. New core migration has a reversible definition for disposable upgrade
 testing; that does not authorize hosted downgrades or removal of audit history.
+
+
+Temporary Render native Python deployment: see [Render demo setup](RENDER_DEMO_SETUP.md).
+Its explicit render_demo profile uses required TLS without a custom CA; the strict
+demo/production and recovery profiles retain their original TLS policies.

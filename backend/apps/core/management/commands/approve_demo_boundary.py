@@ -1,3 +1,4 @@
+from apps.core.demo import DEMO_SETTINGS_MODULES
 """Trusted operator command; never invoked by startup or deployment build."""
 import hashlib
 from datetime import timedelta
@@ -19,7 +20,7 @@ class Command(BaseCommand):
         parser.add_argument('--days', type=int, default=30)
 
     def handle(self, **o):
-        if (settings.SETTINGS_MODULE != 'config.settings.demo' or settings.APP_ENV != 'DEMO'
+        if (settings.SETTINGS_MODULE not in DEMO_SETTINGS_MODULES or settings.APP_ENV != 'DEMO'
                 or o['database'] != settings.DEMO_DATABASE_NAME or o['instance'] != settings.DEMO_INSTANCE_ID
                 or not 1 <= o['days'] <= 90):
             raise CommandError('Explicit matching DEMO identity and duration (1–90 days) required.')

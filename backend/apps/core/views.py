@@ -24,7 +24,7 @@ class ReadinessView(HealthView):
             if executor.migration_plan(executor.loader.graph.leaf_nodes()):
                 return Response(error_body('not_ready', 'Service is not ready.', request.request_id), status=503)
             from django.conf import settings
-            if settings.SETTINGS_MODULE == 'config.settings.demo' or getattr(settings, 'APP_ENV', None) == 'DEMO':
+            if settings.SETTINGS_MODULE in ('config.settings.demo', 'config.settings.render_demo') or getattr(settings, 'APP_ENV', None) == 'DEMO':
                 from .demo import require_demo_environment
                 require_demo_environment()
         except (DatabaseError, PermissionDenied):
