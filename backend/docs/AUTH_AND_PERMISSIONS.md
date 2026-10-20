@@ -40,6 +40,54 @@ requires independence; no domain authority matrix has been approved. Maker must 
 loaded from persisted server state, never request data. execute_command always writes
 audit with its authenticated actor; callers cannot supply a substitute reviewer ID.
 
-Operations must manage permission grants through controlled tooling; a public role editor
-or user administration API is out of scope. Tenancy, delegation, approval thresholds,
+Operations must manage permission grants through controlled tooling; a public role editor remains out of scope. Phase 2 now adds a strictly
+Master Admin-gated employee administration API (see EMPLOYEE_ADMIN.md). Tenancy, delegation, approval thresholds,
 revocation breadth, MFA/SSO and token storage remain deployment/client decisions.
+
+## Phase 2 catalog authorization
+
+Implemented per-resource view/add/change capabilities, prospect promotion, revision
+creation and import stage/review/approve capabilities. No grants or client roles seeded.
+Shared catalog is explicitly the current server scope; no implicit department or tenant
+rule is claimed. New references require active masters; inactive catalog entries remain
+visible with read capability. Every write uses transactional command authorization,
+including retry reauthorization; importer also checks all target capabilities.
+See [exact action/capability matrix](PHASE2_API.md#permission-matrix).
+Independence for master imports is a client decision, not a guessed role rule.
+
+
+## Master Admin and employee accounts
+
+The server-controlled User.is_master_admin flag plus explicit accounts action capability
+is mandatory for employee/role administration and audit reads. Superuser status or an
+accounts capability alone does not grant entry. The employee API cannot set any privileged
+flag, group/direct permission, User ID, password or role permission contents. Trusted
+provisioning grants only technical accounts capabilities, with validated getpass input.
+No final business matrix or business capabilities are seeded.
+
+Role grants/removals require a current explicitly configured RoleAssignmentPolicy;
+required independent approval is enforced for superusers too, with fresh maker/reviewer
+capabilities and matching policy digest. Self/privileged targets are denied. Reset/email/
+activation paths also enforce the target access ceiling to prevent impersonation escalation.
+Independent offline completion is mandatory for ordinary employee recovery. No reset email
+or public reset token endpoint exists. No role editor or privilege-granting API is exposed.
+
+Employee deactivation blocks subsequent access/refresh/login and changes the password
+fingerprint, preserving invalidation after reactivation. It does not retract a request
+already authenticated and in flight. Subsequent role checks use Phase 1 server-managed
+memberships rather than JWT role claims. Details/permission matrix: EMPLOYEE_ADMIN.md.
+
+
+## Phase 2.1 governance
+
+Two new technical permissions, accounts.manage_role_capabilities and
+accounts.approve_role_capabilities, govern role shell/metadata/proposal/cancel and
+independent publication respectively. Active Master Admin flag is mandatory in addition
+to the capability. No migration grants these to existing users. New trusted provisioning
+includes technical administration rights only. Publication rechecks maker and reviewer,
+both delegation ceilings, role ownership/privileged members and exact affected member/
+policy snapshot. Every publication needs distinct actors even if employee assignments
+for the approved role do not. Governed runtime capabilities resolve the immutable approved
+revision; unreviewed M2M changes cannot expand access. Configured legacy roles with
+permission drift fail closed. Governed assignment independence must match its published
+revision. See EMPLOYEE_ADMIN.md for endpoint matrix and legacy transition boundaries.

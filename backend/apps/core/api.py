@@ -17,6 +17,11 @@ class CommandConflict(APIException):
     default_detail = 'This command key was already used with another payload.'
 
 
+class StaleReview(CommandConflict):
+    default_code = 'stale_review'
+    default_detail = 'The reviewed plan is stale; review again.'
+
+
 class PreconditionRequired(APIException):
     status_code = 428
     default_code = 'version_required'

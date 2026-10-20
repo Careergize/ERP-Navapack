@@ -29,3 +29,17 @@ contract, CSRF controls and frontend changes. No storage choice was silently imp
 Later adapters must handle paginated responses, snake_case, Decimal strings, UUID source
 mapping, version preconditions and idempotency keys. No sales, job, QC or inventory
 behavior should be connected until its persistent endpoint and authorization are complete.
+
+
+Phase 2 implementation update (20 October 2026): see FRONTEND_MAPPING.md for the
+current inspected customer numeric-ID mismatch and complete master/specification mapping.
+Phase 2 API uses stable UUIDs and mandatory retry/version headers; frontend unchanged.
+
+
+## Phase 2.1 contract status
+
+Current frontend adapters have not been corrected or integrated. See
+PHASE21_FRONTEND_CONTRACT_PLAN.md for email/plural-role auth, logout revocation,
+UUID/version DTOs, is_active filtering, retry/If-Match headers and Admin/import screens.
+Backend validation remains strict. Successful frontend mock scripts do not establish
+browser-to-Django compatibility; that acceptance run remains separately scoped.

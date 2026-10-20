@@ -1,9 +1,17 @@
 # Foundation architecture
 
-Only config, accounts and core are implemented. Accounts owns identity, roles and
-JWT lifecycle; core owns technical audit, retries, versions and operational endpoints.
-Sales, masters, inventory, production, QC, recycling, dispatch, billing, costing and
-external integrations remain planned. No business schema or speculative migrations exist.
+Phase 1 config/accounts/core are retained. Phase 2 adds masters (parties, units,
+generic products, exact variants, materials, consumables and equipment/areas),
+specifications (sealed revisioned recipes/routes/default process costs), and imports
+(bounded CSV/XLSX evidence, explicit review and atomic authorized master application).
+These resources use the Phase 1 command executor, capability checks, versions and audit.
+The catalog is explicitly global/shared, not an inferred tenant or department boundary.
+No inventory, commercial, production, QC, dispatch, finance or costing posting exists.
+
+See [implemented contracts and permission matrix](PHASE2_API.md),
+[database schema](DATABASE_SCHEMA.md), [frontend mapping](FRONTEND_MAPPING.md) and
+[Phase 3 gates](PHASE3_DEPENDENCIES.md). Direct revision/source-evidence database guards
+supplement API restrictions. No existing applied migration was edited.
 
 ## Transactional command contract
 
@@ -65,3 +73,55 @@ a fresh UUID. Logs emit UTC JSON and omit exception bodies/SQL/request secrets.
 Default permissions require authentication, while every future domain view must explicitly
 use action/object authorization and filter list querysets to authorized objects. DRF
 object permission hooks do not automatically scope list or create operations.
+
+
+## Employee administration extension
+
+Phase 2 now extends accounts with a protected Employee-to-User one-to-one profile,
+server-controlled Master Admin designation, explicit role-assignment policies,
+independent access-change requests and verified reset requests. User remains the single
+source of name/email/active status. Membership remains effective multi-role authority.
+Pending requests are separate from effective grants. No client role/permission matrix seeded.
+
+All administration routes require a fresh active Master Admin plus action capability;
+self/privileged account writes are excluded from the API. Nested assignments/requests
+are scoped to the employee. Delegation ceilings and policy digests guard role changes,
+resets, email changes and reactivation. A PostgreSQL advisory transaction lock serializes
+cooperating administration API/command writes before row locks and command audit.
+Database constraints additionally forbid self-approved required independent changes.
+
+Trusted commands provision new Master Admins (technical rights only), configure explicit
+assignment policies and independently complete verified employee resets. No credentials
+are accepted through API or returned/stored in command results. Deactivation clears the
+usable password and changes Phase 1 JWT fingerprint; reactivation cannot revive old access.
+See [employee contracts, screens and operational boundaries](EMPLOYEE_ADMIN.md).
+
+
+## Phase 2.1 remediation architecture (20 October 2026)
+
+ImportReview is append-only PostgreSQL evidence of a canonical normalized plan/hash.
+The batch points at its latest review; legacy review remains a response projection.
+Plans include resolved FK UUIDs, reference versions/state hashes, explicit target
+versions, decisions and the complete candidate set. Approval compares current state
+under locks, rejects stale_review (409), then applies the stored plan itself and
+retains applied_plan plus row result UUID/version mappings. It never approves a freshly
+rebound plan. Canonical serialization retains decimal strings and null unknowns.
+User references resolve UUID first; only models with a code support code lookup.
+Catalog/specification/import command entrypoints acquire advisory transaction lock
+70462027 before row locks, closing cooperating API duplicate-candidate phantoms.
+Trusted external writers must share that gate. No stock posting was introduced.
+
+RoleCapabilityRevision stores immutable proposal contents, affected membership/status
+snapshot, prior policy/digest, maker and separate approval evidence. Role gains version,
+governed and approved_revision. Publication is atomic under administration lock
+70462026 and changes effective existing memberships only after independent review of
+that exact set. No public technical privilege assignment, holder self-edit or privileged
+role edit is allowed. Runtime governed permissions come from the approved revision;
+legacy configured roles with drift fail closed. See EMPLOYEE_ADMIN.md for compatibility
+and release requirements; no final business matrix was seeded. Pending capability
+reviews do not affect access. Forward migrations add DB immutability guards.
+
+Explicit ProcessSerializer replaces runtime field injection; stage:null is normalized
+away, while nonnull external stage references are rejected in favor of source_stage_id.
+DRF UUID-aware object lookups return structured 404 errors for malformed path identities;
+invalid body UUIDs remain validation errors. Historic revision APIs remain immutable.

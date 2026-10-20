@@ -21,5 +21,13 @@ class EmailBackend(ModelBackend):
         base = super().get_group_permissions(user_obj, obj)
         if not user_obj.is_active or user_obj.is_anonymous or obj is not None:
             return base
-        rows = user_obj.roles.values_list('permissions__content_type__app_label', 'permissions__codename')
-        return base | {f'{app}.{code}' for app, code in rows if code}
+        from .employee_services import permission_codes, permission_digest
+        from .models import RoleAssignmentPolicy
+        codes = set()
+        for role in user_obj.roles.select_related('approved_revision'):
+            policy = RoleAssignmentPolicy.objects.filter(role=role).first()
+            # Fail closed on unreviewed edits to previously configured legacy roles.
+            if not role.governed and policy and policy.permission_digest != permission_digest(role):
+                continue
+            codes.update(permission_codes(role))
+        return base | codes

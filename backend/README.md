@@ -1,7 +1,8 @@
-# Navapack backend — Phase 1
+# Navapack backend — Phases 1 and 2
 
 Django/DRF foundation with PostgreSQL, email identity, JWT, server-managed capabilities,
-append-only audit and transactional command primitives. No domain posting or frontend
+append-only audit, transactional commands, master APIs, immutable specifications and
+reviewed import staging. No domain posting or frontend
 integration is implemented. The sibling frontend is preserved.
 
 ## Layout
@@ -112,3 +113,23 @@ idempotency deletion is provided until retention/retry policies are approved.
 See [architecture](docs/ARCHITECTURE.md), [API conventions](docs/API_CONVENTIONS.md),
 [auth and permissions](docs/AUTH_AND_PERMISSIONS.md), [frontend adapter proposal](docs/FRONTEND_ADAPTER.md),
 [decisions](docs/DECISION_LOG.md) and [executed verification](docs/DEVELOPMENT_STATUS.md).
+
+## Phase 2 masters and data foundation
+
+Apply new forward migrations with the existing migration command; Phase 1 files are
+unchanged. No master/role/demo data is seeded. Provision capabilities through trusted
+server tooling after client authority decisions. See [implemented API/permission matrix](docs/PHASE2_API.md),
+[schema](docs/DATABASE_SCHEMA.md), [frontend mapping](docs/FRONTEND_MAPPING.md),
+[verification](docs/DEVELOPMENT_STATUS.md) and [Phase 3 decisions](docs/PHASE3_DEPENDENCIES.md).
+The existing frontend customer adapter requires a separate UUID/version/retry update.
+
+
+## Employee accounts and Master Admin
+
+Phase 2 additionally provides protected employee profiles and authenticated Master Admin
+administration APIs, role-policy review, status changes, reset initiation and audit history.
+No real administrator or business role is seeded. Apply forward accounts migrations, then
+follow the [trusted provisioning and employee API guide](docs/EMPLOYEE_ADMIN.md). Passwords
+are prompted securely, never CLI arguments or API output. Bootstrap technical rights do
+not grant arbitrary business capabilities. Independent recovery needs two authorized
+Master Admins. The guide also specifies future Admin Dashboard screens; frontend unchanged.
