@@ -15,6 +15,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles', 'corsheaders', 'rest_framework', 'django_filters',
     'rest_framework_simplejwt.token_blacklist', 'apps.accounts', 'apps.core',
     'apps.masters', 'apps.specifications', 'apps.imports', 'apps.inventory', 'apps.commercial',
+    'apps.rehearsal',
 ]
 MIDDLEWARE = [
     'apps.core.middleware.RequestIDMiddleware',

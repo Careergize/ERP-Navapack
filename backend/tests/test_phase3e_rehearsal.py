@@ -35,7 +35,9 @@ class Phase3ERehearsalTests(TransactionTestCase):
         # explicitly for the additive commercial guard's core dependency.
         self.assertEqual(len([p for p, _ in plan if p.app_label != 'commercial']),20)
         self.assertEqual([(p.app_label, p.name) for p, _ in plan if p.app_label == 'commercial'],
-                         [('commercial', '0002_evidence_guards')])
+                         [('commercial', '0002_evidence_guards'),
+                          ('commercial', '0003_governancerecord_governancerevision_and_more'),
+                          ('commercial', '0004_proposal_and_revision_guards')])
         self.assertTrue(all(not backwards for _,backwards in plan))
         historical=executor.loader.project_state([p for p in checkpoint if p[1] is not None]+[
             ('masters','0002_alter_area_name_alter_consumable_category_and_more'),('specifications','0005_alter_productmodel_name')]).apps

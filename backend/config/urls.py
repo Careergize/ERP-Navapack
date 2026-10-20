@@ -3,6 +3,7 @@ from apps.accounts.views import LoginView, RefreshView, MeView, LogoutView
 from apps.core.views import HealthView, ReadinessView
 
 urlpatterns = [
+    path('api/v1/rehearsal/', include('apps.rehearsal.urls')),
     path('api/v1/commercial/', include('apps.commercial.urls')),
     path('api/v1/inventory/', include('apps.inventory.urls')),
     path('api/v1/', include('apps.accounts.admin_urls')),

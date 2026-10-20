@@ -1,4 +1,5 @@
 import json
+from decimal import Decimal
 from django.db import connection
 from rest_framework.exceptions import ValidationError, PermissionDenied
 from rest_framework.generics import get_object_or_404
@@ -12,7 +13,7 @@ from apps.inventory.ledger_guard import require_synthetic_environment, synthetic
 from apps.inventory.models import StockIdentity
 from apps.masters.models import Customer, Prospect, ProductVariant, Material, Unit
 from apps.specifications.models import ProductModelRevision
-from .contracts import DocumentInput, estimate
+from .contracts import DocumentInput, estimate, clean_reason
 from .models import CommercialDocument, CommercialRevision
 
 
@@ -51,7 +52,8 @@ def snapshot(actor, kind, raw):
     if data.get('marketing_person'):
         if 'accounts.view_employee' not in explicit_permission_codes(actor):
             raise PermissionDenied('Employee reference access required.')
-        employee = get_object_or_404(Employee.objects.select_for_update(), pk=data['marketing_person'], user__is_active=True)
+        from .reference_views import marketing_people
+        employee = get_object_or_404(marketing_people(actor).select_for_update(), pk=data['marketing_person'])
         data['marketing_snapshot'] = {'id': str(employee.pk), 'version': employee.version}
     if data.get('quotation_revision'):
         get_object_or_404(CommercialRevision, pk=data['quotation_revision'], document__owner=actor, document__kind='QUOTATION')
@@ -96,8 +98,8 @@ def snapshot(actor, kind, raw):
                 raise ValidationError('A costing cannot recursively reference another costing.')
             rev = get_object_or_404(CommercialRevision, pk=line['costing_revision'], document__owner=actor, document__kind='COSTING')
             candidates = rev.snapshot['input']['lines']
-            matches = [v for v in candidates if all(str(v.get(k, '')) == str(line.get(k, '')) for k in
-                       ('variant', 'unit', 'quantity', 'specifications', 'customisation', 'model_revision'))]
+            matches = [v for v in candidates if Decimal(v['quantity']) == Decimal(line['quantity']) and all(str(v.get(k, '')) == str(line.get(k, '')) for k in
+                       ('variant', 'unit', 'specifications', 'customisation', 'model_revision'))]
             if rev.snapshot['input']['currency'] != data['currency'] or len(matches) != 1:
                 raise ValidationError('Costing snapshot must match exact source quantity, currency, unit and specification.')
             line['costing_snapshot'] = {'revision': str(rev.pk), 'sha256': rev.sha256, 'authoritative': False,
@@ -105,6 +107,7 @@ def snapshot(actor, kind, raw):
         if 'costing' in line:
             for material in line['costing']['materials']:
                 master = reference(Material, material['material'], actor)
+                reference(Unit, material['unit'], actor)
                 if master.unit_id != material['unit'] or material['unit'] != material['price_unit']:
                     raise ValidationError('Material unit and price unit must match its master.')
                 material['master_snapshot'] = {'id': str(master.pk), 'version': master.version, 'name': master.name}
@@ -115,7 +118,10 @@ def snapshot(actor, kind, raw):
             code = line['unit_snapshot']['code']
             result['costing']['cost_per_kg'] = result['costing']['cost_per_output_unit'] if code == 'kg' and line['unit_snapshot']['dimension'] == 'mass' else None
             result['costing']['cost_per_ctr'] = result['costing']['cost_per_output_unit'] if code == 'ctr' and line['unit_snapshot']['dimension'] == 'package' else None
-    return json.loads(JSONRenderer().render({'input': data, 'estimate': totals}))
+    result = json.loads(JSONRenderer().render({'input': data, 'estimate': totals}))
+    if len(json.dumps(result, ensure_ascii=False).encode()) > 262144:
+        raise ValidationError('Commercial snapshot exceeds 256 KiB; reduce the draft size.')
+    return result
 
 
 def representation(document):
@@ -127,8 +133,7 @@ def representation(document):
 def command(*, actor, key, request_id, kind=None, data=None, pk=None, version=None, transition=None, reason=''):
     # Semantic payload and version are hashed in full. Validation/lookup stays inside
     # the operation, allowing replay even when referenced masters later change.
-    if not isinstance(reason, str) or not reason.strip() or len(reason) > 500:
-        raise ValidationError({'reason': 'A bounded change reason is required.'})
+    reason = clean_reason(reason)
     payload = {'kind': kind, 'data': data, 'id': str(pk) if pk else None, 'version': version,
                'transition': transition, 'reason': reason}
     def check():
@@ -162,10 +167,12 @@ def command(*, actor, key, request_id, kind=None, data=None, pk=None, version=No
                     raise ValidationError('Unknown commercial document kind.')
                 snap = snapshot(actor, kind, data)
                 doc = CommercialDocument.objects.create(kind=kind, owner=actor)
-            CommercialRevision.objects.create(document=doc, number=doc.version, actor=actor, status=doc.status,
+            revision = CommercialRevision.objects.create(document=doc, number=doc.version, actor=actor, status=doc.status,
                                               reason=reason, snapshot=snap, sha256=payload_hash(snap))
             return representation(doc), 200 if pk else 201, {
                 'entity_type': 'commercial.commercialdocument', 'entity_id': doc.pk, 'source_version': doc.version,
-                'summary': {'after_status': doc.status, 'changed_fields': ['revision'], 'outcome': 'success'}}
+                'reason': reason,
+                'summary': {'after_status': doc.status, 'changed_fields': ['revision'],
+                            'outcome': {'revision': str(revision.pk), 'sha256': revision.sha256}}}
     return execute_command(actor=actor, scope='commercial-owner:'+str(actor.pk), action=CAPABILITY,
                            key=key, payload=payload, request_id=request_id, authorize=check, operation=operation)

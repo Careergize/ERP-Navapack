@@ -3,6 +3,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from apps.core.commands import expected_version
+from apps.core.models import AuditEvent
 from .contracts import Strict
 from . import services
 
@@ -60,8 +61,12 @@ class CommercialViewSet(viewsets.GenericViewSet):
 
     @action(detail=True, methods=['get'])
     def history(self, request, pk=None):
-        rows = self.get_object().revisions.all()
+        doc = self.get_object()
+        rows = doc.revisions.all()
         page = self.paginate_queryset(rows)
+        events = {e.source_version: {'id': str(e.pk), 'actor': str(e.actor_id), 'at': e.timestamp.isoformat(),
+            'request_id': str(e.request_id), 'revision': e.summary.get('outcome', {}).get('revision') if isinstance(e.summary.get('outcome'), dict) else None}
+            for e in AuditEvent.objects.filter(entity_type='commercial.commercialdocument', entity_id=str(doc.pk), source_version__in=[r.number for r in page])}
         return self.get_paginated_response([{'id': str(r.pk), 'number': r.number, 'actor': str(r.actor_id),
             'at': r.created_at.isoformat(), 'status': r.status, 'reason': r.reason,
-            'sha256': r.sha256, 'snapshot': r.snapshot} for r in page])
+            'sha256': r.sha256, 'snapshot': r.snapshot, 'audit': events.get(r.number)} for r in page])

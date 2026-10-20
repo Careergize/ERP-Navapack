@@ -3,6 +3,16 @@ import re
 from decimal import Decimal, localcontext, ROUND_HALF_UP, ROUND_HALF_EVEN
 from rest_framework.exceptions import ValidationError
 from rest_framework import serializers
+from apps.core.audit import sanitize
+
+
+def clean_reason(value):
+    if not isinstance(value, str) or not value.strip():
+        raise ValidationError({'reason': 'A change reason is required.'})
+    result = sanitize(value.strip())
+    if len(result) > 500:
+        raise ValidationError({'reason': 'Use at most 500 characters after privacy redaction.'})
+    return result
 
 
 class Strict(serializers.Serializer):
