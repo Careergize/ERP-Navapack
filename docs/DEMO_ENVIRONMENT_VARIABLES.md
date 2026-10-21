@@ -1,5 +1,10 @@
 # DEMO environment variables
 
+For the current native Render service using `config.settings.render_demo`, use
+the complete [Render environment checklist](RENDER_DEMO_ENVIRONMENT_CHECKLIST.md)
+and `backend/.env.render.example`. The strict demo/production certificate profile
+below is a separate deployment option; do not mix the two profiles' values.
+
 Use secret stores. Never commit `.env`, passwords, dump files or execution secrets.
 No actual hosted identities or credentials are supplied by this template.
 

@@ -1,3 +1,5 @@
+import { CommercialFoundation } from '@/pages/Commercial/CommercialFoundation';
+import { useAuth } from '@/context/AuthContext';
 import { StockIntelligence } from '@/components/StockIntelligence';
 import { CustomCosting } from './CustomCosting';
 import { useSearchParams } from 'react-router-dom';
@@ -15,6 +17,11 @@ const formatDate = (date: string) =>
   new Date(`${date}T00:00:00`).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
 
 export function CostingPage() {
+  const { user } = useAuth();
+  return user?.backendSession ? <CommercialFoundation initialKind="COSTING" title="Costing" /> : <DemoCostingPage />;
+}
+
+function DemoCostingPage() {
   const [params] = useSearchParams();
   const [view, setView] = useState<View>(params.has("orderId") ? "custom" : "costing");
   useEffect(() => { if (params.has("orderId")) setView("custom"); }, [params]);

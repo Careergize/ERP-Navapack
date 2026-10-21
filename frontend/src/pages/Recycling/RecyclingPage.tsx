@@ -1,3 +1,5 @@
+import { PersistedRecycling } from '@/pages/Recycling/PersistedRecycling';
+import { useAuth } from '@/context/AuthContext';
 import { useQuality } from '@/context/QualityContext';
 import { subjectHeld } from '@/lib/quality';
 import { useEffect, useState } from "react";
@@ -13,6 +15,10 @@ const formatDate = (date: string) =>
   new Date(`${date}T00:00:00`).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
 
 export function RecyclingPage() {
+ const { user } = useAuth();
+ return user?.backendSession ? <PersistedRecycling/> : <DemoRecyclingPage/>;
+}
+function DemoRecyclingPage() {
   const quality = useQuality();
   const [view, setView] = useState<View>("waste");
   const [wasteEntries, setWasteEntries] = useState<WasteEntry[]>([]);

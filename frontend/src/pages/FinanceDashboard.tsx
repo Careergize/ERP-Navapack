@@ -1,3 +1,6 @@
+import { QualityFoundation } from '@/pages/Inventory/QualityFoundation';
+import { PersistedDashboard } from '@/pages/PersistedDashboard';
+import { useAuth } from '@/context/AuthContext';
 import { useInventory } from '@/context/InventoryContext';
 import { useJobCards } from '@/context/JobCardsContext';
 import { orderFulfillmentStatus } from '@/lib/fulfillment';
@@ -20,6 +23,10 @@ const money = (amount: number, currency: string) => {
 };
 
 export function FinanceDashboard() {
+ const { user } = useAuth();
+ return user?.backendSession ? <PersistedDashboard finance/> : <DemoFinanceDashboard/>;
+}
+function DemoFinanceDashboard() {
   const { invoices } = useInvoices();
   const { quotations } = useQuotations();
   const { orders } = useSalesOrders();
@@ -93,4 +100,5 @@ function Metric({ label, value, icon: Icon, note }: { label: string; value: stri
   </Card>;
 }
 
-export function FinanceQualityOverview(){const q=useQuality();return <div className="space-y-4"><h1 className="text-2xl font-semibold text-navy">Finance · Quality summary</h1><p className="text-sm text-gray-500">Read-only session overview. Detailed QC records, inspection entry and quality release retain their existing role permissions.</p><Card><p>Recorded inspections: {q.inspections.length}</p><p>Awaiting review: {q.inspections.filter(i=>i.status==='Submitted').length}</p><p>Failed inspections: {q.inspections.filter(i=>i.status==='Failed').length}</p><p>Open corrective actions: {q.nonConformances.filter(n=>n.status!=='Closed').length}</p></Card><Link to="/" className="underline">Finance Dashboard</Link></div>;}
+export function FinanceQualityOverview(){const {user}=useAuth();return user?.backendSession?<QualityFoundation/>:<DemoFinanceQualityOverview/>;}
+function DemoFinanceQualityOverview(){const q=useQuality();return <div className="space-y-4"><h1 className="text-2xl font-semibold text-navy">Finance · Quality summary</h1><p className="text-sm text-gray-500">Read-only session overview. Detailed QC records, inspection entry and quality release retain their existing role permissions.</p><Card><p>Recorded inspections: {q.inspections.length}</p><p>Awaiting review: {q.inspections.filter(i=>i.status==='Submitted').length}</p><p>Failed inspections: {q.inspections.filter(i=>i.status==='Failed').length}</p><p>Open corrective actions: {q.nonConformances.filter(n=>n.status!=='Closed').length}</p></Card><Link to="/" className="underline">Finance Dashboard</Link></div>;}

@@ -1,5 +1,6 @@
 """Synthetic-only custody observations, never registration provenance or posting."""
 import logging
+from datetime import datetime, timezone as datetime_timezone
 from django.db import transaction
 from django.utils import timezone
 from rest_framework import viewsets, serializers
@@ -58,7 +59,18 @@ class CustodyViewSet(viewsets.GenericViewSet):
 
     @action(detail=False,methods=['get'])
     def movements(self, request):
-        page = self.paginate_queryset(self.filtered(LedgerEntry).select_related('transaction').order_by('-event_at','transaction_id','sequence'))
+        rows = self.filtered(LedgerEntry).select_related('transaction')
+        month = request.query_params.get('month')
+        if month:
+            try:
+                start = datetime.strptime(month, '%Y-%m').replace(tzinfo=datetime_timezone.utc)
+                if start.strftime('%Y-%m') != month or start.year >= 9999:
+                    raise ValueError()
+                end = start.replace(year=start.year+1, month=1) if start.month == 12 else start.replace(month=start.month+1)
+            except ValueError:
+                raise serializers.ValidationError({'month':'Use a valid YYYY-MM month before year 9999.'})
+            rows = rows.filter(event_at__gte=start,event_at__lt=end)
+        page = self.paginate_queryset(rows.order_by('-event_at','transaction_id','sequence'))
         return self.get_paginated_response([{**self.identity(row),'id':str(row.pk),'transaction':str(row.transaction_id),
             'kind':row.transaction.kind,'quality':row.quality,'delta':str(row.delta),'event_at':row.event_at.isoformat(),
             'operational_posting':False} for row in page])

@@ -1,3 +1,4 @@
+import { CommercialFoundation } from '@/pages/Commercial/CommercialFoundation';
 import { LEDBreakdown } from '@/components/LEDFields';
 import { QuotationEmail } from './QuotationEmail';
 import { quotationChanges } from '@/lib/quotationReview';
@@ -16,6 +17,12 @@ import { effectiveQuotationStatus, quotationTotals, validateQuotationSources, QU
 import { today } from '@/lib/salesOrders';
 import { QuotationPrint, QUOTE_BUTTON } from './QuotationPrint';
 export function QuotationDetail() {
+  const { user } = useAuth();
+  const { id } = useParams();
+  return user?.backendSession ? <CommercialFoundation initialKind="QUOTATION" documentId={id} title="Quotation detail" /> : <DemoQuotationDetail />;
+}
+
+function DemoQuotationDetail() {
   const { id = '' } = useParams(); const [params] = useSearchParams(); const qStore = useQuotations(); const q = qStore.quotations.find(q => q.id === id); const { user } = useAuth(); const { customers, prospects } = useCommercial(); const { versions } = useModels(); const { estimates } = useCosting(); const { orders } = useSalesOrders(); const navigate = useNavigate();
   const [delivery, setDelivery] = useState(false);
   const [preview, setPreview] = useState(params.get('preview') === '1'), [error, setError] = useState('');

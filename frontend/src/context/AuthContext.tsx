@@ -86,7 +86,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       saveTokens(data.access, data.refresh, remember);
       const profile = data.user ?? await currentUserRequest();
       const nextUser = toUser(profile);
-      if (finance) { clearSession(); throw new Error('Finance backend integration is unavailable. Use the existing operations login.'); }
       generation.current++;
       setSessionError(''); setUser(nextUser);
     } finally {

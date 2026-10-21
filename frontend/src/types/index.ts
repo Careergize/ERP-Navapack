@@ -33,6 +33,7 @@ export interface User {
   permissions?: string[];
   roles?: string[];
   backendSession?: boolean;
+  isMasterAdmin?: boolean;
 }
 
 export type CustomerType = "B2B" | "B2C";

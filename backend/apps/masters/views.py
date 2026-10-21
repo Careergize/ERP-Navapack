@@ -57,6 +57,17 @@ class MasterViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.G
     ordering = ['-created_at','id']
     filterset_fields = ['is_active','source_system']
 
+    @action(detail=False, methods=['get'])
+    def schema(self, request):
+        """Authorized field descriptions without enumerating related identities."""
+        from rest_framework.metadata import SimpleMetadata
+        fields = SimpleMetadata().get_serializer_info(self.get_serializer())
+        for name, field in self.get_serializer().fields.items():
+            fields[name]['allow_null'] = field.allow_null
+            if isinstance(field, serializers.JSONField):
+                fields[name]['type'] = 'json'
+        return Response({'fields': fields})
+
     @staticmethod
     def object_scope(actor, obj):
         # Explicit single shared master catalog. No inferred department/tenant policy.
@@ -135,7 +146,7 @@ class ProspectViewSet(MasterViewSet):
 def master_view(model, base=MasterViewSet):
     label = model._meta.model_name
     app = model._meta.app_label
-    perms = {a: f'{app}.{verb}_{label}' for a,verb in [('list','view'),('retrieve','view'),('create','add'),('partial_update','change')]}
+    perms = {a: f'{app}.{verb}_{label}' for a,verb in [('list','view'),('retrieve','view'),('schema','view'),('create','add'),('partial_update','change')]}
     if model is Prospect: perms['promote'] = 'masters.promote_prospect'
     filters = ['is_active','source_system'] + [f for f in ['category','unit','product','department','area','family','linked_customer'] if any(x.name == f for x in model._meta.fields)]
     return type(model.__name__+'ViewSet', (base,), {'queryset':model.objects.all(), 'serializer_class':serializer_for(model), 'action_permissions':perms, 'filterset_fields':filters})

@@ -1,3 +1,4 @@
+import { RehearsalWorkspace } from '@/pages/Rehearsal/RehearsalWorkspace';
 import { ProductionRuns } from '@/components/ProductionRuns';
 import { ProductionTimeline } from '@/components/ProductionTimeline';
 import { useQuality } from '@/context/QualityContext';
@@ -23,6 +24,12 @@ import { JobEditForm, MaterialIssueForm, StageUpdateForm, StockTransferForm } fr
 const allTabs = ['Overview', 'Materials', 'Costing', 'Production Routing', 'Production Tracking', 'Waste', 'Activity History'] as const;
 type Tab = typeof allTabs[number];
 export function JobCardDetail() {
+  const { user } = useAuth();
+  const { id } = useParams();
+  return user?.backendSession ? <RehearsalWorkspace title="Job Card detail" jobId={id} /> : <DemoJobCardDetail />;
+}
+
+function DemoJobCardDetail() {
   const { id = '' } = useParams();
   const [search, setSearch] = useSearchParams();
   const { user } = useAuth();

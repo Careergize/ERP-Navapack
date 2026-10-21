@@ -1,3 +1,4 @@
+import { CommercialFoundation } from '@/pages/Commercial/CommercialFoundation';
 import { useEffect, useState, type FormEvent } from 'react';
 import axios from 'axios';
 import { LEDFields, LEDBreakdown } from '@/components/LEDFields';
@@ -26,6 +27,12 @@ export function TermsFields({ terms, onChange }: { terms: QuotationTerms; onChan
   return <div className="grid gap-3 sm:grid-cols-2">{([['priceValidity', 'Price validity clause'], ['deliveryPeriod', 'Delivery terms'], ['paymentTerms', 'Payment terms'], ['revisionClause', 'Price revision clause'], ['additionalTerms', 'Additional terms'], ['remarks', 'Remarks']] as const).map(([key, label]) => <label key={key}>{label}<textarea value={terms[key]} onChange={e => onChange({ ...terms, [key]: e.target.value })} className={ENTRY_INPUT} /></label>)}{([['advancePercent', 'Advance payment %'], ['creditDays', 'Credit days'], ['quantityTolerance', 'Commercial quantity tolerance +/- %']] as const).map(([key, label]) => <label key={key}>{label}<input type="number" min="0" max={key === 'creditDays' ? undefined : 100} step={key === 'creditDays' ? '1' : 'any'} value={terms[key] ?? ''} onChange={e => onChange({ ...terms, [key]: e.target.value === '' ? undefined : e.target.valueAsNumber })} className={ENTRY_INPUT} /></label>)}</div>;
 }
 export function QuotationEditor() {
+  const { user } = useAuth();
+  const { id } = useParams();
+  return user?.backendSession ? <CommercialFoundation initialKind="QUOTATION" documentId={id} title="Edit quotation draft" /> : <DemoQuotationEditor />;
+}
+
+function DemoQuotationEditor() {
   const { id = '' } = useParams(); const { quotations, edit, loading, loadError } = useQuotations(); const q = quotations.find(q => q.id === id); const { user } = useAuth();
   if (!q && loading) return <Card>Loading saved quotation…</Card>;
   if (!q && loadError) return <Card>{loadError}</Card>;

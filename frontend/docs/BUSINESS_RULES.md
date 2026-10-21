@@ -1,5 +1,15 @@
 # Business Rules
 
+## Guarded local integration — 21 October 2026
+
+Real-session module saves require backend acknowledgment, capabilities, object scope,
+retry keys and current versions. Synthetic recycling intake cannot exceed the remaining
+completed source-stage waste/rejection; recovered + rejected + disposed equals intake
+in the source unit. No recovered output becomes operational available stock. Draft
+finance estimates are separated by currency/kind and do not constitute revenue,
+receivables, accounting entries or approved customer documents.
+
+
 ## Phase 4A persistent commercial boundary
 
 `/commercial` supports development drafts and review only, using explicit employee capability rather than demo role names. Backend Decimal snapshots determine estimates; no authoritative VAT/LED/final amount or inferred currency/unit conversion. Only draft edits and pre-approval cancellations are available; review must return to draft first. Orders never reserve/deduct stock or execute manufacturing/dispatch. Historical revisions retain their original inputs and prices. [Contracts and pending policies](../../docs/phase4-planning/PHASE_4A_DOMAIN_CONTRACTS.md) govern this path; older demo rules below are not backend authority.

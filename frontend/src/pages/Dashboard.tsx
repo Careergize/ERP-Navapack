@@ -1,3 +1,4 @@
+import { PersistedDashboard } from '@/pages/PersistedDashboard';
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useSalesOrders } from '@/context/SalesOrdersContext';
@@ -19,7 +20,11 @@ import { effectiveQuotationStatus, QUOTATION_VIEW_ROLES } from '@/lib/quotations
 const grouped=(rows:{unit:string;quantity:number|null}[])=>{const sums:Record<string,number>={};let unknown=0;rows.forEach(r=>{if(r.quantity===null)unknown++;else sums[r.unit]=(sums[r.unit]??0)+r.quantity;});return Object.entries(sums).map(([u,n])=>`${n.toLocaleString()} ${u}`).join(' · ')+(unknown?` · ${unknown} unknown balances`:'');};
 const money=(values:Record<string,number>)=>Object.entries(values).map(([c,n])=>`${n.toLocaleString()} ${c}`).join(' · ')||'No recorded confirmed value';
 function Stats({title,values,link}:{title:string;values:Record<string,string|number>;link:string}){return <Card><Link className="font-semibold text-navy underline" to={link}>{title}</Link><dl className="mt-3 grid gap-3 sm:grid-cols-3">{Object.entries(values).map(([k,v])=><div key={k}><dt className="text-sm text-gray-500">{k}</dt><dd className="font-medium">{v}</dd></div>)}</dl></Card>;}
-export function Dashboard(){
+export function Dashboard() {
+ const { user } = useAuth();
+ return user?.backendSession ? <PersistedDashboard/> : <DemoDashboard/>;
+}
+function DemoDashboard() {
  const {orders}=useSalesOrders(),{cards,load}=useJobCards(),inv=useInventory(),cost=useCosting(),q=useQuality(),quotes=useQuotations(),{user}=useAuth();useEffect(()=>{void load();},[load]);
  const m=salesMetrics(orders,cards,inv.ledger),items=cards.flatMap(workItems),date=today(),stages=items.flatMap(j=>j.productionStages??[]);
  const commercial=QUOTATION_VIEW_ROLES.includes(user?.role??''),costAccess=['admin','accounts','production_manager'].includes(user?.role??'');

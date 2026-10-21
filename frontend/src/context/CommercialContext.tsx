@@ -15,7 +15,7 @@ export function CommercialProvider({ children }: { children: ReactNode }) {
   const isDemo = user?.id.startsWith('demo-');
   const publishCustomer = (customer: Customer) => { customerRef.current = [...customerRef.current.filter(c => c.id !== customer.id), customer]; setCustomers(customerRef.current); };
   const reloadCustomers = useCallback(async () => {
-    if (!user || user.id.startsWith('demo-')) return;
+    if (!user || user.backendSession || user.id.startsWith('demo-')) return;
     const accountId = user.id;
     setCustomersLoading(true); setCustomersError('');
     try {

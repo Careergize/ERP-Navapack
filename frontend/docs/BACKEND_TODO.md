@@ -1,5 +1,19 @@
 # Backend Integration TODO
 
+## Existing-screen integration — 21 October 2026
+
+The full real-session sidebar now reaches existing module routes backed by current
+master/commercial/inventory/QC/rehearsal APIs. Added scoped field metadata, document-kind
+pagination filtering, monthly custody reads, rehearsal recycling and estimate reports.
+Operational/approval/financial gates remain; polished selectors, external recycling,
+unsupported QC schedules and full employee access-governance UI remain incomplete.
+[Current report](../../docs/FULL_ERP_FRONTEND_BACKEND_INTEGRATION_REPORT.md).
+
+
+Verification: full isolated PostgreSQL regression 320 PASS; separate final HTTP/metadata
+runs 8 PASS and 3 PASS; all 17 frontend check scripts, noEmit/build, Django check and
+migration drift PASS. Browser persistence/navigation acceptance recorded in the report.
+
 ## Phase 4A update
 
 Separate `/commercial/documents/` APIs now support synthetic costing/quotation/order draft persistence, revisions, review/reopen/cancellation, JWT, idempotency and version checks. `/commercial` consumes these APIs; legacy quotation endpoints remain incompatible and are not advertised as implemented. Next: resolve [Phase 4 policy decisions](../../docs/phase4-planning/PHASE_4_CLIENT_DECISIONS.md), accept browser behavior, design governed approvals/confirmed amendments and separately authorize later integrations. Do not enable email/PDF, production, dispatch, fiscal totals or live posting by adapting the demo role/template defaults.

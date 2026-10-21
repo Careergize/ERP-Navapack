@@ -1,4 +1,6 @@
 import { UnitsManager } from './UnitsManager';
+import { BackendMasters } from './BackendMasters';
+import { useAuth } from '@/context/AuthContext';
 import { UsersManager } from './UsersManager';
 import { useSearchParams } from 'react-router-dom';
 import { GenerateQuotation } from '@/components/GenerateQuotation';
@@ -58,6 +60,11 @@ const CONFIG_COLUMNS: Record<MasterKey, MasterColumn[]> = {
 };
 
 export function MastersPage() {
+  const { user } = useAuth();
+  return user?.backendSession ? <BackendMasters /> : <DemoMastersPage />;
+}
+
+function DemoMastersPage() {
   const [params] = useSearchParams();
   const [selected, setSelected] = useState<MasterKey>(params.get("section") === "units" ? "units" : "items");
   const [items, setItems] = useState<Item[]>(MOCK_ITEMS);

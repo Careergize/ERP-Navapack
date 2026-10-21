@@ -1,3 +1,4 @@
+import { QualityFoundation } from '@/pages/Inventory/QualityFoundation';
 import { useInventory } from '@/context/InventoryContext';
 import { useState, type FormEvent } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
@@ -9,6 +10,12 @@ import { inspectionStatusLabel, QC_REVIEW_ROLES, canRecordQC, qualityReleased, t
 import { InspectionForm, QC_BUTTON } from './InspectionForm';
 
 export function InspectionDetail() {
+  const { user } = useAuth();
+  const { id } = useParams();
+  return user?.backendSession ? <QualityFoundation inspectionId={id} /> : <DemoInspectionDetail />;
+}
+
+function DemoInspectionDetail() {
   const { finishedMovements } = useInventory();
   const { id = '' } = useParams(); const q = useQuality(); const { user } = useAuth(); const navigate = useNavigate();
   const i = q.inspections.find(i => i.id === id); const [error, setError] = useState('');

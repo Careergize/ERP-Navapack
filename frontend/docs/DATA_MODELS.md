@@ -1,5 +1,15 @@
 # Frontend Data Models
 
+## Local API integration — 21 October 2026
+
+New frontend master DTOs retain opaque UUIDs, integer versions, server field metadata
+and decimal strings. Recycling uses existing RehearsalJob snapshots and immutable
+RehearsalRevision records: exact source line/stage/unit/revision, classification,
+intake/recovered/rejected/disposed amounts and synthetic batch reference. There is no
+new balance table or operational recycling stock credit. Financial aggregates preserve
+currency and document kind; missing component costs yield unavailable margins.
+
+
 ## Phase 4A persistent commercial contract
 
 `CommercialRecord` in `src/lib/commercialApi.ts` uses backend UUID/version/state/revision/hash and immutable input/estimate snapshots. Monetary values remain decimal strings; VAT/LED/payable total are unavailable. Backend CommercialDocument/CommercialRevision are owner-scoped synthetic aggregates, independent of existing demo stores. See [complete nested schema and reference rules](../../docs/phase4-planning/PHASE_4A_DOMAIN_CONTRACTS.md). No demo-state migration or production allocation model is implied.

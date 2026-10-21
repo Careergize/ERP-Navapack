@@ -1,3 +1,4 @@
+import { PersistedTrace } from '@/pages/TrackTrace/PersistedTrace';
 import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useJobCards } from '@/context/JobCardsContext';
@@ -13,7 +14,11 @@ import { convertQuantity } from '@/lib/customCosting';
 import { Card } from '@/components/ui/Card';
 import { ENTRY_INPUT } from '@/components/ui/SearchSelect';
 import { LegacyTrace } from './TrackTrace';
-export function TrackTrace(){
+export function TrackTrace() {
+ const { user } = useAuth();
+ return user?.backendSession ? <PersistedTrace/> : <DemoTrackTrace/>;
+}
+function DemoTrackTrace() {
  const [params,setParams]=useSearchParams(),{cards,load}=useJobCards(),inv=useInventory(),{orders}=useSalesOrders(),cost=useCosting(),qc=useQuality(),{user}=useAuth();const [legacy,setLegacy]=useState(false);useEffect(()=>{void load();},[load]);
  const productId=params.get('productId')??'',jobId=params.get('jobId')??'',orderId=params.get('orderId')??'',batch=params.get('batch')??'';
  const set=(key:string,v:string)=>setParams(p=>{v?p.set(key,v):p.delete(key);return p;});

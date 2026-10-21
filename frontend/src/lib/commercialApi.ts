@@ -7,7 +7,8 @@ export interface CommercialRecord {
 }
 export interface CommercialHistory { id: string; number: number; at: string; actor: string; status: string; reason: string; snapshot: CommercialRecord['snapshot']; audit?: { id: string; actor: string; at: string; request_id: string; revision: string | null } }
 export interface Page<T> { count: number; next: string | null; previous: string | null; results: T[] }
-export const commercialPage = async (page = 1) => (await api.get<Page<CommercialRecord>>('/commercial/documents/', { params: { page } })).data;
+export const commercialPage = async (page = 1, kind?: CommercialKind) => (await api.get<Page<CommercialRecord>>('/commercial/documents/', { params: { page, kind } })).data;
+export const commercialDetail = async (id: string) => (await api.get<CommercialRecord>(`/commercial/documents/${id}/`)).data;
 export const commercialHistory = async (id: string, page = 1) => (await api.get<Page<CommercialHistory>>(`/commercial/documents/${id}/history/`, { params: { page } })).data;
 export const deriveCommercial = async (record: CommercialRecord, reason: string, key: string) => (await api.post<CommercialRecord>(`/commercial/documents/${record.id}/derive/`, { source_revision: record.revision, reason }, { headers: { 'Idempotency-Key': key } })).data;
 export async function saveCommercial(kind: CommercialKind, data: Record<string, unknown>, reason: string, key: string, record?: CommercialRecord) {

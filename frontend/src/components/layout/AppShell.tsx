@@ -1,3 +1,5 @@
+import { DevelopmentNotifications } from './DevelopmentNotifications';
+import { useState } from 'react';
 import { QC_VIEW_ROLES, isQCRole } from '@/lib/quality';
 import { QC_SECTIONS } from '@/pages/Quality/QualityPage';
 import { NavLink, Outlet } from "react-router-dom";
@@ -12,7 +14,6 @@ import {
   Search,
   Settings,
   LogOut,
-  Bell,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import type { Role } from "@/types";
@@ -54,11 +55,21 @@ const FINANCE_NAV_ITEMS: NavItem[] = [
 ];
 
 export function AppShell() {
+  const [mobileNavigation,setMobileNavigation]=useState(false);
   const { user, logout } = useAuth();
   const items: NavItem[] = user?.backendSession ? [
-    ...(user.permissions?.includes('rehearsal.use_simulation') ? [{to: "/rehearsal", label: "Development journey", icon: LayoutDashboard, roles: []}] : []),
-    {to: "/admin/inventory", label: "Inventory configuration", icon: Settings, roles: []},
-    ...(user.permissions?.includes('commercial.use_foundation') ? [{to: "/commercial", label: "Commercial drafts", icon: ClipboardList, roles: []}] : []),
+    {to:'/',label:'Dashboard',icon:LayoutDashboard,roles:[]},
+    ...NAV_ITEMS.filter(item => {
+      const permissions=user.permissions??[];
+      if(item.to==='/')return false;
+      if(['/costing','/quotations','/sales-orders'].includes(item.to))return permissions.includes('commercial.use_foundation');
+      if(['/job-cards','/recycling','/track-trace'].includes(item.to))return permissions.includes('rehearsal.use_simulation');
+      if(item.to==='/qc')return permissions.includes('inventory.view_qc');
+      if(['/stock','/raw-materials','/consumables'].includes(item.to))return permissions.some(p=>['inventory.view_synthetic_custody','inventory.view_operationrequest','inventory.view_stockidentity'].includes(p));
+      if(item.to==='/masters')return permissions.some(p=>p.startsWith('masters.view_')||p==='specifications.view_productmodel'||p==='inventory.view_warehouse'||p==='imports.view_importbatch')||!!user.isMasterAdmin&&permissions.includes('accounts.view_employee');
+      return false;
+    }),
+    ...(user.permissions?.includes('rehearsal.use_simulation')?[{to:'/finance',label:'Finance estimates',icon:Calculator,roles:[]},{to:'/dispatch',label:'Simulated dispatch',icon:Boxes,roles:[]}]:[]),
   ] : isQCRole(user?.role) ? [{ to: "/qc", label: "QC Dashboard", icon: LayoutDashboard, roles: QC_VIEW_ROLES }, ...QC_SECTIONS.map(([key, label]) => ({ to: `/qc/${key}`, label, icon: ClipboardList, roles: QC_VIEW_ROLES }))] : user?.role === "accounts" ? FINANCE_NAV_ITEMS : NAV_ITEMS.filter((item) => !user || item.roles.includes(user.role));
 
   return (
@@ -74,12 +85,17 @@ export function AppShell() {
           <p className="mt-1 text-xs font-medium text-white/90">{user?.role==='accounts'?'NavaPack Finance':'NavaPack Operations'}</p>
         </div>
 
-        <nav className="flex-1 space-y-1 px-3">
+        <button className="mx-4 mb-3 rounded-lg border border-white/20 px-3 py-2 text-left text-sm sm:hidden" aria-expanded={mobileNavigation} aria-controls="module-navigation" onClick={()=>setMobileNavigation(v=>!v)}>{mobileNavigation?'Hide modules':'Show modules'}</button>
+        <nav id="module-navigation" className={`${mobileNavigation?'block':'hidden'} flex-1 space-y-1 px-3 sm:block`}>
           <p className="px-3 pb-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-white/35">Navigation</p>
           {items.map(({ to, label, icon: Icon }) => (
             <NavLink
               key={to}
               to={to}
+              onClick={event => {
+                if (document.querySelector('form[data-dirty="true"]') && !window.confirm('Discard unsaved form fields and leave this module?')) event.preventDefault();
+                else setMobileNavigation(false);
+              }}
               end={to === "/" || to === "/qc"}
               className={({ isActive }) =>
                 `flex items-center gap-3 rounded-xl px-3 py-2.5 text-[13px] font-medium transition-colors ${
@@ -112,7 +128,7 @@ export function AppShell() {
 
       <main className="min-w-0 flex-1 overflow-y-auto bg-[#f5f8f5]">
         <div className="flex items-center justify-end gap-4 border-b border-[#e6eee8] px-5 py-4 sm:px-8">
-          <span className="rounded-full p-2 text-[#668075]" title="Notifications are not connected"><Bell size={17} /></span>
+          <DevelopmentNotifications />
           <div className="h-7 w-px bg-[#dce8df]" />
           <span className="text-xs text-[#668075]">Operations overview</span>
         </div>

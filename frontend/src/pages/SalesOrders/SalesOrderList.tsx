@@ -1,3 +1,5 @@
+import { CommercialFoundation } from '@/pages/Commercial/CommercialFoundation';
+import { useAuth } from '@/context/AuthContext';
 import { SalesSummary } from '@/components/SalesSummary';
 import { useInventory } from '@/context/InventoryContext';
 import { useJobCards } from '@/context/JobCardsContext';
@@ -124,6 +126,11 @@ function TableSkeleton() {
 // ---------------------------------------------------------------------------
 
 export function SalesOrderList() {
+  const { user } = useAuth();
+  return user?.backendSession ? <CommercialFoundation initialKind="SALES_ORDER" title="Sales Order drafts" /> : <DemoSalesOrderList />;
+}
+
+function DemoSalesOrderList() {
   const { orders: sourceOrders } = useSalesOrders();
   const { ledger } = useInventory();
   const { cards, load } = useJobCards();

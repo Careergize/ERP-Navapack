@@ -1,5 +1,15 @@
 # Changelog
 
+## 21 October 2026 — local existing-screen integration
+
+- Enabled capability-filtered full navigation for real JWT sessions.
+- Connected existing module routes to persisted guarded APIs and removed mock fallback
+  from connected real-session screens.
+- Added immutable synthetic recycling, exact-unit/month custody reads, draft finance
+  estimates, protected Masters forms and internal development status notifications.
+- Preserved blocked operational posting, legal invoices, unapproved tax/FX and approvals.
+
+
 ## 20 October 2026 — Phase 4A commercial foundation
 
 Added a separate backend-session Commercial Foundation page for persistent costing, quotation and multi-product order drafts, revisions and review history in disposable development environments. Preserved existing demos. Explicit unavailable states cover unapproved tax/levy totals, commercial approvals, PDF/email, production and dispatch. No stock reservation or deduction.

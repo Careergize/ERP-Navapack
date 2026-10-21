@@ -1,7 +1,7 @@
 import { api } from './api';
 import type { Page } from './commercialApi';
 export const productionStages = ['EXTRUSION', 'PRINTING', 'SLITTING', 'MAKING', 'PACKING'] as const;
-export type RehearsalAction = 'review' | 'issue' | 'start' | 'complete' | 'qc' | 'finish' | 'dispatch';
+export type RehearsalAction = 'review' | 'issue' | 'start' | 'complete' | 'qc' | 'finish' | 'dispatch' | 'recycle';
 export interface RehearsalStage { name: string; status: string; [key: string]: unknown }
 export interface RehearsalJob {
   id: string; version: number; status: string; sales_order_revision: string | null; costing_revision?: string | null; purpose?: string; warehouse: string;

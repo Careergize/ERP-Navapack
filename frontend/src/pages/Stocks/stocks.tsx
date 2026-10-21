@@ -1,3 +1,4 @@
+import { InventoryModule } from '@/pages/Inventory/InventoryModule';
 import { StockIntelligence } from '@/components/StockIntelligence';
 import { useAuth } from '@/context/AuthContext';
 import { findWorkItem } from '@/lib/parentJobCards';
@@ -47,6 +48,11 @@ function downloadCsv(filename: string, lines: (string | number | null)[][]) {
 }
 
 export function StockPage() {
+  const { user } = useAuth();
+  return user?.backendSession ? <InventoryModule itemType="variant" title="Finished Goods Stock" /> : <DemoStockPage />;
+}
+
+function DemoStockPage() {
   const { user } = useAuth();
   const { ledger, finishedMovements, addFinishedMovement, finishedPieces, updateFinishedPieces } = useInventory();
   const { cards, load } = useJobCards();

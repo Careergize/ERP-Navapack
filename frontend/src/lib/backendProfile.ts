@@ -6,5 +6,5 @@ export function backendProfile(data: NonNullable<LoginResponse['user']>): User {
     || !Array.isArray(data.roles) || !data.roles.every(r=>typeof r==='string')
     || !Array.isArray(data.permissions) || !data.permissions.every(p=>typeof p==='string')) throw new Error('Invalid account profile.');
   return {id:data.id,name:data.name??data.email??'',role:'authenticated',roles:data.roles,
-    permissions:data.permissions,backendSession:true};
+    permissions:data.permissions,backendSession:true,isMasterAdmin:data.is_master_admin===true};
 }

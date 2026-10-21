@@ -1,3 +1,5 @@
+import { InventoryModule } from '@/pages/Inventory/InventoryModule';
+import { useAuth } from '@/context/AuthContext';
 import { Link } from 'react-router-dom';
 import { useQuality } from '@/context/QualityContext';
 import { rawQualityStatus } from '@/lib/qualityIntegration';
@@ -17,6 +19,11 @@ const button = 'flex items-center gap-2 rounded-card border border-gray-200 bg-w
 const th = 'px-4 py-3 font-medium';
 const td = 'px-4 py-3 tabular-nums';
 export function RawMaterialPage() {
+  const { user } = useAuth();
+  return user?.backendSession ? <InventoryModule itemType="material" title="Raw Materials" /> : <DemoRawMaterialPage />;
+}
+
+function DemoRawMaterialPage() {
   const quality = useQuality();
   const { rawMovements, addRawMovement } = useInventory();
   const [category, setCategory] = useState<RawCategory>('virgin');

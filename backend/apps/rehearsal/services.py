@@ -1,6 +1,6 @@
 """Transactional rehearsal commands; deliberately no inventory/quality posting imports."""
 import copy
-from decimal import Decimal
+from decimal import Decimal, localcontext
 from django.utils import timezone
 from rest_framework.exceptions import ValidationError
 from rest_framework.generics import get_object_or_404
@@ -149,6 +149,36 @@ def transition(job, action, data):
         expected = 'QC_PASSED' if action == 'finish' else 'FINISHED'
         if job.status != expected: raise CommandConflict('QC pass and finished-goods progression required.')
         job.status = 'FINISHED' if action == 'finish' else 'DISPATCHED'
+    elif action == 'recycle':
+        fields(data, ['line', 'stage', 'classification', 'intake', 'recovered', 'rejected', 'disposed', 'unit', 'batch_reference'])
+        stage, _ = stage_for(snap, data)
+        if stage['status'] != 'COMPLETE':
+            raise CommandConflict('Completed source-stage evidence is required.')
+        source_line = snap['source']['input']['lines'][data['line']]
+        if data.get('unit') != str(source_line['unit']):
+            raise ValidationError('Use the exact source unit; conversion is unavailable.')
+        classification = data.get('classification')
+        if classification not in ('PROCESS_WASTE', 'REJECTED_OUTPUT'):
+            raise ValidationError('Classify as PROCESS_WASTE or REJECTED_OUTPUT.')
+        batch = data.get('batch_reference')
+        if not isinstance(batch, str) or not batch.startswith('synthetic:') or len(batch) > 160:
+            raise ValidationError('An explicit synthetic batch reference is required.')
+        events = snap.setdefault('recycling', [])
+        if any(e['batch_reference'] == batch for e in events):
+            raise CommandConflict('Batch reference already recorded; use the original request key to retry.')
+        amounts = {name: quantity(data, name, name == 'intake') for name in ('intake', 'recovered', 'rejected', 'disposed')}
+        with localcontext() as context:
+            context.prec = 60
+            if sum(Decimal(amounts[k]) for k in ('recovered','rejected','disposed')) != Decimal(amounts['intake']):
+                raise ValidationError('Recovered + rejected + disposed must equal intake exactly.')
+            used = sum((Decimal(e['intake']) for e in events if e['line'] == data['line'] and e['stage'] == data['stage'] and e['classification'] == classification), Decimal(0))
+            available = Decimal(stage['waste' if classification == 'PROCESS_WASTE' else 'rejection'])
+            if used + Decimal(amounts['intake']) > available:
+                raise CommandConflict('Intake exceeds remaining recorded source waste/rejection.')
+        events.append({**amounts, 'line': data['line'], 'stage': data['stage'], 'unit': data['unit'],
+            'classification': classification, 'batch_reference': batch, 'at': now,
+            'source_job': str(job.pk), 'source_version': job.version, 'source_revision': str(job.revisions.get(number=job.version).pk),
+            'available_stock_credit': False, 'simulation': True})
     else:
         raise ValidationError('Unknown simulation action.')
     snap['history'].append({'action': action, 'status': job.status, 'at': now,

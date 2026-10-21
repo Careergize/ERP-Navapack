@@ -18,7 +18,7 @@ export function QuotationsProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(false), [loadError, setLoadError] = useState('');
   const accountId = useRef(user?.id); accountId.current = user?.id;
   const reload = useCallback(async () => {
-    if (!user || user.id.startsWith('demo-')) return;
+    if (!user || user.backendSession || user.id.startsWith('demo-')) return;
     const owner = user.id; setLoading(true); setLoadError('');
     try { const loaded = await loadQuotationDrafts(); if (accountId.current === owner) { const unsaved = current.current.filter(q => !q.draftVersion && !loaded.some(row => row.id === q.id)); publish([...loaded, ...unsaved]); } }
     catch { if (accountId.current === owner) setLoadError('Unable to load saved quotations. Check the backend connection and quotation view permission.'); }

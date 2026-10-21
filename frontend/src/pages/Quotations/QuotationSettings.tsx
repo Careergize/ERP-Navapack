@@ -1,3 +1,4 @@
+import { CommercialPolicyRegistry } from '@/pages/Commercial/CommercialPolicyRegistry';
 import { GenerateQuotation } from '@/components/GenerateQuotation';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -8,7 +9,8 @@ import { ENTRY_INPUT } from '@/components/ui/SearchSelect';
 import { EMPTY_TERMS, type QuotationTerms } from '@/lib/quotations';
 import { QUOTE_BUTTON } from './QuotationPrint';
 import { TermsFields } from './QuotationEditor';
-export function QuotationSettings() {
+export function QuotationSettings() { const {user}=useAuth(); return user?.backendSession ? <div className="space-y-4"><h1 className="text-2xl font-semibold text-navy">Quotation policies and settings</h1><p>Company, tax and approval defaults require adopted policies. Drafts retain explicit terms and historical snapshots.</p><CommercialPolicyRegistry enabled={!!user.permissions?.includes('commercial.use_foundation')}/></div> : <DemoQuotationSettings/>; }
+function DemoQuotationSettings() {
   const c = useCommercial(); const { user } = useAuth();
   const [company, setCompany] = useState(() => structuredClone(c.company)); const [terms, setTerms] = useState<QuotationTerms>({ ...EMPTY_TERMS }); const [error, setError] = useState(''), [notice, setNotice] = useState('');
   const run = async (action: () => void | Promise<void>) => { try { await action(); setError(''); setNotice('Saved in this session only.'); } catch(e) { setError(e instanceof Error ? e.message : 'Unable to save.'); } };

@@ -43,7 +43,6 @@ function RequireAuth({ children }: { children: JSX.Element }) {
   if (loading) return <p role="status" className="p-8">Restoring your session…</p>;
   if (sessionError) return <div className="space-y-3 p-8"><p role="alert">{sessionError}</p><button className="rounded border px-4 py-2" onClick={retrySession}>Retry</button></div>;
   if (!user) return <Navigate to="/login" replace />;
-  if (user.backendSession && !['/admin/inventory', '/commercial', '/rehearsal'].includes(location.pathname)) return <Navigate to="/rehearsal" replace />;
   if (!user.backendSession && isQCRole(user.role) && location.pathname !== "/" && !location.pathname.startsWith("/qc") && !location.pathname.startsWith("/job-cards")) return <Navigate to="/qc" replace />;
   return children;
 }
@@ -63,7 +62,8 @@ function AppRoutes() {
         }
       >
         <Route path="/" element={user?.role === "accounts" ? <FinanceDashboard /> : <RoleDashboard operations={<Dashboard />} />} />
-        <Route path="/finance/quality" element={user?.role==="accounts"?<FinanceQualityOverview/>:<Navigate to="/" replace/>} />
+        <Route path="/finance/quality" element={user?.backendSession || user?.role==="accounts"?<FinanceQualityOverview/>:<Navigate to="/" replace/>} />
+        <Route path="/finance" element={<FinanceDashboard />} />
         <Route path="/qc" element={<QualityGuard><QualityPage /></QualityGuard>} />
         <Route path="/qc/inspections/:id" element={<QualityGuard><InspectionDetail /></QualityGuard>} />
         <Route path="/qc/:section" element={<QualityGuard><QualityPage /></QualityGuard>} />
@@ -86,6 +86,8 @@ function AppRoutes() {
         <Route path="/costing" element={<CostingPage />} />
         <Route path="/masters" element={<MastersPage />} />
         <Route path="/track-trace" element={<TrackTrace />} />
+        <Route path="/dispatch" element={<TrackTrace />} />
+        <Route path="*" element={<div className="space-y-3"><h1>Page unavailable</h1><p>Select a module from the navigation.</p></div>} />
       </Route>
     </Routes>
   );

@@ -1,3 +1,4 @@
+import { CommercialFoundation } from '@/pages/Commercial/CommercialFoundation';
 import { ManagerApprovals } from './ManagerApprovals';
 import { GenerateQuotation } from '@/components/GenerateQuotation';
 import { useState } from 'react';
@@ -8,7 +9,7 @@ import { Card } from '@/components/ui/Card';
 import { ENTRY_INPUT } from '@/components/ui/SearchSelect';
 import { effectiveQuotationStatus, quotationTotals, QUOTATION_EDIT_ROLES, QUOTATION_VIEW_ROLES } from '@/lib/quotations';
 import { QUOTE_BUTTON } from './QuotationPrint';
-export function QuotationsGuard({ children }: { children: JSX.Element }) { const { user } = useAuth(); return QUOTATION_VIEW_ROLES.includes(user?.role ?? '') ? children : <Card>Your role cannot access quotations.</Card>; }
+export function QuotationsGuard({ children }: { children: JSX.Element }) { const { user } = useAuth(); return (user?.backendSession ? user.permissions?.includes('commercial.use_foundation') : QUOTATION_VIEW_ROLES.includes(user?.role ?? '')) ? children : <Card>Your account cannot access quotations.</Card>; }
 export function QuotationMetrics() {
   const { quotations } = useQuotations(); const latest = quotations.filter(q => !quotations.some(n => n.rootId === q.rootId && n.revision > q.revision));
   const count = (status: string) => latest.filter(q => effectiveQuotationStatus(q) === status).length;
@@ -16,6 +17,11 @@ export function QuotationMetrics() {
   return <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4" aria-label="Quotation metrics">{[['Draft Quotations', count('Draft')], ['Pending Approval', count('Pending Internal Approval')], ['Quotations Sent', latest.filter(q => q.events.some(e => e.type === 'Marked sent')).length], ['Awaiting Customer Response', latest.filter(q => effectiveQuotationStatus(q) === 'Sent' && !q.responses.some(r => r.response === 'Accepted' || r.response === 'Rejected' || r.response === 'Revision Requested')).length], ['Accepted Quotations', count('Accepted')], ['Expired Quotations', count('Expired')], ['Converted Quotations', converted], ['Conversion Rate', latest.length ? `${(converted / latest.length * 100).toFixed(1)}%` : 'No quotations']].map(([label, value]) => <Card key={label}><p className="text-sm text-gray-500">{label}</p><p className="text-xl font-semibold text-navy">{value}</p></Card>)}</section>;
 }
 export function QuotationList() {
+  const { user } = useAuth();
+  return user?.backendSession ? <CommercialFoundation initialKind="QUOTATION" title="Quotations" /> : <DemoQuotationList />;
+}
+
+function DemoQuotationList() {
   const { quotations, create, revise, send, loading, loadError, reload } = useQuotations(); const { user } = useAuth(); const navigate = useNavigate();
   const [query, setQuery] = useState(''), [customer, setCustomer] = useState('all'), [from, setFrom] = useState(''), [to, setTo] = useState(''), [status, setStatus] = useState('all'), [creator, setCreator] = useState('all'), [history, setHistory] = useState(false), [error, setError] = useState('');
   const rows = quotations.filter(q => (history || !quotations.some(n => n.rootId === q.rootId && n.revision > q.revision)) && q.number.toLowerCase().includes(query.toLowerCase()) && (customer === 'all' || q.customer.name === customer) && (!from || q.date >= from) && (!to || q.date <= to) && (status === 'all' || effectiveQuotationStatus(q) === status) && (creator === 'all' || q.createdById === creator));

@@ -11,7 +11,7 @@ const fields:Record<string,string[]>={plans:['reference','revision','applicabili
 const createCaps:Record<QCResource,string>={plans:'configure_qc',inspections:'inspect_qc',holds:'hold_qc',ncr:'manage_ncr','held-stock':''};
 const stepCaps:Record<string,string>={publish:'approve_qc_plan',review:'review_qc',release:'release_qc',ncr_action:'manage_ncr'};
 
-export function QualityFoundation(){
+export function QualityFoundation({inspectionId}:{inspectionId?:string}){
   const {user}=useAuth();const permissions=user?.permissions??[];
   const [mode,setMode]=useState<Awaited<ReturnType<typeof qualityMode>>>();
   const [resource,setResource]=useState<QCResource>('inspections');const [page,setPage]=useState(1);const [rows,setRows]=useState<QCPage>();
@@ -23,6 +23,7 @@ export function QualityFoundation(){
   const fail=(cause:unknown)=>{setError(axios.isAxiosError(cause)?JSON.stringify(cause.response?.data?.error??'Connection unavailable; retry unchanged input if outcome is uncertain.'):'Unable to complete QC request.');};
   useEffect(()=>{let live=true;qualityMode().then(v=>{if(live)setMode(v);}).catch(fail);return()=>{live=false;};},[]);
   useEffect(()=>{setSelected(undefined);setHistory(undefined);setStep(undefined);},[user?.id,permissionKey]);
+  useEffect(()=>{if(!inspectionId||!mode?.synthetic_enabled||!can('view_qc'))return;let live=true;setResource('inspections');qualityDetail('inspections',inspectionId).then(v=>{if(live)setSelected(v);}).catch(fail);return()=>{live=false;};},[inspectionId,mode,user?.id,permissionKey]);
   useEffect(()=>{let live=true;setRows(undefined);if(mode?.synthetic_enabled&&can('view_qc'))qualityPage(resource,page).then(v=>{if(live)setRows(v);}).catch(fail);return()=>{live=false;};},[mode,resource,page,revision,user?.id,permissionKey]);
   function start(next:string,record?:QCRecord){setSelected(record);setStep(next);setHistory(undefined);setForm({reason:'',evidence_reference:''});setKey(crypto.randomUUID());setError('');}
   async function detail(record:QCRecord){setBusy(true);setStep(undefined);setHistory(undefined);try{setSelected(await qualityDetail(resource,record.id));}catch(cause){fail(cause);}finally{setBusy(false);}}
@@ -36,11 +37,11 @@ export function QualityFoundation(){
     }catch(cause){fail(cause);}finally{setBusy(false);}
   }
   if(!user?.backendSession)return <p>QC requires the existing authenticated backend session.</p>;
-  return <section className="space-y-4"><h1 className="text-2xl font-semibold">Quality control foundation</h1>
+  return <section className="space-y-4"><h1 className="text-2xl font-semibold text-navy">Quality Control</h1>
     <p>{mode?.message??'Checking isolated QC availability…'}</p>
     <p>Inspection acceptance is evidence only. Release requires a separate successful, conserved ledger transition. Operational release is disabled.</p>
     <p>One whole physically identified root per inspection. Partial release within an indistinguishable lot, mixed custody and rejected-stock disposition are unavailable. NCR closure does not remove containment.</p>
-    {!mode?.synthetic_enabled?<p role="status">QC workflows unavailable outside an authorized disposable test environment.</p>:!can('view_qc')?<p>QC view capability required.</p>:<>
+    {!mode?<p role="status">Checking QC backend availability…</p>:!mode.synthetic_enabled?<p role="status">QC workflows unavailable outside an authorized disposable test environment.</p>:!can('view_qc')?<p>QC view capability required.</p>:<>
       <nav className="flex flex-wrap gap-3">{(Object.keys(labels)as QCResource[]).map(r=><button key={r} onClick={()=>{setResource(r);setPage(1);setSelected(undefined);setStep(undefined);setHistory(undefined);}}>{labels[r]}</button>)}</nav>
       <h2>{labels[resource]}</h2>
       {resource!=='held-stock'&&can(createCaps[resource])&&<button onClick={()=>start(resource)}>Create {labels[resource]}</button>}

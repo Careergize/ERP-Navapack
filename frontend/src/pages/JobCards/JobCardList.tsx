@@ -1,3 +1,5 @@
+import { RehearsalWorkspace } from '@/pages/Rehearsal/RehearsalWorkspace';
+import { useAuth } from '@/context/AuthContext';
 import { workItems } from '@/lib/parentJobCards';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -11,6 +13,11 @@ import { JOB_BUTTON, JobFields, JobProgress, JobStatus, jobDate } from './JobCar
 
 const emptyFilters: JobFilters = { query: '', status: 'all', department: 'all', stage: 'all', from: '', to: '' };
 export function JobCardList() {
+  const { user } = useAuth();
+  return user?.backendSession ? <RehearsalWorkspace title="Job Cards and Production" /> : <DemoJobCardList />;
+}
+
+function DemoJobCardList() {
   const { cards, loading, usingDemo, load } = useJobCards();
   const [filters, setFilters] = useState(emptyFilters);
   useEffect(() => { void load(); }, [load]);

@@ -35,7 +35,13 @@ class CommercialViewSet(viewsets.GenericViewSet):
     lookup_value_regex = '[0-9a-fA-F-]{36}'
 
     def get_queryset(self):
-        return services.scoped(self.request.user)
+        rows = services.scoped(self.request.user)
+        kind = self.request.query_params.get('kind')
+        if kind:
+            if kind not in {'COSTING', 'QUOTATION', 'SALES_ORDER'}:
+                raise serializers.ValidationError({'kind': 'Unknown commercial document kind.'})
+            rows = rows.filter(kind=kind)
+        return rows
 
     def list(self, request):
         page = self.paginate_queryset(self.get_queryset())

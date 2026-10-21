@@ -1,3 +1,5 @@
+import { InventoryModule } from '@/pages/Inventory/InventoryModule';
+import { useAuth } from '@/context/AuthContext';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { ArrowDownToLine, ArrowUpFromLine, Plus, Search, X } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
@@ -60,6 +62,11 @@ function ConsumableForm({ item, readOnly, posted, onClose, onSave }: { item: Con
 }
 
 export function ConsumablesPage() {
+  const { user } = useAuth();
+  return user?.backendSession ? <InventoryModule itemType="consumable" title="Consumables" /> : <DemoConsumablesPage />;
+}
+
+function DemoConsumablesPage() {
   const { items, movements, saveItem, addMovement } = useConsumables();
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState('all');

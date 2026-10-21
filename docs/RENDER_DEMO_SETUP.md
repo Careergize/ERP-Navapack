@@ -1,5 +1,10 @@
 # Temporary Render demo profile
 
+Configure all variables together using the
+[complete Render environment checklist](RENDER_DEMO_ENVIRONMENT_CHECKLIST.md)
+and tracked `backend/.env.render.example`. These include the required database
+identity, independent secrets, origins and runtime provisioning prerequisites.
+
 Prepared locally; no hosted service, environment, database or migration changed.
 Production settings and the disposable synthetic ledger gate are unchanged.
 This profile supersedes the strict certificate requirement in the original Render

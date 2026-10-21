@@ -1,5 +1,19 @@
 # Development Status
 
+## Existing-screen local backend integration — 21 October 2026
+
+Real sessions now navigate the existing Masters, Costing, Quotations, Sales Orders,
+Stock/Raw Materials/Consumables, Job Cards, QC, Recycling, Trace and Finance routes.
+These reuse guarded persisted APIs; demo sessions remain separate. New recycling
+records live in immutable rehearsal revisions and never credit operational stock.
+Advanced specification/import forms still use API-field JSON and some reference UUIDs.
+See [scope, actual tests and remaining work](../../docs/FULL_ERP_FRONTEND_BACKEND_INTEGRATION_REPORT.md).
+
+
+Verification: full isolated PostgreSQL regression 320 PASS; separate final HTTP/metadata
+runs 8 PASS and 3 PASS; all 17 frontend check scripts, noEmit/build, Django check and
+migration drift PASS. Browser persistence/navigation acceptance recorded in the report.
+
 ## Phase 4A commercial foundation — 20 October 2026
 
 Real backend sessions can open `/commercial` from the existing shell. A separate bounded editor persists costing/quotation/multi-line order drafts, edits and immutable history through JWT APIs; review/reopen/pre-approval cancellation supported. Demo pages remain separate. Explicit capability and verified disposable database required. Final payable totals, tax/levy rules, approvals, PDF/email, production and dispatch are unavailable. See [implementation and actual tests](../../docs/phase4-planning/PHASE_4A_IMPLEMENTATION_REPORT.md); API transport acceptance does not establish browser visual acceptance.

@@ -1,3 +1,4 @@
+import { CommercialFoundation } from '@/pages/Commercial/CommercialFoundation';
 import { LEDBreakdown } from '@/components/LEDFields';
 import { workItems } from '@/lib/parentJobCards';
 import { useEffect, useState, type FormEvent } from 'react';
@@ -18,6 +19,12 @@ import { InvoiceForm, InvoiceView } from './SalesInvoice';
 import { useInvoices } from '@/context/InvoicesContext';
 const button = 'rounded-card border border-gray-200 px-3 py-2 text-sm text-navy';
 export function SalesOrderDetail() {
+  const { user } = useAuth();
+  const { id } = useParams();
+  return user?.backendSession ? <CommercialFoundation initialKind="SALES_ORDER" documentId={id} title="Sales Order draft detail" /> : <DemoSalesOrderDetail />;
+}
+
+function DemoSalesOrderDetail() {
   const { versions } = useModels(); const { estimates } = useCosting();
   const { id } = useParams(); const { orders } = useSalesOrders(); const order = orders.find(o => o.id === id);
   const { ledger, allocateStock, directDispatch, dispatch, reverse } = useInventory(); const { cards, load, createLinked } = useJobCards(); const { user } = useAuth(); const { invoices } = useInvoices();

@@ -1,3 +1,4 @@
+import { QualityFoundation } from '@/pages/Inventory/QualityFoundation';
 import { DailySchedules } from './DailySchedules';
 import { useInventory } from '@/context/InventoryContext';
 import { rawQualityStatus } from '@/lib/qualityIntegration';
@@ -15,9 +16,14 @@ import { NewInspection } from './NewInspection';
 import { QC_BUTTON } from './InspectionForm';
 import { QualityTemplates } from './QualityTemplates';
 export const QC_SECTIONS = [ ['raw', 'Raw Material Inspection'], ['production', 'Production / Product Inspection'], ['machine', 'Machine Checklists'], ['cleaning', 'Factory Cleaning'], ['safety', 'Personnel Safety'], ['non-conformances', 'Non-Conformance & Corrective Actions'], ['reports', 'QC Reports'], ['templates', 'Inspection Templates'] ] as const;
-export function QualityGuard({ children }: { children: JSX.Element }) { const { user } = useAuth(); return canViewQC(user?.role) ? children : <Card>Your role cannot access Quality Control.</Card>; }
+export function QualityGuard({ children }: { children: JSX.Element }) { const { user } = useAuth(); return (user?.backendSession ? user.permissions?.includes('inventory.view_qc') : canViewQC(user?.role)) ? children : <Card>Your account cannot access Quality Control.</Card>; }
 export function RoleDashboard({ operations }: { operations: JSX.Element }) { const { user } = useAuth(); return isQCRole(user?.role) ? <QualityPage /> : operations; }
 export function QualityPage() {
+  const { user } = useAuth();
+  return user?.backendSession ? <QualityFoundation /> : <DemoQualityPage />;
+}
+
+function DemoQualityPage() {
   const { rawMovements } = useInventory();
   const { section = 'dashboard' } = useParams(); const q = useQuality(); const { user } = useAuth(); const { machines } = useModels();
   const [query, setQuery] = useState(''), [from, setFrom] = useState(''), [to, setTo] = useState(''), [status, setStatus] = useState('all'), [department, setDepartment] = useState('all'), [inspector, setInspector] = useState('all'), [category, setCategory] = useState('all'), [period, setPeriod] = useState('custom'), [findingStatus, setFindingStatus] = useState('all');

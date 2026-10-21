@@ -8,13 +8,15 @@ import { CommercialPolicyRegistry } from './CommercialPolicyRegistry';
 import { DraftPreview } from './DraftPreview';
 import { QuickCustomer } from './QuickCustomer';
 import { deriveCommercial } from '@/lib/commercialApi';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { commercialDetail } from '@/lib/commercialApi';
 const css = 'rounded border p-2 w-full';
 const message = (e: unknown) => axios.isAxiosError(e) ? `${e.response?.status === 412 ? 'Stale version: reload the record; entered draft retained.' : e.response?.status === 403 ? 'Permission or approved DEMO/test environment unavailable.' : 'Request failed.'} ${JSON.stringify(e.response?.data?.error ?? 'Connection failed. Retry unchanged intent safely.')}` : e instanceof Error ? e.message : 'Request failed.';
-export function CommercialFoundation() {
+export function CommercialFoundation({ initialKind = 'QUOTATION', documentId, title = 'Commercial drafts' }: {initialKind?: CommercialKind; documentId?: string; title?: string}) {
+  const navigate = useNavigate();
   const { user } = useAuth(); const allowed = !!user?.backendSession && !!user.permissions?.includes('commercial.use_foundation');
-  const [kind, setKind] = useState<CommercialKind>('QUOTATION'), [draft, setDraft] = useState<CommercialInput>(newCommercialInput());
-  const [party, setParty] = useState<'customer'|'prospect'|'none'>('customer');
+  const [kind, setKind] = useState<CommercialKind>(initialKind), [draft, setDraft] = useState<CommercialInput>(newCommercialInput(initialKind === 'COSTING'));
+  const [party, setParty] = useState<'customer'|'prospect'|'none'>(initialKind === 'COSTING' ? 'none' : 'customer');
   const [masters, setMasters] = useState<Record<string, CommercialReference[]>>({}), [costings, setCostings] = useState<CostingReference[]>([]);
   const [records, setRecords] = useState<Page<CommercialRecord>>(), [page, setPage] = useState(1), [refresh, setRefresh] = useState(0);
   const [selected, setSelected] = useState<CommercialRecord>(), [editing, setEditing] = useState<CommercialRecord>();
@@ -31,8 +33,12 @@ export function CommercialFoundation() {
     return () => window.removeEventListener('beforeunload', protect);
   }, [dirty]);
   useEffect(() => { if (!allowed) return; let live = true;
-    commercialPage(page).then(d => { if (live) setRecords(d); }).catch(e => { if (live) setError(message(e)); }); return () => { live = false; };
-  }, [allowed, page, refresh]);
+    commercialPage(page, kind).then(d => { if (live) setRecords(d); }).catch(e => { if (live) setError(message(e)); }); return () => { live = false; };
+  }, [allowed, page, refresh, kind]);
+  useEffect(() => { if (!allowed || !documentId) return; let live = true;
+    commercialDetail(documentId).then(d => { if (live) { setSelected(d); setHistoryPage(1); } }).catch(e => { if(live) setError(message(e)); });
+    return () => {live = false;};
+  },[allowed,documentId]);
   useEffect(() => { if (!allowed) return; let live = true; setRefError('');
     const refs = [['customers','/customers/','masters.view_customer'],['prospects','/prospects/','masters.view_prospect'],['variants','/finished-goods/','masters.view_productvariant'],['materials','/raw-materials/','masters.view_material'],['units','/units/','masters.view_unit'],['models','/model-revisions/','specifications.view_productmodelrevision'],['marketing','/commercial/references/marketing-people/','accounts.view_employee']];
     Promise.allSettled(refs.filter(([, , p]) => user?.permissions?.includes(p)).map(async ([name, url]) => [name, await allCommercialReferences<CommercialReference>(url)] as const)).then(results => {
@@ -63,14 +69,15 @@ export function CommercialFoundation() {
   async function derive() { if (!selected || commandLock.current) return; commandLock.current = true; setBusy(true); setError(''); try {
     const r = await deriveCommercial(selected, reason, key({ source: selected.revision, reason, action: 'derive' }));
     setSelected(r); setHistoryPage(1); setRefresh(n => n + 1);
+    navigate(r.kind === 'QUOTATION' ? `/quotations/${r.id}` : `/sales-orders/${r.id}`);
   } catch (e) { setError(message(e)); } finally { commandLock.current = false; setBusy(false); } }
   const options = (resource: string, value?: string, filter?: (m: CommercialReference) => boolean) => <><option value="">Unspecified / select…</option>{value && !masters[resource]?.some(m => m.id === value) && <option value={value}>Retained selection (not in current directory)</option>}{masters[resource]?.filter(filter ?? (() => true)).map(m => <option key={m.id} value={m.id}>{m.name}{m.number ? ` · revision ${m.number}` : ''}{m.code ? ` (${m.code})` : ''}</option>)}</>;
   const unit = (id: string) => { const u = masters.units?.find(u => u.id === id); return u ? `${u.name} (${u.code || 'no code'})` : 'Retained unit / unavailable in directory'; };
   const text = (label: string, value: string, change: (v: string) => void, required = false, type = 'text') => <label>{label}<input className={css} type={type} required={required} value={value} onChange={e => change(e.target.value)}/></label>;
   if (!allowed) return <main className="p-6"><h1>Commercial foundation</h1><p>Unavailable: a backend employee session and explicit commercial capability are required.</p></main>;
   const diffs = selected && compare ? compareCommercial(compare.snapshot, selected.snapshot) : [];
-  return <main className="max-w-6xl p-6 space-y-6"><h1 className="text-2xl font-semibold">Commercial foundation</h1>
-    <p>Isolated DEMO/test environment only. Save costing → derive draft quotation → derive draft Sales Order demand → <Link className="underline" to="/rehearsal">synthetic production rehearsal</Link>. Draft derivation never approves a quote or confirms an order. VAT, LED, final payable and customer issue/email remain unavailable. Orders never reserve or deduct stock.</p>
+  return <main className="max-w-6xl space-y-6"><h1 className="text-2xl font-semibold text-navy">{title}</h1>
+    <p>Isolated DEMO/test environment only. Save costing → derive draft quotation → derive draft Sales Order demand → <Link className="underline" to="/job-cards">synthetic production rehearsal</Link>. Draft derivation never approves a quote or confirms an order. VAT, LED, final payable and customer issue/email remain unavailable. Orders never reserve or deduct stock.</p>
     {preview && <DraftPreview record={preview} close={() => setPreview(undefined)}/>}
     {records && user?.permissions?.includes('masters.add_customer') && <QuickCustomer saved={id => { setDraft(d => ({ ...d, customer: id })); setParty('customer'); setRefresh(n => n + 1); }}/ >}
     {error && <p role="alert" className="text-red-700">{error}</p>}{refError && <p role="alert">{refError}</p>}
@@ -90,7 +97,7 @@ export function CommercialFoundation() {
       <button disabled={historyPage === 1} onClick={() => setHistoryPage(n => n - 1)}>Previous history</button> · <button disabled={!history?.next} onClick={() => setHistoryPage(n => n + 1)}>Next history</button>
       {compare && <div><h3>Revision {compare.number} → {selected.version}: {diffs.length} changed values</h3>{!diffs.length && <p>No snapshot differences; status/reason history may differ.</p>}<ul>{diffs.slice(0, 200).map((d, i) => <li key={i} className="break-words">{d.field}: {d.before} → {d.after}</li>)}</ul>{diffs.length > 200 && <p>First 200 changes shown; full snapshots remain available above.</p>}</div>}
     </section>}
-    <form onSubmit={save} onChangeCapture={() => setDirty(true)} className="border rounded p-4 space-y-4"><h2 className="text-xl font-semibold">{editing ? `Edit revision ${editing.version}` : 'New draft'}</h2>{dirty && <p role="status">Unsaved draft fields. Save before leaving this workspace.</p>}<button type="button" disabled={busy} onClick={() => reset()}>Start a new draft</button>
+    <form data-dirty={dirty} onSubmit={save} onChangeCapture={() => setDirty(true)} className="border rounded p-4 space-y-4"><h2 className="text-xl font-semibold">{editing ? `Edit revision ${editing.version}` : 'New draft'}</h2>{dirty && <p role="status">Unsaved draft fields. Save before leaving this workspace.</p>}<button type="button" disabled={busy} onClick={() => reset()}>Start a new draft</button>
       <div className="grid md:grid-cols-3 gap-3"><label>Document<select className={css} disabled={!!editing} value={kind} onChange={e => { if (draft.lines.some(l => l.variant || l.quantity)) { setError('Start a new draft before changing type. Entered data is retained.'); return; } reset(e.target.value as CommercialKind); }}><option value="COSTING">Costing</option><option value="QUOTATION">Quotation</option><option value="SALES_ORDER">Sales order</option></select></label>
       <label>Party type<select className={css} value={party} onChange={e => { setParty(e.target.value as typeof party); setDraft(d => { const n = { ...d }; delete n.customer; delete n.prospect; return n; }); }}><option value="customer">Existing customer</option>{kind !== 'SALES_ORDER' && <option value="prospect">Prospect</option>}{kind === 'COSTING' && <option value="none">No customer (product costing)</option>}</select></label>
       {party !== 'none' && <label>Customer / prospect<select className={css} required value={draft[party] ?? ''} onChange={e => setDraft(d => ({ ...d, [party]: e.target.value }))}>{options(party === 'customer' ? 'customers' : 'prospects', draft[party])}</select></label>}

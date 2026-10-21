@@ -3,6 +3,7 @@
 .env.*
 !.env.example
 !/backend/.env.demo.example
+!/backend/.env.render.example
 !/frontend/.env.demo.example
 *.pem
 *.key

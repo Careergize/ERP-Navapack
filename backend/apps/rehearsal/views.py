@@ -28,7 +28,7 @@ class CreateInput(Strict):
 
 
 class CommandInput(Strict):
-    action = serializers.ChoiceField(choices=['review', 'issue', 'start', 'complete', 'qc', 'finish', 'dispatch'])
+    action = serializers.ChoiceField(choices=['review', 'issue', 'start', 'complete', 'qc', 'finish', 'dispatch', 'recycle'])
     data = serializers.DictField(default=dict)
     reason = serializers.CharField(max_length=500)
 
@@ -80,12 +80,42 @@ class RehearsalViewSet(viewsets.GenericViewSet):
         from apps.commercial.models import CommercialDocument
         commercial = CommercialDocument.objects.filter(owner=request.user)
         from apps.accounts.backends import explicit_permission_codes
-        from apps.masters.models import Customer, Prospect
+        from apps.masters.models import Customer, Prospect, Product, ProductVariant, Material, Consumable
         permissions = explicit_permission_codes(request.user)
+        if 'commercial.use_foundation' not in permissions:
+            commercial = commercial.none()
         parties = {name: model.objects.count() if f'masters.view_{name}' in permissions else None
                    for name, model in [('customer', Customer), ('prospect', Prospect)]}
+        catalog = {name: model.objects.count() if f'masters.view_{name}' in permissions else None
+                   for name, model in [('product', Product), ('productvariant', ProductVariant), ('material', Material), ('consumable', Consumable)]}
+        summaries = {}
+        if 'commercial.use_foundation' in permissions:
+            for document in commercial.exclude(status='CANCELLED'):
+                snapshot = document.revisions.get(number=document.version).snapshot
+                values = snapshot['input']
+                party = values.get('customer') or values.get('prospect') or 'unassigned'
+                currency = values['currency']
+                group = summaries.setdefault((party, currency, document.kind), {'party': str(party), 'currency': currency, 'kind': document.kind, 'documents': 0, 'net_estimate': Decimal(0), 'estimated_production_cost': Decimal(0)})
+                group['documents'] += 1
+                with localcontext() as context:
+                    context.prec = 60
+                    group['net_estimate'] += Decimal(snapshot['estimate']['net_estimate'])
+                    costs = [line.get('costing', {}).get('estimated_production_cost') if line.get('costing') else None for line in snapshot['estimate']['lines']]
+                    if group['estimated_production_cost'] is None or any(cost is None for cost in costs):
+                        group['estimated_production_cost'] = None
+                    else:
+                        group['estimated_production_cost'] += sum((Decimal(cost) for cost in costs), Decimal(0))
+        financial = []
+        for value in summaries.values():
+            cost = value['estimated_production_cost']
+            with localcontext() as context:
+                context.prec = 60
+                margin = value['net_estimate'] - cost if cost is not None else None
+            financial.append({**value, 'net_estimate': format(value['net_estimate'], 'f'),
+                'estimated_production_cost': format(cost, 'f') if cost is not None else None,
+                'estimated_margin': format(margin, 'f') if margin is not None else None, 'authoritative': False})
         estimates = {}
-        for document in commercial.filter(kind='COSTING'):
+        for document in commercial.filter(kind='COSTING').exclude(status='CANCELLED'):
             snapshot = document.revisions.get(number=document.version).snapshot
             currency = snapshot['input']['currency']
             total = estimates.setdefault(currency, Decimal(0))
@@ -95,7 +125,14 @@ class RehearsalViewSet(viewsets.GenericViewSet):
                     for line in snapshot['estimate']['lines'] if line.get('costing')), Decimal(0))
         stage_counts = {'PENDING': 0, 'STARTED': 0, 'COMPLETE': 0}
         units = {}
+        recycling = {}
         for job in rows:
+            for event in job.snapshot.get('recycling', []):
+                group = recycling.setdefault(event['unit'], {'unit':event['unit'],'batches':0,'intake':Decimal(0),'recovered':Decimal(0),'rejected':Decimal(0),'disposed':Decimal(0)})
+                group['batches'] += 1
+                with localcontext() as context:
+                    context.prec = 60
+                    for key in ('intake','recovered','rejected','disposed'): group[key] += Decimal(event[key])
             for route in job.snapshot['routes']:
                 line = job.snapshot['source']['input']['lines'][route['line']]
                 unit = str(line['unit'])
@@ -110,10 +147,15 @@ class RehearsalViewSet(viewsets.GenericViewSet):
                     target['output_quantity'] += Decimal(route['stages'][-1]['output_quantity'])
         production = [{key: format(value, 'f') if isinstance(value, Decimal) else value
             for key, value in target.items()} for target in units.values()]
+        notifications = [{'id':str(job.pk),'status':job.status,'kind':'SYNTHETIC_PRODUCTION',
+            'href':'/job-cards/'+str(job.pk),'message':f'Synthetic Job Card {job.status.lower().replace("_", " ")}'}
+            for job in rows.filter(status__in=['DRAFT','QC_FAILED','FINISHED']).order_by('-updated_at','id')[:20]]
         return Response({'simulation': True, 'operational_posting': False, 'jobs': rows.count(),
             'statuses': {r['status']: r['total'] for r in rows.values('status').annotate(total=Count('id'))},
             'stages': stage_counts, 'production_by_unit': production,
-            'parties': parties, 'estimated_cost_by_currency': {k: format(v, 'f') for k, v in estimates.items()},
+            'parties': parties, 'catalog': catalog, 'commercial_by_party': financial, 'notifications': notifications,
+            'recycling_by_unit': [{key:format(value,'f') if isinstance(value,Decimal) else value for key,value in group.items()} for group in recycling.values()],
+            'estimated_cost_by_currency': {k: format(v, 'f') for k, v in estimates.items()},
             'financial_payable': None, 'operational_available_stock': None,
             'commercial': {'counts': {r['kind']: r['total'] for r in commercial.values('kind').annotate(total=Count('id'))},
                 'statuses': {r['status']: r['total'] for r in commercial.values('status').annotate(total=Count('id'))}}})
